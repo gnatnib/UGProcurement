@@ -1,5 +1,4 @@
 # **UGProcurement**  
-![Inventoryweb-thumbnail](https://user-images.githubusercontent.com/47371845/205918923-dcc3b42f-4d67-46af-9bd1-d6b577b868cb.jpg)
 
 ## :information_source: About UGProcurement  
 UGProcurement is a powerful inventory management application designed to help you monitor and control your stock. With UGProcurement, you can easily track incoming and outgoing transactions, manage items effectively, and generate detailed reports.  
