@@ -1,56 +1,64 @@
-![Inventoryweb-thumnail](https://user-images.githubusercontent.com/47371845/205918923-dcc3b42f-4d67-46af-9bd1-d6b577b868cb.jpg)
+# **UGProcurement**  
+![Inventoryweb-thumbnail](https://user-images.githubusercontent.com/47371845/205918923-dcc3b42f-4d67-46af-9bd1-d6b577b868cb.jpg)
 
-## *:information_source: Inventoryweb*
-Aplikasi ini bisa anda gunakan untuk mengontrol stock barang yang anda miliki sehingga jelas transaksi keluar dan masuk barang tersebut juga mempermudah kontrol barang tersebut.
-<br><br>
-Untuk tampilannya saya sudah pasang template admin `bootstrap v5` yaitu `sash admin`.
+## :information_source: About UGProcurement  
+UGProcurement is a powerful inventory management application designed to help you monitor and control your stock. With UGProcurement, you can easily track incoming and outgoing transactions, manage items effectively, and generate detailed reports.  
 
-## *:sparkles: Fitur*
-* **Dashboard**
-* **Jenis Barang**
-* **Satuan Barang**
-* **Merk Barang**
-* **Barang**
-* **Customer**
-* **Barang Masuk**
-* **Barang Keluar**
-* **Laporan Barang Masuk**
-* **Laporan Barang Keluar**
-* **Laporan Stok Barang**
-* **Setting Website**
-* **Setting Hak Akses user per Role**
-* **Setting Menu (bisa tambah menu atau bisa hapus menu)**
+This application uses the **Sash Admin** template (built with Bootstrap v5) for its user interface.
 
-## *:electric_plug: Plugin*
-* **Yajra Datatables**
-* **SweetAlert**
-* **jQuery**
-* **Datetime picker**
+---
 
-## *:gear: Requirement*
-<p>
-<img alt="gambar" src="https://img.shields.io/badge/PHP%20-%5E8.1-green"/>
-<img alt="gambar" src="https://img.shields.io/badge/Node JS%20-%5E16.14.0-green"/>
-<img alt="gambar" src="https://img.shields.io/badge/Npm%20-%5E8.3.1-green"/>
-<img alt="gambar" src="https://img.shields.io/badge/Composer%20-%5E2.3.9-green"/>
-</p>
+## :sparkles: Features  
+- **Dashboard**: Overview of key metrics and stock status.  
+- **Jenis Barang**: Manage item categories.  
+- **Satuan Barang**: Define and manage item units.  
+- **Merk Barang**: Manage item brands.  
+- **Barang**: Add, update, or remove items.  
+- **Customer**: Manage customer data.  
+- **Barang Masuk**: Record incoming stock transactions.  
+- **Barang Keluar**: Record outgoing stock transactions.  
+- **Laporan Barang Masuk**: Generate reports for incoming stock.  
+- **Laporan Barang Keluar**: Generate reports for outgoing stock.  
+- **Laporan Stok Barang**: Generate stock reports.  
+- **Setting Website**: Configure website settings.  
+- **Setting Hak Akses User per Role**: Define user permissions by role.  
+- **Setting Menu**: Add or remove application menus.
 
-## *:rocket: Instalasi*
-#### :arrow_right: Clone Project / Download File
-Clone Project dengan perintah terminal `gitbash` sebagai berikut:
-```
+---
+
+## :electric_plug: Plugins  
+- **Yajra Datatables**  
+- **SweetAlert**  
+- **jQuery**  
+- **Datetime Picker**  
+
+---
+
+## :gear: Requirements  
+![PHP](https://img.shields.io/badge/PHP-%5E8.1-green)  
+![Node.js](https://img.shields.io/badge/Node%20JS-%5E16.14.0-green)  
+![Npm](https://img.shields.io/badge/Npm-%5E8.3.1-green)  
+![Composer](https://img.shields.io/badge/Composer-%5E2.3.9-green)  
+
+---
+
+## :rocket: Installation  
+
+### :arrow_right: Clone Project / Download Files  
+Clone the project using Git:  
+```bash
 git clone git@github.com:gnatnib/ugprocurement.git
 ```
-Atau bisa klik tombol download Zip dan extrak file tersebut
+Or click download zip and extract.
 #### :arrow_right: Buat Database
-Buat Database `ugprocurement`
+Create database in your database viewer, for example PHPMyadmin `ugprocurement`
 #### :arrow_right: Config ENV
-Ubah file dari `env.development` jadi `.env`
+Change file name from `env.development` to `.env`
 
-Setting `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` yang ada di file `.env` sesuai Nama Database mysql kalian
+Set `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` in `.env` file according to your database file name.
 
 #### :arrow_right: Set Up
-Buka Terminal di proyek folder Anda dan jalankan perintah dibawah ini:
+Open your terminal and run these codes below:
 ```
 composer install
 ```
@@ -58,13 +66,13 @@ composer install
 php artisan storage:link
 ```
 #### :arrow_right: Import Database
-Import file database `ugprocurement.sql` yang ada di folder `database/db` ke phpmyadmin 
+Import `ugprocurement.sql` in `database/db` path to phpmyadmin 
 
 #### :arrow_right: Jalankan Aplikasi
 ```
 php artisan serve
 ```
-copy & paste `http://127.0.0.1:8000/` ke browser anda.
+copy & paste `http://127.0.0.1:8000/` to your browser.
 
 #### :arrow_right: Login Default
 username: `superadmin` password: `12345678`
