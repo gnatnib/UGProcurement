@@ -39,11 +39,11 @@ Untuk tampilannya saya sudah pasang template admin `bootstrap v5` yaitu `sash ad
 #### :arrow_right: Clone Project / Download File
 Clone Project dengan perintah terminal `gitbash` sebagai berikut:
 ```
-git clone git@github.com:radhiant/laravel-inventoryweb.git
+git clone git@github.com:gnatnib/ugprocurement.git
 ```
 Atau bisa klik tombol download Zip dan extrak file tersebut
 #### :arrow_right: Buat Database
-Buat Database `db_inventoryweb`
+Buat Database `ugprocurement`
 #### :arrow_right: Config ENV
 Ubah file dari `env.development` jadi `.env`
 
@@ -58,7 +58,7 @@ composer install
 php artisan storage:link
 ```
 #### :arrow_right: Import Database
-Import file database `db_inventoryweb.sql` yang ada di folder `database/db` ke phpmyadmin 
+Import file database `ugprocurement.sql` yang ada di folder `database/db` ke phpmyadmin 
 
 #### :arrow_right: Jalankan Aplikasi
 ```
