@@ -21,11 +21,7 @@ $web = WebModel::first();
     <meta name="keywords" content="">
 
     <!-- FAVICON -->
-    @if($web->web_logo == '' || $web->web_logo == 'default.png')
-    <link rel="shortcut icon" type="image/x-icon" href="{{url('/assets/default/web/default.png')}}" />
-    @else
-    <link rel="shortcut icon" type="image/x-icon" href="{{asset('storage/web/' . $web->web_logo)}}" />
-    @endif
+    <link rel="shortcut icon" type="image/x-icon" href="{{url('/assets/images/logoug.png')}}" />
 
     <!-- TITLE -->
     <title>{{$title}} | {{$web->web_nama}}</title>
