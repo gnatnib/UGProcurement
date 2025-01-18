@@ -88,6 +88,22 @@ class SatuanBarang extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
+            [
+                'satuan_id' => 13,
+                'satuan_nama' => 'Rim',
+                'satuan_slug' => 'rim',
+                'satuan_keterangan' => '1 Rim = 500 Lembar',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'satuan_id' => 14,
+                'satuan_nama' => 'Kodi',
+                'satuan_slug' => 'kodi',
+                'satuan_keterangan' => '1 Kodi = 20 Unit',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
         ]);
     }
 }
