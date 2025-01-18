@@ -35,7 +35,7 @@ class AksesTableSeeder extends Seeder
 
     private function seedDashboardPermissions()
     {
-        $roles = [1, 2, 3, 4]; // Super Admin, Admin, Operator, Manager
+        $roles = [1, 2, 3, 4,5]; // Super Admin, Admin, Operator, Manager
         foreach ($roles as $role_id) {
             DB::table('tbl_akses')->insert([
                 [
@@ -72,7 +72,7 @@ class AksesTableSeeder extends Seeder
 
     private function seedMasterBarangPermissions()
     {
-        $roles = [1, 2, 3, 4];
+        $roles = [1, 2, 3, 4,5];
         foreach ($roles as $role_id) {
             DB::table('tbl_akses')->insert([
                 [
@@ -109,7 +109,7 @@ class AksesTableSeeder extends Seeder
 
     private function seedCustomerPermissions()
     {
-        $roles = [1, 2, 3, 4];
+        $roles = [1, 2, 3, 4 ,5];
         foreach ($roles as $role_id) {
             DB::table('tbl_akses')->insert([
                 [
@@ -146,7 +146,7 @@ class AksesTableSeeder extends Seeder
 
     private function seedTransaksiPermissions()
     {
-        $roles = [1, 2, 3, 4];
+        $roles = [1, 2, 3, 4,5];
         foreach ($roles as $role_id) {
             DB::table('tbl_akses')->insert([
                 [
@@ -183,7 +183,7 @@ class AksesTableSeeder extends Seeder
 
     private function seedLaporanPermissions()
     {
-        $roles = [1, 2, 3, 4];
+        $roles = [1, 2, 3, 4,5];
         foreach ($roles as $role_id) {
             DB::table('tbl_akses')->insert([
                 [
@@ -221,7 +221,7 @@ class AksesTableSeeder extends Seeder
     private function seedSubmenuPermissions()
     {
         $submenuIds = [9, 10, 17, 18, 19, 20, 21, 22, 23];
-        $roles = [1, 2, 3, 4];
+        $roles = [1, 2, 3, 4,5];
 
         foreach ($roles as $role_id) {
             foreach ($submenuIds as $submenu_id) {

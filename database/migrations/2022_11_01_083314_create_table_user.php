@@ -19,6 +19,9 @@ return new class extends Migration
             $table->string('user_nmlengkap');
             $table->string('user_nama');
             $table->string('user_email');
+            $table->string('nomor_hp');
+            $table->string('divisi');
+            $table->string('departemen');
             $table->string('user_foto');
             $table->string('user_password');
             $table->timestamps();
