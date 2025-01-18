@@ -18,7 +18,6 @@ return new class extends Migration
             $table->integer('user_id');
             $table->string('bm_kode');
             $table->string('barang_kode');
-            $table->string('customer_id');
             $table->string('bm_tanggal');
             $table->string('bm_jumlah');
             $table->string('divisi');

@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+
 class BarangmasukController extends Controller
 {
     public function index()
@@ -25,7 +27,7 @@ class BarangmasukController extends Controller
     public function show(Request $request)
     {
         if ($request->ajax()) {
-            $data = BarangmasukModel::leftJoin('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')->leftJoin('tbl_customer', 'tbl_customer.customer_id', '=', 'tbl_barangmasuk.customer_id')->orderBy('bm_id', 'DESC')->get();
+            $data = BarangmasukModel::leftJoin('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')->leftJoin('tbl_user', 'tbl_user.user_id', '=', 'tbl_barangmasuk.user_id')->orderBy('bm_id', 'DESC')->get();
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('tgl', function ($row) {
@@ -33,10 +35,10 @@ class BarangmasukController extends Controller
 
                     return $tgl;
                 })
-                ->addColumn('customer', function ($row) {
-                    $customer = $row->customer_id == '' ? '-' : $row->customer_nama;
+                ->addColumn('user', function ($row) {
+                    $user = $row->user_id == '' ? '-' : $row->user_nama;
 
-                    return $customer;
+                    return $user;
                 })
                 ->addColumn('barang', function ($row) {
                     $barang = $row->barang_id == '' ? '-' : $row->barang_nama;
@@ -48,7 +50,7 @@ class BarangmasukController extends Controller
                         "bm_id" => $row->bm_id,
                         "bm_kode" => $row->bm_kode,
                         "barang_kode" => $row->barang_kode,
-                        "customer_id" => $row->customer_id,
+                        "user_id" => $row->user_id, // Menggunakan user_id
                         "bm_tanggal" => $row->bm_tanggal,
                         "bm_jumlah" => $row->bm_jumlah
                     );
@@ -79,33 +81,46 @@ class BarangmasukController extends Controller
                     }
                     return $button;
                 })
-                ->rawColumns(['action', 'tgl', 'customer', 'barang'])->make(true);
+                ->rawColumns(['action', 'tgl', 'user', 'barang'])->make(true);
         }
     }
 
-        public function proses_tambah(Request $request)
-    {
+    public function proses_tambah(Request $request)
+{
+    try {
         // Mendapatkan data user yang sedang login
-        $user = Auth::user();
+        $user = Session::get('user'); // Karena aplikasi menggunakan Session::get('user')
 
-        // Insert data dengan auto-filled fields
-        BarangmasukModel::create([
+        // Debug
+        Log::info('User data:', ['user' => $user]);
+        Log::info('Request data:', $request->all());
+
+        // Insert data
+        $barangmasuk = BarangmasukModel::create([
             'bm_tanggal' => $request->tglmasuk,
             'bm_kode' => $request->bmkode,
             'barang_kode' => $request->barang,
             'keterangan' => $request->keterangan,
             'bm_jumlah' => $request->jml,
-            'user_id' => $user->user_id, 
-            'divisi' => $user->divisi, 
+            'user_id' => $user->user_id,
+            'divisi' => $user->divisi,
             'status' => null,
             'approval' => null
         ]);
 
-        return response()->json(['success' => 'Berhasil']);
+        Log::info('Saved data:', $barangmasuk->toArray());
+
+        return response()->json(['success' => true]);
+    } catch (\Exception $e) {
+        Log::error('Error saving data: ' . $e->getMessage());
+        return response()->json([
+            'success' => false,
+            'message' => $e->getMessage()
+        ], 500);
     }
+}
 
-
-        public function proses_ubah(Request $request, BarangmasukModel $barangmasuk)
+    public function proses_ubah(Request $request, BarangmasukModel $barangmasuk)
     {
         //update data
         $barangmasuk->update([
@@ -125,5 +140,4 @@ class BarangmasukController extends Controller
 
         return response()->json(['success' => 'Berhasil']);
     }
-
 }

@@ -136,14 +136,14 @@
                 $("input[name='tglmasuk']").addClass('is-invalid');
                 setLoading(false);
                 return false;
-            } else if (keterangan == "") {
-                validasi('Keterangan wajib di isi!', 'warning');
-                $("textarea[name='keterangan']").addClass('is-invalid');
-                setLoading(false);
-                return false;
             } else if (status == "false") {
                 validasi('Barang wajib di pilih!', 'warning');
                 $("input[name='kdbarang']").addClass('is-invalid');
+                setLoading(false);
+                return false;
+            } else if (keterangan == "") {
+                validasi('Keterangan wajib di isi!', 'warning');
+                $("textarea[name='keterangan']").addClass('is-invalid');
                 setLoading(false);
                 return false;
             } else if (jml == "" || jml == "0") {
@@ -156,7 +156,7 @@
             }
         }
 
-        function submitForm() {
+       function submitForm() {
             const bmkode = $("input[name='bmkode']").val();
             const tglmasuk = $("input[name='tglmasuk']").val();
             const kdbarang = $("input[name='kdbarang']").val();
@@ -166,22 +166,33 @@
             $.ajax({
                 type: 'POST',
                 url: "{{ route('barang-masuk.store') }}",
-                enctype: 'multipart/form-data',
                 data: {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
                     bmkode: bmkode,
                     tglmasuk: tglmasuk,
                     barang: kdbarang,
                     keterangan: keterangan,
                     jml: jml
                 },
-                success: function (data) {
-                    $('#modaldemo8').modal('toggle');
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        $('#modaldemo8').modal('hide');
+                        swal({
+                            title: "Berhasil ditambah!",
+                            type: "success"
+                        });
+                        table.ajax.reload(null, false);
+                        reset();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
                     swal({
-                        title: "Berhasil ditambah!",
-                        type: "success"
+                        title: "Error!",
+                        text: "Terjadi kesalahan saat menyimpan data",
+                        type: "error"
                     });
-                    table.ajax.reload(null, false);
-                    reset();
                 }
             });
         }
