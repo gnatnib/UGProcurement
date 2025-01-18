@@ -16,16 +16,15 @@ class WebTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('tbl_web')->insert(
+        DB::table('tbl_web')->insert([
             [
-                [
-                    'web_nama' => 'Laravel 9',
-                    'web_logo' => 'laravel.svg',
-                    'web_deskripsi' => null,
-                    'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                    'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-                ],
+                'web_id' => 1,
+                'web_nama' => 'UG Procurement',
+                'web_logo' => 'default.png',
+                'web_deskripsi' => 'Mengelola Data Barang Masuk & Barang Keluar',
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ]
-        );
+        ]);
     }
 }

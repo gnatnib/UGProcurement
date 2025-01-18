@@ -162,7 +162,7 @@ $appreance = AppreanceModel::where('user_id', '=', Session::get('user')->user_id
                         data-bs-dismiss="modal"><span aria-hidden="true">×</span></button>
                     <br>
                     <i class="icon icon-exclamation fs-70 text-warning lh-1 my-5 d-inline-block"></i>
-                    <h3 class="mb-5">Yakin logout ?</h3>
+                    <h3 class="mb-5">Apakah anda yakin ?</h3>
                     <button type="submit" class="btn btn-danger-light pd-x-25">Iya</button>
                     <button type="reset" data-bs-dismiss="modal" class="btn btn-default pd-x-25">Batal</button>
                 </div>

@@ -9,394 +9,294 @@ use Illuminate\Support\Facades\DB;
 
 class AksesTableSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
     public function run()
     {
-        DB::table('tbl_akses')->insert(
-            [
-                // Dashboard akses role Super Admin
+        // Part 1: Menu Permissions for Dashboard
+        $this->seedDashboardPermissions();
+
+        // Part 2: Master Barang Menu Permissions
+        $this->seedMasterBarangPermissions();
+
+        // Part 3: Customer Menu Permissions
+        $this->seedCustomerPermissions();
+
+        // Part 4: Transaksi Menu Permissions
+        $this->seedTransaksiPermissions();
+
+        // Part 5: Laporan Menu Permissions
+        $this->seedLaporanPermissions();
+
+        // Part 6: Other Menu Permissions (Settings, etc)
+        $this->seedOtherMenuPermissions();
+
+        // Part 7: Submenu Permissions
+        $this->seedSubmenuPermissions();
+    }
+
+    private function seedDashboardPermissions()
+    {
+        $roles = [1, 2, 3, 4]; // Super Admin, Admin, Operator, Manager
+        foreach ($roles as $role_id) {
+            DB::table('tbl_akses')->insert([
                 [
                     'menu_id' => '1667444041',
-                    'role_id' => 1,
+                    'role_id' => $role_id,
                     'akses_type' => 'view',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
                 ],
                 [
                     'menu_id' => '1667444041',
-                    'role_id' => 1,
+                    'role_id' => $role_id,
                     'akses_type' => 'create',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
                 ],
                 [
                     'menu_id' => '1667444041',
-                    'role_id' => 1,
+                    'role_id' => $role_id,
                     'akses_type' => 'update',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
                 ],
                 [
                     'menu_id' => '1667444041',
-                    'role_id' => 1,
+                    'role_id' => $role_id,
                     'akses_type' => 'delete',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-                ],
+                ]
+            ]);
+        }
+    }
 
-                // Dashboard akses role Admin
+    private function seedMasterBarangPermissions()
+    {
+        $roles = [1, 2, 3, 4];
+        foreach ($roles as $role_id) {
+            DB::table('tbl_akses')->insert([
                 [
-                    'menu_id' => '1667444041',
-                    'role_id' => 2,
+                    'menu_id' => '1668509889',
+                    'role_id' => $role_id,
                     'akses_type' => 'view',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
                 ],
                 [
-                    'menu_id' => '1667444041',
-                    'role_id' => 2,
+                    'menu_id' => '1668509889',
+                    'role_id' => $role_id,
                     'akses_type' => 'create',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
                 ],
                 [
-                    'menu_id' => '1667444041',
-                    'role_id' => 2,
+                    'menu_id' => '1668509889',
+                    'role_id' => $role_id,
                     'akses_type' => 'update',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
                 ],
                 [
-                    'menu_id' => '1667444041',
-                    'role_id' => 2,
+                    'menu_id' => '1668509889',
+                    'role_id' => $role_id,
                     'akses_type' => 'delete',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-                ],
+                ]
+            ]);
+        }
+    }
 
-                // Dashboard akses role Operator
+    private function seedCustomerPermissions()
+    {
+        $roles = [1, 2, 3, 4];
+        foreach ($roles as $role_id) {
+            DB::table('tbl_akses')->insert([
                 [
-                    'menu_id' => '1667444041',
-                    'role_id' => 3,
+                    'menu_id' => '1669390641',
+                    'role_id' => $role_id,
                     'akses_type' => 'view',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
                 ],
                 [
-                    'menu_id' => '1667444041',
-                    'role_id' => 3,
+                    'menu_id' => '1669390641',
+                    'role_id' => $role_id,
                     'akses_type' => 'create',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
                 ],
                 [
-                    'menu_id' => '1667444041',
-                    'role_id' => 3,
+                    'menu_id' => '1669390641',
+                    'role_id' => $role_id,
                     'akses_type' => 'update',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
                 ],
                 [
-                    'menu_id' => '1667444041',
-                    'role_id' => 3,
+                    'menu_id' => '1669390641',
+                    'role_id' => $role_id,
                     'akses_type' => 'delete',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+                ]
+            ]);
+        }
+    }
+
+    private function seedTransaksiPermissions()
+    {
+        $roles = [1, 2, 3, 4];
+        foreach ($roles as $role_id) {
+            DB::table('tbl_akses')->insert([
+                [
+                    'menu_id' => '1668510437',
+                    'role_id' => $role_id,
+                    'akses_type' => 'view',
+                    'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
                 ],
+                [
+                    'menu_id' => '1668510437',
+                    'role_id' => $role_id,
+                    'akses_type' => 'create',
+                    'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+                ],
+                [
+                    'menu_id' => '1668510437',
+                    'role_id' => $role_id,
+                    'akses_type' => 'update',
+                    'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+                ],
+                [
+                    'menu_id' => '1668510437',
+                    'role_id' => $role_id,
+                    'akses_type' => 'delete',
+                    'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+                ]
+            ]);
+        }
+    }
 
-            ]
-        );
+    private function seedLaporanPermissions()
+    {
+        $roles = [1, 2, 3, 4];
+        foreach ($roles as $role_id) {
+            DB::table('tbl_akses')->insert([
+                [
+                    'menu_id' => '1668510568',
+                    'role_id' => $role_id,
+                    'akses_type' => 'view',
+                    'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+                ],
+                [
+                    'menu_id' => '1668510568',
+                    'role_id' => $role_id,
+                    'akses_type' => 'create',
+                    'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+                ],
+                [
+                    'menu_id' => '1668510568',
+                    'role_id' => $role_id,
+                    'akses_type' => 'update',
+                    'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+                ],
+                [
+                    'menu_id' => '1668510568',
+                    'role_id' => $role_id,
+                    'akses_type' => 'delete',
+                    'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+                ]
+            ]);
+        }
+    }
 
-        DB::table('tbl_akses')->insert([
-            // Settings akses role Super Admin
-            [
-                'othermenu_id' => 1,
-                'role_id' => 1,
-                'akses_type' => 'view',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            // Settings akses role Admin
-            [
-                'othermenu_id' => 1,
-                'role_id' => 2,
-                'akses_type' => 'view',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
+    private function seedSubmenuPermissions()
+    {
+        $submenuIds = [9, 10, 17, 18, 19, 20, 21, 22, 23];
+        $roles = [1, 2, 3, 4];
 
-            // Menu akses role Super Admin
-            [
-                'othermenu_id' => 2,
-                'role_id' => 1,
-                'akses_type' => 'view',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'othermenu_id' => 2,
-                'role_id' => 1,
-                'akses_type' => 'create',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'othermenu_id' => 2,
-                'role_id' => 1,
-                'akses_type' => 'update',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'othermenu_id' => 2,
-                'role_id' => 1,
-                'akses_type' => 'delete',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
+        foreach ($roles as $role_id) {
+            foreach ($submenuIds as $submenu_id) {
+                DB::table('tbl_akses')->insert([
+                    [
+                        'submenu_id' => $submenu_id,
+                        'role_id' => $role_id,
+                        'akses_type' => 'view',
+                        'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                        'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+                    ],
+                    [
+                        'submenu_id' => $submenu_id,
+                        'role_id' => $role_id,
+                        'akses_type' => 'create',
+                        'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                        'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+                    ],
+                    [
+                        'submenu_id' => $submenu_id,
+                        'role_id' => $role_id,
+                        'akses_type' => 'update',
+                        'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                        'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+                    ],
+                    [
+                        'submenu_id' => $submenu_id,
+                        'role_id' => $role_id,
+                        'akses_type' => 'delete',
+                        'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                        'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+                    ]
+                ]);
+            }
+        }
+    }
 
-            // Menu akses role Admin
-            [
-                'othermenu_id' => 2,
-                'role_id' => 2,
-                'akses_type' => 'view',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'othermenu_id' => 2,
-                'role_id' => 2,
-                'akses_type' => 'create',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'othermenu_id' => 2,
-                'role_id' => 2,
-                'akses_type' => 'update',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'othermenu_id' => 2,
-                'role_id' => 2,
-                'akses_type' => 'delete',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
+    private function seedOtherMenuPermissions()
+    {
+        $otherMenuIds = range(1, 6); // Settings, Menu, Role, User, Akses, Web
+        $roles = [1, 2]; // Only Super Admin and Admin get these permissions
 
-            // Menu Role akses role Super Admin
-            [
-                'othermenu_id' => 3,
-                'role_id' => 1,
-                'akses_type' => 'view',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'othermenu_id' => 3,
-                'role_id' => 1,
-                'akses_type' => 'create',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'othermenu_id' => 3,
-                'role_id' => 1,
-                'akses_type' => 'update',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'othermenu_id' => 3,
-                'role_id' => 1,
-                'akses_type' => 'delete',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            // Menu Role akses role Admin
-            [
-                'othermenu_id' => 3,
-                'role_id' => 2,
-                'akses_type' => 'view',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'othermenu_id' => 3,
-                'role_id' => 2,
-                'akses_type' => 'create',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'othermenu_id' => 3,
-                'role_id' => 2,
-                'akses_type' => 'update',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'othermenu_id' => 3,
-                'role_id' => 2,
-                'akses_type' => 'delete',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-
-            // User akses role Super Admin
-            [
-                'othermenu_id' => 4,
-                'role_id' => 1,
-                'akses_type' => 'view',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'othermenu_id' => 4,
-                'role_id' => 1,
-                'akses_type' => 'create',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'othermenu_id' => 4,
-                'role_id' => 1,
-                'akses_type' => 'update',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'othermenu_id' => 4,
-                'role_id' => 1,
-                'akses_type' => 'delete',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-
-            // User akses role Admin
-            [
-                'othermenu_id' => 4,
-                'role_id' => 2,
-                'akses_type' => 'view',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'othermenu_id' => 4,
-                'role_id' => 2,
-                'akses_type' => 'create',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'othermenu_id' => 4,
-                'role_id' => 2,
-                'akses_type' => 'update',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'othermenu_id' => 4,
-                'role_id' => 2,
-                'akses_type' => 'delete',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-
-            // Menu Akses role Super Admin
-            [
-                'othermenu_id' => 5,
-                'role_id' => 1,
-                'akses_type' => 'view',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'othermenu_id' => 5,
-                'role_id' => 1,
-                'akses_type' => 'create',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'othermenu_id' => 5,
-                'role_id' => 1,
-                'akses_type' => 'update',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'othermenu_id' => 5,
-                'role_id' => 1,
-                'akses_type' => 'delete',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-
-            // Menu Web role Super Admin
-            [
-                'othermenu_id' => 6,
-                'role_id' => 1,
-                'akses_type' => 'view',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'othermenu_id' => 6,
-                'role_id' => 1,
-                'akses_type' => 'create',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'othermenu_id' => 6,
-                'role_id' => 1,
-                'akses_type' => 'update',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'othermenu_id' => 6,
-                'role_id' => 1,
-                'akses_type' => 'delete',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-
-            // Menu Web role Admin
-            [
-                'othermenu_id' => 6,
-                'role_id' => 2,
-                'akses_type' => 'view',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'othermenu_id' => 6,
-                'role_id' => 2,
-                'akses_type' => 'create',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'othermenu_id' => 6,
-                'role_id' => 2,
-                'akses_type' => 'update',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'othermenu_id' => 6,
-                'role_id' => 2,
-                'akses_type' => 'delete',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-        ]);
+        foreach ($roles as $role_id) {
+            foreach ($otherMenuIds as $othermenu_id) {
+                DB::table('tbl_akses')->insert([
+                    [
+                        'othermenu_id' => $othermenu_id,
+                        'role_id' => $role_id,
+                        'akses_type' => 'view',
+                        'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                        'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+                    ],
+                    [
+                        'othermenu_id' => $othermenu_id,
+                        'role_id' => $role_id,
+                        'akses_type' => 'create',
+                        'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                        'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+                    ],
+                    [
+                        'othermenu_id' => $othermenu_id,
+                        'role_id' => $role_id,
+                        'akses_type' => 'update',
+                        'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                        'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+                    ],
+                    [
+                        'othermenu_id' => $othermenu_id,
+                        'role_id' => $role_id,
+                        'akses_type' => 'delete',
+                        'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                        'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+                    ]
+                ]);
+            }
+        }
     }
 }
