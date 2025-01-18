@@ -232,12 +232,12 @@ class BarangController extends Controller
         }
     }
 
-    public function proses_tambah(Request $request)
+        public function proses_tambah(Request $request)
     {
         $img = "";
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->nama)));
 
-        //upload image
+        // Upload image
         if ($request->file('foto') == null) {
             $img = "image.png";
         } else {
@@ -246,8 +246,10 @@ class BarangController extends Controller
             $img = $image->hashName();
         }
 
+        // Get authenticated user info
+        $user = auth()->user();
 
-        //create
+        // Create
         BarangModel::create([
             'barang_gambar' => $img,
             'jenisbarang_id' => $request->jenisbarang,
@@ -258,11 +260,16 @@ class BarangController extends Controller
             'barang_slug' => $slug,
             'barang_harga' => $request->harga,
             'barang_stok' => 0,
-
+            'barang_keterangan' => $request->keterangan, 
+            'user_id' => $user->id,                     
+            'divisi' => $user->divisi,                  
+            'approval' => null,                         
+            'status' => null                           
         ]);
 
         return response()->json(['success' => 'Berhasil']);
     }
+
 
     public function proses_ubah(Request $request, BarangModel $barang)
     {

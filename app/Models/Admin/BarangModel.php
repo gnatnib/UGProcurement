@@ -11,6 +11,7 @@ class BarangModel extends Model
     protected $table = "tbl_barang";
     protected $primaryKey = 'barang_id';
     protected $fillable = [
+        'user_id',
         'jenisbarang_id',
         'satuan_id',
         'merk_id',
@@ -20,5 +21,27 @@ class BarangModel extends Model
         'barang_harga',
         'barang_stok',
         'barang_gambar',
+        'approval',
+        'status',
+        'divisi',
+        'keterangan',
     ]; 
+
+    
+
+    // Add relationships
+    public function jenisBarang()
+    {
+        return $this->belongsTo(JenisBarangModel::class, 'jenisbarang_id');
+    }
+
+    public function satuan() 
+    {
+        return $this->belongsTo(SatuanModel::class, 'satuan_id');
+    }
+
+    public function merk()
+    {
+        return $this->belongsTo(MerkModel::class, 'merk_id'); 
+    }
 }
