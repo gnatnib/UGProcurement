@@ -3,7 +3,8 @@
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content modal-content-demo">
             <div class="modal-header">
-                <h6 class="modal-title">Tambah Barang</h6><button onclick="reset()" aria-label="Close" class="btn-close" data-bs-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                <h6 class="modal-title">Tambah Barang</h6><button onclick="reset()" aria-label="Close" class="btn-close"
+                    data-bs-dismiss="modal"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body">
                 <div class="row">
@@ -30,7 +31,7 @@
                             <select name="satuan" class="form-control">
                                 <option value="">-- Pilih --</option>
                                 @foreach ($satuan as $s)
-                                <option value="{{$s->satuan_id}}">{{$s->satuan_nama}}</option>
+                                    <option value="{{$s->satuan_id}}">{{$s->satuan_nama}}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -39,26 +40,27 @@
                             <select name="merk" class="form-control">
                                 <option value="">-- Pilih --</option>
                                 @foreach ($merk as $m)
-                                <option value="{{$m->merk_id}}">{{$m->merk_nama}}</option>
+                                    <option value="{{$m->merk_id}}">{{$m->merk_nama}}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="harga" class="form-label">Harga Barang <span class="text-danger">*</span></label>
-                            <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" name="harga" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="keterangan" class="form-label">Keterangan</label>
-                            <textarea name="keterangan" class="form-control" rows="3"></textarea>
+                            <label for="harga" class="form-label">Harga Barang <span
+                                    class="text-danger">*</span></label>
+                            <input type="text"
+                                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..?)\../g, '$1').replace(/^0[^.]/, '0');"
+                                name="harga" class="form-control">
                         </div>
                     </div>
                     <div class="col-md-5">
                         <div class="form-group">
                             <label for="title" class="form-label">Foto</label>
                             <center>
-                                <img src="{{url('/assets/default/barang/image.png')}}" width="80%" alt="profile-user" id="outputImg" class="">
+                                <img src="{{url('/assets/default/barang/image.png')}}" width="80%" alt="profile-user"
+                                    id="outputImg" class="">
                             </center>
-                            <input class="form-control mt-5" id="GetFile" name="photo" type="file" onchange="VerifyFileNameAndFileSize()" accept=".png,.jpeg,.jpg,.svg">
+                            <input class="form-control mt-5" id="GetFile" name="photo" type="file"
+                                onchange="VerifyFileNameAndFileSize()" accept=".png,.jpeg,.jpg,.svg">
                         </div>
                     </div>
                 </div>
@@ -68,8 +70,10 @@
                     <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
                     Loading...
                 </button>
-                <a href="javascript:void(0)" onclick="checkForm()" id="btnSimpan" class="btn btn-primary">Simpan <i class="fe fe-check"></i></a>
-                <a href="javascript:void(0)" class="btn btn-light" onclick="reset()" data-bs-dismiss="modal">Batal <i class="fe fe-x"></i></a>
+                <a href="javascript:void(0)" onclick="checkForm()" id="btnSimpan" class="btn btn-primary">Simpan <i
+                        class="fe fe-check"></i></a>
+                <a href="javascript:void(0)" class="btn btn-light" onclick="reset()" data-bs-dismiss="modal">Batal <i
+                        class="fe fe-x"></i></a>
             </div>
         </div>
     </div>
@@ -78,86 +82,65 @@
 @section('formTambahJS')
 <script>
     function checkForm() {
-            // Get all form values at once
-            const formValues = {
-                kode: $("input[name='kode']").val(),
-                nama: $("input[name='nama']").val(),
-                harga: $("input[name='harga']").val()
-            };
-
-            // Validate all fields at once
-            const errors = {};
-            if (!formValues.kode) errors.kode = 'Kode Barang wajib di isi!';
-            if (!formValues.nama) errors.nama = 'Nama Barang wajib di isi!';
-            if (!formValues.harga) errors.harga = 'Harga Barang wajib di isi!';
-
-            // If there are errors, show them
-            if (Object.keys(errors).length > 0) {
-                resetValid();
-                Object.keys(errors).forEach(key => {
-                    $(`input[name='${key}']`).addClass('is-invalid');
-                    validasi(errors[key], 'warning');
-                });
-                return false;
-            }
-
-            // If valid, submit
+        const kode = $("input[name='kode']").val();
+        const nama = $("input[name='nama']").val();
+        const harga = $("input[name='harga']").val();
+        setLoading(true);
+        resetValid();
+        if (kode == "") {
+            validasi('Kode Barang wajib di isi!', 'warning');
+            $("input[name='kode']").addClass('is-invalid');
+            setLoading(false);
+            return false;
+        } else if (nama == "") {
+            validasi('Nama Barang wajib di isi!', 'warning');
+            $("input[name='nama']").addClass('is-invalid');
+            setLoading(false);
+            return false;
+        } else if (harga == "") {
+            validasi('Harga Barang wajib di isi!', 'warning');
+            $("input[name='harga']").addClass('is-invalid');
+            setLoading(false);
+            return false;
+        } else {
             submitForm();
         }
-
-        function submitForm() {
-            setLoading(true);
-
-            // Create FormData more efficiently
-            const fd = new FormData();
-            const foto = $('#GetFile')[0].files[0];
-
-            // Add all form data at once
-            const formData = {
-                foto: foto,
-                kode: $("input[name='kode']").val(),
-                nama: $("input[name='nama']").val(),
-                jenisbarang: $("select[name='jenisbarang']").val(),
-                satuan: $("select[name='satuan']").val(),
-                merk: $("select[name='merk']").val(),
-                harga: $("input[name='harga']").val(),
-                keterangan: $("textarea[name='keterangan']").val()
-            };
-
-            // Append all data
-            Object.keys(formData).forEach(key => {
-                if (formData[key]) fd.append(key, formData[key]);
-            });
-
-            // Add error handling and timeout
-            $.ajax({
-                type: 'POST',
-                url: "{{route('barang.store')}}",
-                data: fd,
-                processData: false,
-                contentType: false,
-                timeout: 10000, // 10 second timeout
-                success: function (data) {
-                    $('#modaldemo8').modal('toggle');
-                    swal({
-                        title: "Berhasil ditambah!",
-                        type: "success"
-                    });
-                    table.ajax.reload(null, false);
-                    reset();
-                },
-                error: function (xhr, status, error) {
-                    swal({
-                        title: "Gagal!",
-                        text: "Terjadi kesalahan saat menyimpan data",
-                        type: "error"
-                    });
-                },
-                complete: function () {
-                    setLoading(false);
-                }
-            });
-        }
+    }
+    function submitForm() {
+        const kode = $("input[name='kode']").val();
+        const nama = $("input[name='nama']").val();
+        const jenisbarang = $("select[name='jenisbarang']").val();
+        const satuan = $("select[name='satuan']").val();
+        const merk = $("select[name='merk']").val();
+        const harga = $("input[name='harga']").val();
+        const foto = $('#GetFile')[0].files;
+        var fd = new FormData();
+        // Append data 
+        fd.append('foto', foto[0]);
+        fd.append('kode', kode);
+        fd.append('nama', nama);
+        fd.append('jenisbarang', jenisbarang);
+        fd.append('satuan', satuan);
+        fd.append('merk', merk);
+        fd.append('harga', harga);
+        $.ajax({
+            type: 'POST',
+            url: "{{route('barang.store')}}",
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            data: fd,
+            success: function (data) {
+                $('#modaldemo8').modal('toggle');
+                swal({
+                    title: "Berhasil ditambah!",
+                    type: "success"
+                });
+                table.ajax.reload(null, false);
+                reset();
+            }
+        });
+    }
     function resetValid() {
         $("input[name='kode']").removeClass('is-invalid');
         $("input[name='nama']").removeClass('is-invalid');
@@ -174,12 +157,10 @@
         $("select[name='satuan']").val('');
         $("select[name='merk']").val('');
         $("input[name='harga']").val('');
-        $("textarea[name='keterangan']").val(''); // Reset keterangan
         $("#outputImg").attr("src", "{{url('/assets/default/barang/image.png')}}");
         $("#GetFile").val('');
         setLoading(false);
     }
-
     function setLoading(bool) {
         if (bool == true) {
             $('#btnLoader').removeClass('d-none');

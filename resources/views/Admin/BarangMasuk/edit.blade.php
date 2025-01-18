@@ -18,13 +18,8 @@
                             <input type="text" name="tglmasukU" class="form-control datepicker-date" placeholder="">
                         </div>
                         <div class="form-group">
-                            <label for="customerU" class="form-label">Pilih Customer <span class="text-danger">*</span></label>
-                            <select name="customerU" id="customerU" class="form-control">
-                                <option value="">-- Pilih Customer --</option>
-                                @foreach ($customer as $c)
-                                <option value="{{ $c->customer_id }}">{{ $c->customer_nama }}</option>
-                                @endforeach
-                            </select>
+                            <label for="keterangan" class="form-label">Keterangan <span class="text-danger">*</span></label>
+                            <textarea name="keterangan" class="form-control" rows="3" placeholder="Masukkan keterangan"></textarea>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -128,92 +123,88 @@
     }
 
     function checkFormU() {
-        const tglmasuk = $("input[name='tglmasukU']").val();
-        const status = $("#statusU").val();
-        const kdbarang = $("input[name='kdbarangU").val();
-        const customer = $("select[name='customerU']").val();
-        const jml = $("input[name='jmlU']").val();
-        setLoadingU(true);
-        resetValidU();
+            const tglmasuk = $("input[name='tglmasuk']").val();
+            const status = $("#status").val();
+            const keterangan = $("textarea[name='keterangan']").val();
+            const jml = $("input[name='jml']").val();
+            setLoading(true);
+            resetValid();
 
-        if (tglmasuk == "") {
-            validasi('Tanggal Masuk wajib di isi!', 'warning');
-            $("input[name='tglmasukU']").addClass('is-invalid');
-            setLoading(Ufalse);
-            return false;
-        } else if (customer == "") {
-            validasi('Customer wajib di pilih!', 'warning');
-            $("select[name='customerU']").addClass('is-invalid');
-            setLoadingU(false);
-            return false;
-        } else if (status == "false" || kdbarang == '') {
-            validasi('Barang wajib di pilih!', 'warning');
-            $("input[name='kdbarangU']").addClass('is-invalid');
-            setLoadingU(false);
-            return false;
-        } else if (jml == "" || jml == "0") {
-            validasi('Jumlah Masuk wajib di isi!', 'warning');
-            $("input[name='jmlU']").addClass('is-invalid');
-            setLoadingU(false);
-            return false;
-        } else {
-            submitFormU();
-        }
-    }
-
-    function submitFormU() {
-        const id = $("input[name='idbmU']").val();
-        const bmkode = $("input[name='bmkodeU']").val();
-        const tglmasuk = $("input[name='tglmasukU']").val();
-        const kdbarang = $("input[name='kdbarangU']").val();
-        const customer = $("select[name='customerU']").val();
-        const jml = $("input[name='jmlU']").val();
-
-        $.ajax({
-            type: 'POST',
-            url: "{{ url('admin/barang-masuk/proses_ubah') }}/" + id,
-            enctype: 'multipart/form-data',
-            data: {
-                bmkode: bmkode,
-                tglmasuk: tglmasuk,
-                barang: kdbarang,
-                customer: customer,
-                jml: jml
-            },
-            success: function(data) {
-                swal({
-                    title: "Berhasil diubah!",
-                    type: "success"
-                });
-                $('#Umodaldemo8').modal('toggle');
-                table.ajax.reload(null, false);
-                resetU();
+            if (tglmasuk == "") {
+                validasi('Tanggal Masuk wajib di isi!', 'warning');
+                $("input[name='tglmasuk']").addClass('is-invalid');
+                setLoading(false);
+                return false;
+            } else if (keterangan == "") {
+                validasi('Keterangan wajib di isi!', 'warning');
+                $("textarea[name='keterangan']").addClass('is-invalid');
+                setLoading(false);
+                return false;
+            } else if (status == "false") {
+                validasi('Barang wajib di pilih!', 'warning');
+                $("input[name='kdbarang']").addClass('is-invalid');
+                setLoading(false);
+                return false;
+            } else if (jml == "" || jml == "0") {
+                validasi('Jumlah Masuk wajib di isi!', 'warning');
+                $("input[name='jml']").addClass('is-invalid');
+                setLoading(false);
+                return false;
+            } else {
+                submitForm();
             }
-        });
-    }
+        }
 
-    function resetValidU() {
-        $("input[name='tglmasukU']").removeClass('is-invalid');
-        $("input[name='kdbarangU']").removeClass('is-invalid');
-        $("select[name='customerU']").removeClass('is-invalid');
-        $("input[name='jmlU']").removeClass('is-invalid');
-    };
+        function submitFormU() {
+            const bmkode = $("input[name='bmkode']").val();
+            const tglmasuk = $("input[name='tglmasuk']").val();
+            const kdbarang = $("input[name='kdbarang']").val();
+            const keterangan = $("textarea[name='keterangan']").val();
+            const jml = $("input[name='jml']").val();
 
-    function resetU() {
-        resetValidU();
-        $("input[name='idbmU']").val('');
-        $("input[name='bmkodeU']").val('');
-        $("input[name='tglmasukU']").val('');
-        $("input[name='kdbarangU']").val('');
-        $("select[name='customerU']").val('');
-        $("input[name='jmlU']").val('0');
-        $("#nmbarangU").val('');
-        $("#satuanU").val('');
-        $("#jenisU").val('');
-        $("#statusU").val('false');
-        
-        setLoadingU(false);
-    }
+            $.ajax({
+                type: 'POST',
+                url: "{{ route('barang-masuk.store') }}",
+                enctype: 'multipart/form-data',
+                data: {
+                    bmkode: bmkode,
+                    tglmasuk: tglmasuk,
+                    barang: kdbarang,
+                    keterangan: keterangan,
+                    jml: jml
+                },
+                success: function (data) {
+                    $('#modaldemo8').modal('toggle');
+                    swal({
+                        title: "Berhasil ditambah!",
+                        type: "success"
+                    });
+                    table.ajax.reload(null, false);
+                    reset();
+                }
+            });
+        }
+
+        function resetValidU() {
+            $("input[name='tglmasuk']").removeClass('is-invalid');
+            $("input[name='kdbarang']").removeClass('is-invalid');
+            $("textarea[name='keterangan']").removeClass('is-invalid');
+            $("input[name='jml']").removeClass('is-invalid');
+        }
+
+        function resetU() {
+            resetValid();
+            $("input[name='bmkode']").val('');
+            $("input[name='tglmasuk']").val('');
+            $("input[name='kdbarang']").val('');
+            $("textarea[name='keterangan']").val('');
+            $("input[name='jml']").val('0');
+            $("#nmbarang").val('');
+            $("#satuan").val('');
+            $("#jenis").val('');
+            $("#status").val('false');
+            setLoading(false);
+        }
 
     function setLoadingU(bool) {
         if (bool == true) {

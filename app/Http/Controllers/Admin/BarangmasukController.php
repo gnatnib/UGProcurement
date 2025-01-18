@@ -11,14 +11,14 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\DataTables;
-
+use Illuminate\Support\Facades\Auth;
 class BarangmasukController extends Controller
 {
     public function index()
     {
         $data["title"] = "Barang Masuk";
         $data["hakTambah"] = AksesModel::leftJoin('tbl_submenu', 'tbl_submenu.submenu_id', '=', 'tbl_akses.submenu_id')->where(array('tbl_akses.role_id' => Session::get('user')->role_id, 'tbl_submenu.submenu_judul' => 'Barang Masuk', 'tbl_akses.akses_type' => 'create'))->count();
-        $data["customer"] = CustomerModel::orderBy('customer_id', 'DESC')->get();
+        
         return view('Admin.BarangMasuk.index', $data);
     }
 
@@ -83,30 +83,36 @@ class BarangmasukController extends Controller
         }
     }
 
-    public function proses_tambah(Request $request)
+        public function proses_tambah(Request $request)
     {
+        // Mendapatkan data user yang sedang login
+        $user = Auth::user();
 
-        //insert data
+        // Insert data dengan auto-filled fields
         BarangmasukModel::create([
             'bm_tanggal' => $request->tglmasuk,
             'bm_kode' => $request->bmkode,
             'barang_kode' => $request->barang,
-            'customer_id'   => $request->customer,
-            'bm_jumlah'   => $request->jml,
+            'keterangan' => $request->keterangan,
+            'bm_jumlah' => $request->jml,
+            'user_id' => $user->user_id, 
+            'divisi' => $user->divisi, 
+            'status' => null,
+            'approval' => null
         ]);
 
         return response()->json(['success' => 'Berhasil']);
     }
 
 
-    public function proses_ubah(Request $request, BarangmasukModel $barangmasuk)
+        public function proses_ubah(Request $request, BarangmasukModel $barangmasuk)
     {
         //update data
         $barangmasuk->update([
             'bm_tanggal' => $request->tglmasuk,
             'barang_kode' => $request->barang,
-            'customer_id'   => $request->customer,
-            'bm_jumlah'   => $request->jml,
+            'keterangan' => $request->keterangan,
+            'bm_jumlah' => $request->jml,
         ]);
 
         return response()->json(['success' => 'Berhasil']);

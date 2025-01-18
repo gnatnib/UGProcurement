@@ -15,7 +15,6 @@ return new class extends Migration
     {
         Schema::create('tbl_barang', function (Blueprint $table) {
             $table->increments('barang_id');
-            $table->integer('user_id');
             $table->string('jenisbarang_id')->nullable();
             $table->string('satuan_id')->nullable();
             $table->string('merk_id')->nullable();
@@ -25,10 +24,6 @@ return new class extends Migration
             $table->string('barang_harga');
             $table->string('barang_stok');
             $table->string('barang_gambar');
-            $table->string('divisi');
-            $table->string('approval');
-            $table->string('status');
-            $table->string('keterangan');
             $table->timestamps();
         });
     }

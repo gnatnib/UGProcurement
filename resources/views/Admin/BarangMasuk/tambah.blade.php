@@ -16,14 +16,10 @@
                             <label for="tglmasuk" class="form-label">Tanggal Masuk <span class="text-danger">*</span></label>
                             <input type="text" name="tglmasuk" class="form-control datepicker-date" placeholder="">
                         </div>
+                       
                         <div class="form-group">
-                            <label for="customer" class="form-label">Pilih Customer <span class="text-danger">*</span></label>
-                            <select name="customer" id="customer" class="form-control">
-                                <option value="">-- Pilih Customer --</option>
-                                @foreach ($customer as $c)
-                                <option value="{{ $c->customer_id }}">{{ $c->customer_nama }}</option>
-                                @endforeach
-                            </select>
+                            <label for="keterangan" class="form-label">Keterangan <span class="text-danger">*</span></label>
+                            <textarea name="keterangan" class="form-control" rows="3" placeholder="Masukkan keterangan"></textarea>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -128,90 +124,90 @@
     }
 
     function checkForm() {
-        const tglmasuk = $("input[name='tglmasuk']").val();
-        const status = $("#status").val();
-        const customer = $("select[name='customer']").val();
-        const jml = $("input[name='jml']").val();
-        setLoading(true);
-        resetValid();
+            const tglmasuk = $("input[name='tglmasuk']").val();
+            const status = $("#status").val();
+            const keterangan = $("textarea[name='keterangan']").val();
+            const jml = $("input[name='jml']").val();
+            setLoading(true);
+            resetValid();
 
-        if (tglmasuk == "") {
-            validasi('Tanggal Masuk wajib di isi!', 'warning');
-            $("input[name='tglmasuk']").addClass('is-invalid');
-            setLoading(false);
-            return false;
-        } else if (customer == "") {
-            validasi('Customer wajib di pilih!', 'warning');
-            $("select[name='customer']").addClass('is-invalid');
-            setLoading(false);
-            return false;
-        } else if (status == "false") {
-            validasi('Barang wajib di pilih!', 'warning');
-            $("input[name='kdbarang']").addClass('is-invalid');
-            setLoading(false);
-            return false;
-        } else if (jml == "" || jml == "0") {
-            validasi('Jumlah Masuk wajib di isi!', 'warning');
-            $("input[name='jml']").addClass('is-invalid');
-            setLoading(false);
-            return false;
-        } else {
-            submitForm();
+            if (tglmasuk == "") {
+                validasi('Tanggal Masuk wajib di isi!', 'warning');
+                $("input[name='tglmasuk']").addClass('is-invalid');
+                setLoading(false);
+                return false;
+            } else if (keterangan == "") {
+                validasi('Keterangan wajib di isi!', 'warning');
+                $("textarea[name='keterangan']").addClass('is-invalid');
+                setLoading(false);
+                return false;
+            } else if (status == "false") {
+                validasi('Barang wajib di pilih!', 'warning');
+                $("input[name='kdbarang']").addClass('is-invalid');
+                setLoading(false);
+                return false;
+            } else if (jml == "" || jml == "0") {
+                validasi('Jumlah Masuk wajib di isi!', 'warning');
+                $("input[name='jml']").addClass('is-invalid');
+                setLoading(false);
+                return false;
+            } else {
+                submitForm();
+            }
         }
 
-    }
+        function submitForm() {
+            const bmkode = $("input[name='bmkode']").val();
+            const tglmasuk = $("input[name='tglmasuk']").val();
+            const kdbarang = $("input[name='kdbarang']").val();
+            const keterangan = $("textarea[name='keterangan']").val();
+            const jml = $("input[name='jml']").val();
 
-    function submitForm() {
-        const bmkode = $("input[name='bmkode']").val();
-        const tglmasuk = $("input[name='tglmasuk']").val();
-        const kdbarang = $("input[name='kdbarang']").val();
-        const customer = $("select[name='customer']").val();
-        const jml = $("input[name='jml']").val();
+            $.ajax({
+                type: 'POST',
+                url: "{{ route('barang-masuk.store') }}",
+                enctype: 'multipart/form-data',
+                data: {
+                    bmkode: bmkode,
+                    tglmasuk: tglmasuk,
+                    barang: kdbarang,
+                    keterangan: keterangan,
+                    jml: jml
+                },
+                success: function (data) {
+                    $('#modaldemo8').modal('toggle');
+                    swal({
+                        title: "Berhasil ditambah!",
+                        type: "success"
+                    });
+                    table.ajax.reload(null, false);
+                    reset();
+                }
+            });
+        }
 
-        $.ajax({
-            type: 'POST',
-            url: "{{ route('barang-masuk.store') }}",
-            enctype: 'multipart/form-data',
-            data: {
-                bmkode: bmkode,
-                tglmasuk: tglmasuk,
-                barang: kdbarang,
-                customer: customer,
-                jml: jml
-            },
-            success: function(data) {
-                $('#modaldemo8').modal('toggle');
-                swal({
-                    title: "Berhasil ditambah!",
-                    type: "success"
-                });
-                table.ajax.reload(null, false);
-                reset();
+        function resetValid() {
+            $("input[name='tglmasuk']").removeClass('is-invalid');
+            $("input[name='kdbarang']").removeClass('is-invalid');
+            $("textarea[name='keterangan']").removeClass('is-invalid');
+            $("input[name='jml']").removeClass('is-invalid');
+        }
 
-            }
-        });
-    }
+        function reset() {
+            resetValid();
+            $("input[name='bmkode']").val('');
+            $("input[name='tglmasuk']").val('');
+            $("input[name='kdbarang']").val('');
+            $("textarea[name='keterangan']").val('');
+            $("input[name='jml']").val('0');
+            $("#nmbarang").val('');
+            $("#satuan").val('');
+            $("#jenis").val('');
+            $("#status").val('false');
+            setLoading(false);
+        }
 
-    function resetValid() {
-        $("input[name='tglmasuk']").removeClass('is-invalid');
-        $("input[name='kdbarang']").removeClass('is-invalid');
-        $("select[name='customer']").removeClass('is-invalid');
-        $("input[name='jml']").removeClass('is-invalid');
-    };
-
-    function reset() {
-        resetValid();
-        $("input[name='bmkode']").val('');
-        $("input[name='tglmasuk']").val('');
-        $("input[name='kdbarang']").val('');
-        $("select[name='customer']").val('');
-        $("input[name='jml']").val('0');
-        $("#nmbarang").val('');
-        $("#satuan").val('');
-        $("#jenis").val('');
-        $("#status").val('false');
-        setLoading(false);
-    }
+    
 
     function setLoading(bool) {
         if (bool == true) {
