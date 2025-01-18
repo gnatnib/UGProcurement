@@ -14,5 +14,5 @@ class JenisBarangModel extends Model
         'jenisbarang_nama',
         'jenisbarang_slug',
         'jenisbarang_ket'
-    ]; 
+    ];
 }
