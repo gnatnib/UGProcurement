@@ -15,11 +15,16 @@ return new class extends Migration
     {
         Schema::create('tbl_barangkeluar', function (Blueprint $table) {
             $table->increments('bk_id');
+            $table->integer('user_id');
             $table->string('bk_kode');
             $table->string('barang_kode');
             $table->string('bk_tanggal');
             $table->string('bk_tujuan')->nullable();
             $table->string('bk_jumlah');
+            $table->string('divisi');
+            $table->string('approval')->nullable();
+            $table->string('status')->nullable();
+            $table->string('keterangan');
             $table->timestamps();
         });
     }

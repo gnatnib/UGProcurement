@@ -21,6 +21,7 @@ $appreance = AppreanceModel::where('user_id', '=', Session::get('user')->user_id
     <meta name="description" content="{{ $web->web_deskripsi }}">
     <meta name="author" content="{{ $web->web_nama }}">
     <meta name="keywords" content="">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="csrf-token" content="{{ csrf_token() }}" />
 
     <!-- FAVICON -->

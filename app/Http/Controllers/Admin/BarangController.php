@@ -74,9 +74,9 @@ class BarangController extends Controller
                 })
                 ->addColumn('totalstok', function ($row) use ($request) {
                     if ($request->tglawal == '') {
-                        $jmlmasuk = BarangmasukModel::leftJoin('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')->leftJoin('tbl_customer', 'tbl_customer.customer_id', '=', 'tbl_barangmasuk.customer_id')->where('tbl_barangmasuk.barang_kode', '=', $row->barang_kode)->sum('tbl_barangmasuk.bm_jumlah');
+                        $jmlmasuk = BarangmasukModel::leftJoin('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')->leftJoin('tbl_user', 'tbl_user.user_id', '=', 'tbl_barangmasuk.user_id')->where('tbl_barangmasuk.barang_kode', '=', $row->barang_kode)->sum('tbl_barangmasuk.bm_jumlah');
                     } else {
-                        $jmlmasuk = BarangmasukModel::leftJoin('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')->leftJoin('tbl_customer', 'tbl_customer.customer_id', '=', 'tbl_barangmasuk.customer_id')->whereBetween('bm_tanggal', [$request->tglawal, $request->tglakhir])->where('tbl_barangmasuk.barang_kode', '=', $row->barang_kode)->sum('tbl_barangmasuk.bm_jumlah');
+                        $jmlmasuk = BarangmasukModel::leftJoin('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')->leftJoin('tbl_user', 'tbl_user.user_id', '=', 'tbl_barangmasuk.user_id')->whereBetween('bm_tanggal', [$request->tglawal, $request->tglakhir])->where('tbl_barangmasuk.barang_kode', '=', $row->barang_kode)->sum('tbl_barangmasuk.bm_jumlah');
                     }
 
 
@@ -180,9 +180,16 @@ class BarangController extends Controller
                 })
                 ->addColumn('totalstok', function ($row) use ($request) {
                     if ($request->tglawal == '') {
-                        $jmlmasuk = BarangmasukModel::leftJoin('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')->leftJoin('tbl_customer', 'tbl_customer.customer_id', '=', 'tbl_barangmasuk.customer_id')->where('tbl_barangmasuk.barang_kode', '=', $row->barang_kode)->sum('tbl_barangmasuk.bm_jumlah');
+                        $jmlmasuk = BarangmasukModel::leftJoin('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')
+                            ->leftJoin('tbl_user', 'tbl_user.user_id', '=', 'tbl_barangmasuk.user_id')  // Ganti tbl_customer dengan tbl_user
+                            ->where('tbl_barangmasuk.barang_kode', '=', $row->barang_kode)
+                            ->sum('tbl_barangmasuk.bm_jumlah');
                     } else {
-                        $jmlmasuk = BarangmasukModel::leftJoin('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')->leftJoin('tbl_customer', 'tbl_customer.customer_id', '=', 'tbl_barangmasuk.customer_id')->whereBetween('bm_tanggal', [$request->tglawal, $request->tglakhir])->where('tbl_barangmasuk.barang_kode', '=', $row->barang_kode)->sum('tbl_barangmasuk.bm_jumlah');
+                        $jmlmasuk = BarangmasukModel::leftJoin('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')
+                            ->leftJoin('tbl_user', 'tbl_user.user_id', '=', 'tbl_barangmasuk.user_id')  // Ganti tbl_customer dengan tbl_user
+                            ->whereBetween('bm_tanggal', [$request->tglawal, $request->tglakhir])
+                            ->where('tbl_barangmasuk.barang_kode', '=', $row->barang_kode)
+                            ->sum('tbl_barangmasuk.bm_jumlah');
                     }
 
 
@@ -232,12 +239,12 @@ class BarangController extends Controller
         }
     }
 
-        public function proses_tambah(Request $request)
+    public function proses_tambah(Request $request)
     {
         $img = "";
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->nama)));
 
-        // Upload image
+        //upload image
         if ($request->file('foto') == null) {
             $img = "image.png";
         } else {
@@ -246,10 +253,8 @@ class BarangController extends Controller
             $img = $image->hashName();
         }
 
-        // Get authenticated user info
-        $user = auth()->user();
 
-        // Create
+        //create
         BarangModel::create([
             'barang_gambar' => $img,
             'jenisbarang_id' => $request->jenisbarang,
@@ -260,16 +265,11 @@ class BarangController extends Controller
             'barang_slug' => $slug,
             'barang_harga' => $request->harga,
             'barang_stok' => 0,
-            'barang_keterangan' => $request->keterangan, 
-            'user_id' => $user->id,                     
-            'divisi' => $user->divisi,                  
-            'approval' => null,                         
-            'status' => null                           
+
         ]);
 
         return response()->json(['success' => 'Berhasil']);
     }
-
 
     public function proses_ubah(Request $request, BarangModel $barang)
     {
