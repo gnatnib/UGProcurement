@@ -12,11 +12,30 @@ use Yajra\DataTables\Facades\DataTables;
 
 class JenisBarangController extends Controller
 {
+    // Method yang sudah ada tetap sama
     public function index()
     {
         $data["title"] = "Jenis";
-        $data["hakTambah"] = AksesModel::leftJoin('tbl_submenu', 'tbl_submenu.submenu_id', '=', 'tbl_akses.submenu_id')->where(array('tbl_akses.role_id' => Session::get('user')->role_id, 'tbl_submenu.submenu_judul' => 'Jenis', 'tbl_akses.akses_type' => 'create'))->count();
+        $data["hakTambah"] = AksesModel::leftJoin('tbl_submenu', 'tbl_submenu.submenu_id', '=', 'tbl_akses.submenu_id')
+            ->where([
+                'tbl_akses.role_id' => Session::get('user')->role_id,
+                'tbl_submenu.submenu_judul' => 'Jenis',
+                'tbl_akses.akses_type' => 'create'
+            ])->count();
         return view('Admin.JenisBarang.index', $data);
+    }
+
+    public function getData()
+    {
+        try {
+            $jenisbarang = JenisBarangModel::select('jenisbarang_id', 'jenisbarang_nama')
+                ->orderBy('jenisbarang_nama', 'asc')
+                ->get();
+            return response()->json($jenisbarang);
+        } catch (\Exception $e) {
+            Log::error('Error in getData: ' . $e->getMessage());
+            return response()->json([]);
+        }
     }
 
     public function show(Request $request)

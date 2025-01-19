@@ -35,6 +35,7 @@
                             <thead>
                                 <th class="border-bottom-0" width="1%">No</th>
                                 <th class="border-bottom-0">Merk</th>
+                                <th class="border-bottom-0">Jenis Barang</th>
                                 <th class="border-bottom-0">Keterangan</th>
                                 <th class="border-bottom-0" width="1%">Action</th>
                             </thead>
@@ -85,7 +86,6 @@
         $(document).ready(function() {
             //datatables
             table = $('#table-1').DataTable({
-
                 "processing": true,
                 "serverSide": true,
                 "info": true,
@@ -96,7 +96,6 @@
                     [5, 10, 25, 50, 100]
                 ],
                 "pageLength": 10,
-
                 lengthChange: true,
 
                 "ajax": {
@@ -112,6 +111,10 @@
                         data: 'merk_nama',
                         name: 'merk_nama',
                     },
+                    {   // Tambah kolom jenis barang
+                        data: 'jenisbarang',
+                        name: 'jenisbarang_nama',
+                    },
                     {
                         data: 'ket',
                         name: 'merk_keterangan',
@@ -123,7 +126,6 @@
                         searchable: false
                     },
                 ],
-
             });
         });
     </script>
