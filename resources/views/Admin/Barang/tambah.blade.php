@@ -48,7 +48,7 @@
                             <label for="harga" class="form-label">Harga Barang <span
                                     class="text-danger">*</span></label>
                             <input type="text"
-                                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..?)\../g, '$1').replace(/^0[^.]/, '0');"
+                                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');"
                                 name="harga" class="form-control">
                         </div>
                     </div>
@@ -107,45 +107,40 @@
         }
     }
     function submitForm() {
-            const bmkode = $("input[name='bmkode']").val();
-            const tglmasuk = $("input[name='tglmasuk']").val();
-            const kdbarang = $("input[name='kdbarang']").val();
-            const keterangan = $("textarea[name='keterangan']").val();
-            const jml = $("input[name='jml']").val();
-
-            $.ajax({
-                type: 'POST',
-                url: "{{ url('admin/barang-masuk/proses_tambah') }}", // Updated to match your route
-                data: {
-                    _token: $('meta[name="csrf-token"]').attr('content'),
-                    bmkode: bmkode,
-                    tglmasuk: tglmasuk,
-                    barang: kdbarang,
-                    keterangan: keterangan,
-                    jml: jml
-                },
-                dataType: 'json',
-                success: function (response) {
-                    if (response.success) {
-                        $('#modaldemo8').modal('hide');
-                        swal({
-                            title: "Berhasil ditambah!",
-                            type: "success"
-                        });
-                        table.ajax.reload(null, false);
-                        reset();
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error(xhr.responseText);
-                    swal({
-                        title: "Error!",
-                        text: "Terjadi kesalahan saat menyimpan data",
-                        type: "error"
-                    });
-                }
-            });
-        }
+        const kode = $("input[name='kode']").val();
+        const nama = $("input[name='nama']").val();
+        const jenisbarang = $("select[name='jenisbarang']").val();
+        const satuan = $("select[name='satuan']").val();
+        const merk = $("select[name='merk']").val();
+        const harga = $("input[name='harga']").val();
+        const foto = $('#GetFile')[0].files;
+        var fd = new FormData();
+        // Append data 
+        fd.append('foto', foto[0]);
+        fd.append('kode', kode);
+        fd.append('nama', nama);
+        fd.append('jenisbarang', jenisbarang);
+        fd.append('satuan', satuan);
+        fd.append('merk', merk);
+        fd.append('harga', harga);
+        $.ajax({
+            type: 'POST',
+            url: "{{route('barang.store')}}",
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            data: fd,
+            success: function (data) {
+                $('#modaldemo8').modal('toggle');
+                swal({
+                    title: "Berhasil ditambah!",
+                    type: "success"
+                });
+                table.ajax.reload(null, false);
+                reset();
+            }
+        });
+    }
     function resetValid() {
         $("input[name='kode']").removeClass('is-invalid');
         $("input[name='nama']").removeClass('is-invalid');
