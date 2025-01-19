@@ -54,13 +54,16 @@ Route::group(['middleware' => 'userlogin'], function () {
     });
 
     Route::middleware(['checkRoleUser:/jenisbarang,submenu'])->group(function () {
-        // Jenis Barang
+        // Route yang sudah ada
         Route::get('/admin/jenisbarang', [JenisBarangController::class, 'index']);
         Route::get('/admin/jenisbarang/show/', [JenisBarangController::class, 'show'])->name('jenisbarang.getjenisbarang');
         Route::post('/admin/jenisbarang/proses_tambah/', [JenisBarangController::class, 'proses_tambah'])->name('jenisbarang.store');
         Route::post('/admin/jenisbarang/proses_ubah/{jenisbarang}', [JenisBarangController::class, 'proses_ubah']);
         Route::post('/admin/jenisbarang/proses_hapus/{jenisbarang}', [JenisBarangController::class, 'proses_hapus']);
+        
     });
+            // Tambahkan route untuk getData
+            Route::get('/admin/jenisbarang/get-data', [JenisBarangController::class, 'getData'])->name('jenisbarang.get');
 
     Route::middleware(['checkRoleUser:/satuan,submenu'])->group(function () {
         // Satuan
@@ -78,6 +81,7 @@ Route::group(['middleware' => 'userlogin'], function () {
         Route::post('/admin/merk/proses_tambah/', [MerkController::class, 'proses_tambah'])->name('merk.store');
         Route::post('/admin/merk/proses_ubah/{merk}', [MerkController::class, 'proses_ubah']);
         Route::post('/admin/merk/proses_hapus/{merk}', [MerkController::class, 'proses_hapus']);
+        Route::get('/admin/merk/get-by-jenis/{jenisbarang_id}', [MerkController::class, 'getByJenis'])->name('merk.getByJenis');
     });
 
     Route::middleware(['checkRoleUser:/barang,submenu'])->group(function () {
@@ -87,6 +91,7 @@ Route::group(['middleware' => 'userlogin'], function () {
         Route::post('/admin/barang/proses_tambah/', [BarangController::class, 'proses_tambah'])->name('barang.store');
         Route::post('/admin/barang/proses_ubah/{barang}', [BarangController::class, 'proses_ubah']);
         Route::post('/admin/barang/proses_hapus/{barang}', [BarangController::class, 'proses_hapus']);
+        
     });
 
     Route::middleware(['checkRoleUser:/customer,menu'])->group(function () {

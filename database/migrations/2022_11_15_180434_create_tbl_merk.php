@@ -6,11 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create('tbl_merk', function (Blueprint $table) {
@@ -18,15 +13,12 @@ return new class extends Migration
             $table->string('merk_nama');
             $table->string('merk_slug');
             $table->string('merk_keterangan')->nullable();
+            $table->unsignedInteger('jenisbarang_id')->nullable(); // Tambahkan disini langsung
+            $table->foreign('jenisbarang_id')->references('jenisbarang_id')->on('tbl_jenisbarang');
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists('tbl_merk');

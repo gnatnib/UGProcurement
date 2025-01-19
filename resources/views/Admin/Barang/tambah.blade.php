@@ -39,9 +39,6 @@
                             <label for="merk" class="form-label">Merk Barang</label>
                             <select name="merk" class="form-control">
                                 <option value="">-- Pilih --</option>
-                                @foreach ($merk as $m)
-                                    <option value="{{$m->merk_id}}">{{$m->merk_nama}}</option>
-                                @endforeach
                             </select>
                         </div>
                         <div class="form-group">
@@ -81,6 +78,42 @@
 
 @section('formTambahJS')
 <script>
+$(document).ready(function() {
+    $("select[name='jenisbarang']").on('change', function() {
+        const jenisbarang_id = $(this).val();
+        if(jenisbarang_id) {
+            updateMerkOptions(jenisbarang_id);
+        } else {
+            // Reset dropdown merk ke default
+            $("select[name='merk']").html('<option value="">-- Pilih --</option>');
+        }
+    });
+});
+
+function updateMerkOptions(jenisbarang_id) {
+    $.ajax({
+        type: 'GET',
+        url: "{{ url('admin/merk/get-by-jenis') }}/" + jenisbarang_id,
+        beforeSend: function() {
+            $("select[name='merk']").html('<option value="">Loading...</option>');
+        },
+        success: function(data) {
+            let html = '<option value="">-- Pilih --</option>';
+            if(data && data.length > 0) {
+                data.forEach(function(item) {
+                    html += `<option value="${item.merk_id}">${item.merk_nama}</option>`;
+                });
+            }
+            $("select[name='merk']").html(html);
+        },
+        error: function(xhr, status, error) {
+            console.error('Error:', error);
+            $("select[name='merk']").html('<option value="">-- Pilih --</option>');
+            validasi('Gagal memuat data merk', 'error');
+        }
+    });
+}
+
     function checkForm() {
         const kode = $("input[name='kode']").val();
         const nama = $("input[name='nama']").val();
@@ -150,17 +183,17 @@
         $("input[name='harga']").removeClass('is-invalid');
     };
     function reset() {
-        resetValid();
-        $("input[name='kode']").val('');
-        $("input[name='nama']").val('');
-        $("select[name='jenisbarang']").val('');
-        $("select[name='satuan']").val('');
-        $("select[name='merk']").val('');
-        $("input[name='harga']").val('');
-        $("#outputImg").attr("src", "{{url('/assets/default/barang/image.png')}}");
-        $("#GetFile").val('');
-        setLoading(false);
-    }
+    resetValid();
+    $("input[name='kode']").val('');
+    $("input[name='nama']").val('');
+    $("select[name='jenisbarang']").val('');
+    $("select[name='satuan']").val('');
+    $("select[name='merk']").html('<option value="">-- Pilih --</option>'); // Diubah
+    $("input[name='harga']").val('');
+    $("#outputImg").attr("src", "{{url('/assets/default/barang/image.png')}}");
+    $("#GetFile").val('');
+    setLoading(false);
+}
     function setLoading(bool) {
         if (bool == true) {
             $('#btnLoader').removeClass('d-none');

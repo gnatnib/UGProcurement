@@ -13,6 +13,7 @@ class MerkModel extends Model
     protected $fillable = [
         'merk_nama',
         'merk_slug',
-        'merk_keterangan'
+        'merk_keterangan',
+        'jenisbarang_id' 
     ]; 
 }
