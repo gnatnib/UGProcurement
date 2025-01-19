@@ -3,80 +3,80 @@
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content modal-content-demo">
             <div class="modal-header">
-                <h6 class="modal-title">Ubah Barang Masuk</h6><button onclick="resetU()" aria-label="Close"
-                    class="btn-close" data-bs-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                <h6 class="modal-title">Ubah Barang</h6><button onclick="resetU()" aria-label="Close" class="btn-close"
+                    data-bs-dismiss="modal"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body">
-                <input type="hidden" name="idbmU">
+                <input type="hidden" name="idbarangU">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-7">
                         <div class="form-group">
-                            <label for="bmkodeU" class="form-label">Kode Barang Masuk <span
-                                    class="text-danger">*</span></label>
-                            <input type="text" name="bmkodeU" readonly class="form-control" placeholder="">
+                            <label for="kodeU" class="form-label">Kode Barang <span class="text-danger">*</span></label>
+                            <input type="text" name="kodeU" readonly class="form-control">
                         </div>
                         <div class="form-group">
-                            <label for="tglmasukU" class="form-label">Tanggal Masuk <span
-                                    class="text-danger">*</span></label>
-                            <input type="text" name="tglmasukU" class="form-control datepicker-date" placeholder="">
+                            <label for="namaU" class="form-label">Nama Barang <span class="text-danger">*</span></label>
+                            <input type="text" name="namaU" class="form-control">
                         </div>
                         <div class="form-group">
-                            <label for="keteranganU" class="form-label">Keterangan <span
-                                    class="text-danger">*</span></label>
-                            <textarea name="keteranganU" class="form-control" rows="3"
-                                placeholder="Masukkan keterangan"></textarea>
+                            <label for="jenisbarangU" class="form-label">Jenis Barang</label>
+                            <select name="jenisbarangU" class="form-control">
+                                <option value="">-- Pilih --</option>
+                                @foreach ($jenisbarang as $jb)
+                                    <option value="{{$jb->jenisbarang_id}}">{{$jb->jenisbarang_nama}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="satuanU" class="form-label">Satuan Barang</label>
+                            <select name="satuanU" class="form-control">
+                                <option value="">-- Pilih --</option>
+                                @foreach ($satuan as $s)
+                                    <option value="{{$s->satuan_id}}">{{$s->satuan_nama}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="merkU" class="form-label">Merk Barang</label>
+                            <select name="merkU" class="form-control">
+                                <option value="">-- Pilih --</option>
+                                @foreach ($merk as $m)
+                                    <option value="{{$m->merk_id}}">{{$m->merk_nama}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="stokU" class="form-label">Stok Awal <span class="text-danger">*</span></label>
+                            <input type="text"
+                                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');"
+                                name="stokU" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="hargaU" class="form-label">Harga <span class="text-danger">*</span></label>
+                            <input type="text"
+                                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');"
+                                name="hargaU" class="form-control">
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <div class="form-group">
-                            <label>Kode Barang <span class="text-danger me-1">*</span>
-                                <input type="hidden" id="statusU" value="false">
-                                <div class="spinner-border spinner-border-sm d-none" id="loaderkdU" role="status">
-                                    <span class="visually-hidden">Loading...</span>
-                                </div>
-                            </label>
-                            <div class="input-group">
-                                <input type="text" class="form-control" autocomplete="off" name="kdbarangU"
-                                    placeholder="">
-                                <button class="btn btn-primary-light" onclick="searchBarangU()" type="button"><i
-                                        class="fe fe-search"></i></button>
-                                <button class="btn btn-success-light" onclick="modalBarangU()" type="button"><i
-                                        class="fe fe-box"></i></button>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Nama Barang</label>
-                            <input type="text" class="form-control" id="nmbarangU" readonly>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Satuan</label>
-                                    <input type="text" class="form-control" id="satuanU" readonly>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Jenis</label>
-                                    <input type="text" class="form-control" id="jenisU" readonly>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="jmlU" class="form-label">Jumlah Masuk <span class="text-danger">*</span></label>
-                            <input type="text" name="jmlU" class="form-control"
-                                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');"
-                                placeholder="">
+                            <label for="title" class="form-label">Foto</label>
+                            <center>
+                                <img src="{{url('/assets/default/barang/image.png')}}" width="80%" alt="profile-user"
+                                    id="outputImgU" class="">
+                            </center>
+                            <input class="form-control mt-5" id="GetFileU" name="photoU" type="file"
+                                onchange="VerifyFileNameAndFileSizeU()" accept=".png,.jpeg,.jpg,.svg">
                         </div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary d-none" id="btnLoaderU" type="button" disabled="">
+                <button class="btn btn-success d-none" id="btnLoaderU" type="button" disabled="">
                     <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
                     Loading...
                 </button>
-                <a href="javascript:void(0)" onclick="checkFormU()" id="btnSimpanU" class="btn btn-primary">Simpan
+                <a href="javascript:void(0)" onclick="checkFormU()" id="btnSimpanU" class="btn btn-success">Simpan
                     Perubahan <i class="fe fe-check"></i></a>
                 <a href="javascript:void(0)" class="btn btn-light" onclick="resetU()" data-bs-dismiss="modal">Batal <i
                         class="fe fe-x"></i></a>
@@ -88,100 +88,99 @@
 @section('formEditJS')
 <script>
     function checkFormU() {
-        const tglmasuk = $("input[name='tglmasukU']").val();
-        const status = $("#statusU").val();
-        const keterangan = $("textarea[name='keteranganU']").val();
-        const jml = $("input[name='jmlU']").val();
+        const kode = $("input[name='kodeU']").val();
+        const nama = $("input[name='namaU']").val();
+        const harga = $("input[name='hargaU']").val();
+        const stok = $("input[name='stokU']").val();
         setLoadingU(true);
         resetValidU();
-
-        if (tglmasuk == "") {
-            validasi('Tanggal Masuk wajib di isi!', 'warning');
-            $("input[name='tglmasukU']").addClass('is-invalid');
+        if (kode == "") {
+            validasi('Kode Barang wajib di isi!', 'warning');
+            $("input[name='kodeU']").addClass('is-invalid');
             setLoadingU(false);
             return false;
-        } else if (status == "false") {
-            validasi('Barang wajib di pilih!', 'warning');
-            $("input[name='kdbarangU']").addClass('is-invalid');
+        } else if (nama == "") {
+            validasi('Nama Barang wajib di isi!', 'warning');
+            $("input[name='namaU']").addClass('is-invalid');
             setLoadingU(false);
             return false;
-        } else if (keterangan == "") {
-            validasi('Keterangan wajib di isi!', 'warning');
-            $("textarea[name='keteranganU']").addClass('is-invalid');
+        } else if (harga == "") {
+            validasi('Harga Barang wajib di isi!', 'warning');
+            $("input[name='hargaU']").addClass('is-invalid');
             setLoadingU(false);
             return false;
-        } else if (jml == "" || jml == "0") {
-            validasi('Jumlah Masuk wajib di isi!', 'warning');
-            $("input[name='jmlU']").addClass('is-invalid');
+        } else if (stok == "") {
+            validasi('Stok Awal wajib di isi!', 'warning');
+            $("input[name='stok']").addClass('is-invalid');
             setLoadingU(false);
             return false;
         } else {
             submitFormU();
         }
     }
-
     function submitFormU() {
-            const id = $("input[name='idbmU']").val();
-            const tglmasuk = $("input[name='tglmasukU']").val();
-            const kdbarang = $("input[name='kdbarangU']").val();
-            const keterangan = $("textarea[name='keteranganU']").val();
-            const jml = $("input[name='jmlU']").val();
+        const id = $("input[name='idbarangU']").val();
+        const kode = $("input[name='kodeU']").val();
+        const nama = $("input[name='namaU']").val();
+        const jenisbarang = $("select[name='jenisbarangU']").val();
+        const satuan = $("select[name='satuanU']").val();
+        const merk = $("select[name='merkU']").val();
+        const harga = $("input[name='hargaU']").val();
+        const stok = $("input[name='stokU']").val();
+        const foto = $('#GetFileU')[0].files;
 
-            $.ajax({
-                type: 'POST',
-                url: "{{ url('admin/barang-masuk/proses_ubah') }}/" + id,  // Updated to match your route
-                data: {
-                    _token: $('meta[name="csrf-token"]').attr('content'),
-                    tglmasuk: tglmasuk,
-                    barang: kdbarang,
-                    keterangan: keterangan,
-                    jml: jml
-                },
-                dataType: 'json',
-                success: function (response) {
-                    if (response.success) {
-                        $('#Umodaldemo8').modal('hide');
-                        swal({
-                            title: "Berhasil diubah!",
-                            type: "success"
-                        });
-                        table.ajax.reload(null, false);
-                        resetU();
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error(xhr.responseText);
-                    swal({
-                        title: "Error!",
-                        text: "Terjadi kesalahan saat mengubah data",
-                        type: "error"
-                    });
-                }
-            });
-        }
+        var fd = new FormData();
 
-    function resetValidU() {
-        $("input[name='tglmasukU']").removeClass('is-invalid');
-        $("input[name='kdbarangU']").removeClass('is-invalid');
-        $("textarea[name='keteranganU']").removeClass('is-invalid');
-        $("input[name='jmlU']").removeClass('is-invalid');
+        // Append data 
+        fd.append('foto', foto[0]);
+        fd.append('kode', kode);
+        fd.append('nama', nama);
+        fd.append('jenisbarang', jenisbarang);
+        fd.append('satuan', satuan);
+        fd.append('merk', merk);
+        fd.append('harga', harga);
+        fd.append('stok', stok);
+        $.ajax({
+            type: 'POST',
+            url: "{{url('admin/barang/proses_ubah')}}/" + id,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            data: fd,
+            success: function (data) {
+                swal({
+                    title: "Berhasil diubah!",
+                    type: "success"
+                });
+                $('#Umodaldemo8').modal('toggle');
+                table.ajax.reload(null, false);
+                resetU();
+            }
+        });
     }
-
+    function resetValidU() {
+        $("input[name='kodeU']").removeClass('is-invalid');
+        $("input[name='namaU']").removeClass('is-invalid');
+        $("select[name='jenisbarangU']").removeClass('is-invalid');
+        $("select[name='satuanU']").removeClass('is-invalid');
+        $("select[name='merkU']").removeClass('is-invalid');
+        $("input[name='hargaU']").removeClass('is-invalid');
+        $("input[name='stokU']").removeClass('is-invalid');
+    };
     function resetU() {
         resetValidU();
-        $("input[name='idbmU']").val('');
-        $("input[name='bmkodeU']").val('');
-        $("input[name='tglmasukU']").val('');
-        $("input[name='kdbarangU']").val('');
-        $("textarea[name='keteranganU']").val('');
-        $("input[name='jmlU']").val('0');
-        $("#nmbarangU").val('');
-        $("#satuanU").val('');
-        $("#jenisU").val('');
-        $("#statusU").val('false');
+        $("input[name='idbarangU']").val('');
+        $("input[name='noU']").val('');
+        $("input[name='namaU']").val('');
+        $("select[name='jenisbarangU']").val('');
+        $("select[name='satuanU']").val('');
+        $("select[name='merkU']").val('');
+        $("input[name='hargaU']").val('');
+        $("input[name='stokU']").val('');
+        $("#outputImgU").attr("src", "{{url('/assets/default/barang/image.png')}}");
+        $("#GetFileU").val('');
         setLoadingU(false);
     }
-
     function setLoadingU(bool) {
         if (bool == true) {
             $('#btnLoaderU').removeClass('d-none');
@@ -191,51 +190,44 @@
             $('#btnLoaderU').addClass('d-none');
         }
     }
-
-    function searchBarangU() {
-        getbarangbyidU($('input[name="kdbarangU"]').val());
-        resetValidU();
-    }
-
-    $('input[name="kdbarangU"]').keypress(function (event) {
-        var keycode = (event.keyCode ? event.keyCode : event.which);
-        if (keycode == '13') {
-            getbarangbyidU($('input[name="kdbarangU"]').val());
+    function fileIsValidU(fileName) {
+        var ext = fileName.match(/\.([^\.]+)$/)[1];
+        ext = ext.toLowerCase();
+        var isValid = true;
+        switch (ext) {
+            case 'png':
+            case 'jpeg':
+            case 'jpg':
+            case 'svg':
+                break;
+            default:
+                this.value = '';
+                isValid = false;
         }
-    });
-
-    function getbarangbyidU(id) {
-        $("#loaderkdU").removeClass('d-none');
-        $.ajax({
-            type: 'GET',
-            url: "{{ url('admin/barang/getbarang') }}/" + id,
-            processData: false,
-            contentType: false,
-            dataType: 'json',
-            success: function (data) {
-                if (data.length > 0) {
-                    $("#loaderkdU").addClass('d-none');
-                    $("#statusU").val("true");
-                    $("#nmbarangU").val(data[0].barang_nama);
-                    $("#satuanU").val(data[0].satuan_nama);
-                    $("#jenisU").val(data[0].jenisbarang_nama);
-                } else {
-                    $("#loaderkdU").addClass('d-none');
-                    $("#statusU").val("false");
-                    $("#nmbarangU").val('');
-                    $("#satuanU").val('');
-                    $("#jenisU").val('');
-                }
-            }
-        });
+        return isValid;
     }
-
-    function modalBarangU() {
-        $('#modalBarang').modal('show');
-        $('#Umodaldemo8').addClass('d-none');
-        $('input[name="param"]').val('ubah');
-        resetValidU();
-        table2.ajax.reload();
+    function VerifyFileNameAndFileSizeU() {
+        var file = document.getElementById('GetFileU').files[0];
+        if (file != null) {
+            var fileName = file.name;
+            if (fileIsValidU(fileName) == false) {
+                validasi('Format bukan gambar!', 'warning');
+                document.getElementById('GetFileU').value = null;
+                return false;
+            }
+            var content;
+            var size = file.size;
+            if ((size != null) && ((size / (1024 * 1024)) > 3)) {
+                validasi('Ukuran Maximum 1 MB', 'warning');
+                document.getElementById('GetFileU').value = null;
+                return false;
+            }
+            var ext = fileName.match(/\.([^\.]+)$/)[1];
+            ext = ext.toLowerCase();
+            document.getElementById('outputImgU').src = window.URL.createObjectURL(file);
+            return true;
+        } else
+            return false;
     }
 </script>
 @endsection
