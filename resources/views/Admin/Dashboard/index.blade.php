@@ -44,7 +44,7 @@
         </div>
         <!-- COL END -->
         <div class="col-sm-6 col-md-6 col-lg-6 col-xl-3">
-            <div class="card bg-success img-card box-success-shadow">
+            <div class="card bg-cyan img-card box-success-shadow">
                 <div class="card-body">
                     <div class="d-flex">
                         <div class="text-white">
@@ -104,7 +104,7 @@
                 <div class="card-body">
                     <div class="d-flex">
                         <div class="text-white">
-                            <h2 class="mb-0 number-font">{{ $user  }}</h2>
+                            <h2 class="mb-0 number-font">{{ $user }}</h2>
                             <p class="text-white mb-0">User</p>
                         </div>
                         <div class="ms-auto"> <i class="fe fe-user text-white fs-40 me-2 mt-2"></i> </div>
