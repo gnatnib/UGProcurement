@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             JenisBarang::class,
             MerkBarang::class,
             SatuanBarang::class,
+            BarangSeeder::class,
 
         ]);
     }
