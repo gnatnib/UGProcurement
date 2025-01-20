@@ -17,6 +17,7 @@ use App\Http\Controllers\Master\AppreanceController;
 use App\Http\Controllers\Master\MenuController;
 use App\Http\Controllers\Master\RoleController;
 use App\Http\Controllers\Master\UserController;
+use App\Http\Controllers\Admin\ApproveController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -52,7 +53,13 @@ Route::group(['middleware' => 'userlogin'], function () {
         Route::get('/admin', [DashboardController::class, 'index']);
         Route::get('/admin/dashboard', [DashboardController::class, 'index']);
     });
-
+    Route::middleware(['checkRoleUser:/approve,submenu'])->group(function () {
+        // Approve routes - only accessible by manager (role_id = 4)
+        Route::get('/admin/approve', [ApproveController::class, 'index']);
+        Route::get('/admin/approve/show/', [ApproveController::class, 'show'])->name('approve.getapprove');
+        Route::post('/admin/approve/{barangmasuk}', [ApproveController::class, 'approve']);
+        Route::post('/admin/approve/reject/{barangmasuk}', [ApproveController::class, 'reject']);
+    });
     Route::middleware(['checkRoleUser:/jenisbarang,submenu'])->group(function () {
         // Route yang sudah ada
         Route::get('/admin/jenisbarang', [JenisBarangController::class, 'index']);

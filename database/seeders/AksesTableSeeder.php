@@ -220,7 +220,7 @@ class AksesTableSeeder extends Seeder
 
     private function seedSubmenuPermissions()
     {
-        $submenuIds = [9, 10, 17, 18, 19, 20, 21, 22, 23];
+        $submenuIds = [9, 10,11, 17, 18, 19, 20, 21, 22, 23];
         $roles = [1, 2, 3, 4,5];
 
         foreach ($roles as $role_id) {
