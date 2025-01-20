@@ -38,6 +38,16 @@ class SubMenuTableSeeder extends Seeder
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
             [
+                'submenu_id' => 11,
+                'menu_id' => '1668510437',
+                'submenu_judul' => 'Approval',
+                'submenu_slug' => 'approve',
+                'submenu_redirect' => '/approve',
+                'submenu_sort' => '3',
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+            ],
+            [
                 'submenu_id' => 17,
                 'menu_id' => '1668509889',
                 'submenu_judul' => 'Jenis',
