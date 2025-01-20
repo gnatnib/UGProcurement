@@ -104,6 +104,14 @@ class SatuanBarang extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
+            [
+                'satuan_id' => 15,
+                'satuan_nama' => 'Unit',
+                'satuan_slug' => 'unit',
+                'satuan_keterangan' => 'Satuan unit untuk barang elektronik',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
         ]);
     }
 }
