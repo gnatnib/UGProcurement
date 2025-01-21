@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Admin\BarangmasukModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class ApproveController extends Controller
 {
@@ -24,100 +26,193 @@ class ApproveController extends Controller
     public function show(Request $request)
     {
         if ($request->ajax()) {
-            $userDivisi = Session::get('user')->divisi; // Mengambil divisi dari user yang login
-
-            $data = BarangmasukModel::leftJoin('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')
-                ->select('tbl_barangmasuk.*', 'tbl_barang.barang_nama')
-                ->where('tbl_barangmasuk.divisi', $userDivisi) // Filter berdasarkan divisi
-                ->orderBy('bm_id', 'DESC')
+            $user = Session::get('user');
+            
+            // Query untuk mendapatkan request yang perlu diapprove
+            $data = DB::table('tbl_barangmasuk as bm')
+                ->join('tbl_user as creator', 'creator.user_id', '=', 'bm.user_id')
+                ->join('tbl_request_barang as r', 'r.request_id', '=', 'bm.request_id')
+                ->select(
+                    'r.request_id',
+                    'r.request_tanggal',
+                    'r.request_kode',
+                    'creator.divisi',
+                    'creator.departemen',
+                    'r.status'
+                )
+                ->where([
+                    ['creator.divisi', 'LIKE', trim($user->divisi)],
+                    ['creator.departemen', '=', $user->departemen]
+                ])
+                ->groupBy('r.request_id', 'r.request_tanggal', 'r.request_kode', 'creator.divisi', 'creator.departemen', 'r.status')
+                ->orderBy('r.request_tanggal', 'DESC')
                 ->get();
-
+    
             return DataTables::of($data)
                 ->addIndexColumn()
-                ->addColumn('tgl', function ($row) {
-                    return Carbon::parse($row->bm_tanggal)->format('d/m/Y');
+                ->addColumn('tanggal_format', function($row) {
+                    return Carbon::parse($row->request_tanggal)->format('d/m/Y');
                 })
-                ->addColumn('barang', function ($row) {
-                    return $row->barang_nama;
-                })
-                ->addColumn('approval', function ($row) {
-                    $approval = '';
-                    switch($row->approval) {
+                ->addColumn('status_badge', function($row) {
+                    switch($row->status) {
+                        case 'approved':
+                            return '<span class="badge bg-success">Disetujui</span>';
+                        case 'pending':
                         case null:
-                        case '':
-                            $approval = '<span class="badge bg-warning">Pending</span>';
-                            break;
-                        case 'Approve':
-                            $approval = '<span class="badge bg-success">Approved</span>';
-                            break;
-                        case 'Reject':
-                            $approval = '<span class="badge bg-danger">Rejected</span>';
-                            break;
+                            return '<span class="badge bg-warning">Pending</span>';
+                        case 'rejected':
+                            return '<span class="badge bg-danger">Ditolak</span>';
+                        default:
+                            return '<span class="badge bg-secondary">-</span>';
                     }
-                    return $approval;
                 })
-                ->addColumn('action', function ($row) {
-                    if($row->approval == '' || $row->approval == null) {
-                        return '
-                        <div class="g-2">
-                            <button class="btn btn-success btn-sm" onclick="approve('.$row->bm_id.')">
-                                <i class="fe fe-check"></i>
-                            </button>
-                            <button class="btn btn-danger btn-sm" onclick="reject('.$row->bm_id.')">
-                                <i class="fe fe-x"></i>
-                            </button>
-                        </div>';
+                ->addColumn('action', function($row) {
+                    // Untuk requests yang belum disetujui/ditolak
+                    if($row->status != 'approved' && $row->status != 'rejected') {
+                        return '<button class="btn btn-success btn-sm" onclick="showDetail(\''.$row->request_id.'\')">
+                                <i class="fe fe-eye"></i> Detail
+                               </button>';
                     }
-                    return '-';
+                    // Untuk requests yang sudah disetujui/ditolak
+                    return '<button class="btn btn-info btn-sm" onclick="showDetail(\''.$row->request_id.'\')">
+                            <i class="fe fe-eye"></i> Detail
+                           </button>';
                 })
-                ->rawColumns(['action', 'approval'])
+                ->rawColumns(['action', 'status_badge'])
                 ->make(true);
         }
+    }
+    public function getDetail($request_id)
+    {
+        $detail = DB::table('tbl_barangmasuk as bm')
+            ->join('tbl_barang as b', 'b.barang_kode', '=', 'bm.barang_kode')
+            ->select('bm.*', 'b.barang_nama')
+            ->where('bm.request_id', $request_id)
+            ->get();
+
+        return response()->json($detail);
     }
 
     public function approve($id)
     {
         try {
-            $barangMasuk = BarangmasukModel::find($id);
+            $user = Session::get('user');
+            $barangMasuk = BarangmasukModel::with(['user'])->find($id);
             
-            // Tambahan pengecekan divisi
-            if ($barangMasuk->divisi != Session::get('user')->divisi) {
-                return response()->json(['success' => false, 'message' => 'Unauthorized access'], 403);
+            // Cek divisi dan departemen dari user pembuat request
+            if ($barangMasuk->user->divisi != $user->divisi || 
+                $barangMasuk->user->departemen != $user->departemen) {
+                return response()->json([
+                    'success' => false, 
+                    'message' => 'Unauthorized access'
+                ], 403);
             }
-
-            if (!$barangMasuk) {
-                return response()->json(['success' => false, 'message' => 'Data not found'], 404);
-            }
-            
+    
             $barangMasuk->approval = 'Approve';
             $barangMasuk->save();
-
-            return response()->json(['success' => true, 'message' => 'Successfully approved']);
+    
+            return response()->json([
+                'success' => true, 
+                'message' => 'Successfully approved'
+            ]);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            return response()->json([
+                'success' => false, 
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 
     public function reject($id)
     {
         try {
-            $barangMasuk = BarangmasukModel::find($id);
+            $user = Session::get('user');
+            $barangMasuk = BarangmasukModel::with(['user'])->find($id);
             
-            // Tambahan pengecekan divisi
-            if ($barangMasuk->divisi != Session::get('user')->divisi) {
-                return response()->json(['success' => false, 'message' => 'Unauthorized access'], 403);
+            // Cek divisi dan departemen dari user pembuat request
+            if ($barangMasuk->user->divisi != $user->divisi || 
+                $barangMasuk->user->departemen != $user->departemen) {
+                return response()->json([
+                    'success' => false, 
+                    'message' => 'Unauthorized access'
+                ], 403);
             }
-
-            if (!$barangMasuk) {
-                return response()->json(['success' => false, 'message' => 'Data not found'], 404);
-            }
-            
+    
             $barangMasuk->approval = 'Reject';
             $barangMasuk->save();
-
-            return response()->json(['success' => true, 'message' => 'Successfully rejected']);
+    
+            return response()->json([
+                'success' => true, 
+                'message' => 'Successfully rejected'
+            ]);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            return response()->json([
+                'success' => false, 
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
+
+    public function bulkUpdate(Request $request)
+    {
+        try {
+            // Debug log
+            Log::info('Received approval data:', [
+                'request_id' => $request->request_id,
+                'approvals' => $request->approvals
+            ]);
+    
+            DB::beginTransaction();
+            
+            // Validasi data
+            if (empty($request->request_id) || empty($request->approvals)) {
+                throw new \Exception('Data tidak lengkap');
+            }
+    
+            foreach ($request->approvals as $bm_id => $status) {
+                Log::info('Updating barang masuk:', [
+                    'bm_id' => $bm_id,
+                    'status' => $status
+                ]);
+    
+                $updated = DB::table('tbl_barangmasuk')
+                    ->where('bm_id', $bm_id)
+                    ->update([
+                        'approval' => $status,
+                        'updated_at' => now()
+                    ]);
+    
+                Log::info('Update result:', ['updated' => $updated]);
+            }
+    
+            // Update status request menjadi Approve
+            $updated = DB::table('tbl_request_barang')
+                ->where('request_id', $request->request_id)
+                ->update([
+                    'status' => 'approved',
+                    'updated_at' => now()
+                ]);
+    
+            Log::info('Request update result:', ['updated' => $updated]);
+    
+            DB::commit();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Status approval berhasil diupdate'
+            ]);
+    
+        } catch (\Exception $e) {
+            DB::rollback();
+            Log::error('Error in bulkUpdate:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
 }

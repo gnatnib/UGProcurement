@@ -62,12 +62,12 @@ class UsersTableSeeder extends Seeder
             [
                 'user_id' => 4,
                 'role_id' => '4',
-                'user_nmlengkap' => 'Manajer',
-                'user_nama' => 'manajer',
-                'user_email' => 'manajer@gmail.com',
+                'user_nmlengkap' => 'GMRSCR',
+                'user_nama' => 'GMRSC',
+                'user_email' => 'GMRSCR@gmail.com',
                 'nomor_hp' => '0814444444',
-                'divisi' => 'Management',
-                'departemen' => 'Finance',
+                'divisi' => 'Risk, System, and Compliance',
+                'departemen' => 'Risk',
                 'user_foto' => 'undraw_profile.svg',
                 'user_password' => '25d55ad283aa400af464c76d713c07ad', // 12345678
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
@@ -75,13 +75,55 @@ class UsersTableSeeder extends Seeder
             ],
             [
                 'user_id' => 5,
+                'role_id' => '4',
+                'user_nmlengkap' => 'GMRSCS',
+                'user_nama' => 'GMRSCS',
+                'user_email' => 'GMRSCS@gmail.com',
+                'nomor_hp' => '0814444444',
+                'divisi' => 'Risk, System, and Compliance',
+                'departemen' => 'System',
+                'user_foto' => 'undraw_profile.svg',
+                'user_password' => '25d55ad283aa400af464c76d713c07ad', // 12345678
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+            ],
+            [
+                'user_id' => 6,
+                'role_id' => '4',
+                'user_nmlengkap' => 'GMRSCC',
+                'user_nama' => 'GMRSCC',
+                'user_email' => 'GMRSCC@gmail.com',
+                'nomor_hp' => '0814444444',
+                'divisi' => 'Risk, System, and Compliance',
+                'departemen' => 'Compliance',
+                'user_foto' => 'undraw_profile.svg',
+                'user_password' => '25d55ad283aa400af464c76d713c07ad', // 12345678
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+            ],
+            [
+                'user_id' => 7,
                 'role_id' => '5',
                 'user_nmlengkap' => 'User',
                 'user_nama' => 'user',
                 'user_email' => 'user@gmail.com',
                 'nomor_hp' => '08123124',
-                'divisi' => 'Internal Audit',
-                'departemen' => 'RSC',
+                'divisi' => 'Risk, System, and Compliance',
+                'departemen' => 'Risk',
+                'user_foto' => 'undraw_profile.svg',
+                'user_password' => '25d55ad283aa400af464c76d713c07ad', // 12345678
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+            ],
+            [
+                'user_id' => 8,
+                'role_id' => '5',
+                'user_nmlengkap' => 'User2',
+                'user_nama' => 'user2',
+                'user_email' => 'user2@gmail.com',
+                'nomor_hp' => '08123124',
+                'divisi' => 'Risk, System, and Compliance',
+                'departemen' => 'System',
                 'user_foto' => 'undraw_profile.svg',
                 'user_password' => '25d55ad283aa400af464c76d713c07ad', // 12345678
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'),

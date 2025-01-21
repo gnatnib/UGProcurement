@@ -163,18 +163,27 @@ public function store(Request $request)
 public function getdata(Request $request)
 {
     if ($request->ajax()) {
-        $data = DB::table('tbl_request_barang as r')
+        $user = Session::get('user');
+
+        // Query dasar
+        $query = DB::table('tbl_request_barang as r')
             ->leftJoin('tbl_user as u', 'u.user_id', '=', 'r.user_id')
             ->select(
                 'r.request_id',
                 'r.request_kode',
-                'r.request_tanggal', // Pastikan nama kolom sesuai
+                'r.request_tanggal',
                 'r.departemen',
                 'r.status',
                 'r.created_at'
-            )
-            ->orderBy('r.created_at', 'DESC')
-            ->get();
+            );
+
+        // Jika role_id = 5 (User), hanya tampilkan request miliknya
+        if ($user->role_id == 5) {
+            $query->where('r.user_id', $user->user_id);
+        }
+
+        // Eksekusi query
+        $data = $query->orderBy('r.created_at', 'DESC')->get();
 
         return DataTables::of($data)
             ->addIndexColumn()
@@ -199,8 +208,21 @@ public function getdata(Request $request)
                 }
                 return $badge;
             })
-            ->addColumn('action', function($row) {
-                return '<button class="btn btn-sm btn-primary">Edit</button>';
+            ->addColumn('action', function($row) use ($user) {
+                $button = '';
+                
+                // Jika role_id = 5, hanya bisa menghapus request miliknya yang masih draft
+                if ($user->role_id == 5) {
+                    if ($row->status == 'draft') {
+                        $button = '<button onclick="deleteRequest(\''.$row->request_id.'\')" class="btn btn-sm btn-danger">Delete</button>';
+                    }
+                } else {
+                    // Untuk role selain user, bisa edit dan hapus semua request
+                    $button = '<button onclick="deleteRequest(\''.$row->request_id.'\')" class="btn btn-sm btn-danger">Delete</button>';
+                    $button .= ' <button onclick="editRequest(\''.$row->request_id.'\')" class="btn btn-sm btn-primary">Edit</button>';
+                }
+                
+                return $button;
             })
             ->rawColumns(['status', 'action'])
             ->make(true);

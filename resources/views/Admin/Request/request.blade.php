@@ -17,13 +17,19 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header justify-content-between">
-                <h3 class="card-title">Data Request</h3>
+                <h3 class="card-title">
+                    @if(Session::get('user')->role_id == 5)
+                        Data Request Saya
+                    @else
+                        Data Request Semua User
+                    @endif
+                </h3>
                 @if($hakTambah > 0)
                 <div>
                     <button class="btn btn-primary-light" onclick="addRequest()">
                         Tambah Request <i class="fe fe-plus"></i>
                     </button>
-                    <!-- Button Tambah Barang -->
+                    <!-- Menambahkan kembali tombol Tambah Barang Masuk -->
                     <a href="{{ route('barang-masuk.index') }}" class="btn btn-success-light">
                         Tambah Barang Masuk <i class="fe fe-plus"></i>
                     </a>
@@ -104,7 +110,6 @@ $(document).ready(function() {
     });
 });
 
-// Fungsi untuk hapus request
 // Fungsi untuk hapus request
 function deleteRequest(requestId) {
     if (confirm('Apakah Anda yakin ingin menghapus request ini?')) {
