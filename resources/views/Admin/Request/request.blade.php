@@ -26,13 +26,12 @@
                 </h3>
                 @if($hakTambah > 0)
                 <div>
-                    <button class="btn btn-primary-light" onclick="addRequest()">
+                    <button class="btn btn-primary-light" onclick="checkAndAddRequest()">
                         Tambah Request <i class="fe fe-plus"></i>
                     </button>
-                    <!-- Menambahkan kembali tombol Tambah Barang Masuk -->
-                    <a href="{{ route('barang-masuk.index') }}" class="btn btn-success-light">
+                    <button class="btn btn-success-light" onclick="checkAndAddBarangMasuk()">
                         Tambah Barang Masuk <i class="fe fe-plus"></i>
-                    </a>
+                    </button>
                 </div>
                 @endif
             </div>
@@ -60,26 +59,61 @@
 
 @section('scripts')
 <script>
-// Fungsi Tambah Request
+
+// Add this at the top of your script section
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
+
+// Function to add request
 function addRequest() {
-    $.ajax({
-        url: '/admin/request-barang/store', 
-        type: 'POST',
-        data: {
-            _token: $('meta[name="csrf-token"]').attr('content')
-        },
-        success: function(response) {
-            console.log('Response:', response);
-            if (response.success) {
-                alert('Request berhasil ditambahkan!');
-                location.reload(); 
-            } else {
-                alert('Error: ' + response.message);
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error('Error:', xhr.responseText);
-            alert('Terjadi kesalahan!');
+    Swal.fire({
+        title: 'Konfirmasi',
+        text: "Apakah Anda yakin ingin menambah request baru?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, tambah!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '/admin/request-barang/store',
+                type: 'POST',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: 'Request berhasil ditambahkan!',
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire(
+                            'Error!',
+                            response.message,
+                            'error'
+                        );
+                    }
+                },
+                error: function(xhr) {
+                    const response = xhr.responseJSON;
+                    Swal.fire(
+                        'Error!',
+                        response?.message || 'Terjadi kesalahan saat menambah request!',
+                        'error'
+                    );
+                }
+            });
         }
     });
 }
@@ -102,40 +136,127 @@ $(document).ready(function() {
                 orderable: false, 
                 searchable: false,
                 render: function(data, type, row) {
-                    // Tampilkan tombol Delete
-                    return '<button onclick="deleteRequest(' + row.request_id + ')" class="btn btn-sm btn-danger">Delete</button>';
+                    if (!row.has_barang_masuk) {
+                        return `<button onclick="deleteRequest('${row.request_id}')" class="btn btn-sm btn-danger">Delete</button>`;
+                    }
+                    return '';
                 }
             }
         ]
     });
 });
 
-// Fungsi untuk hapus request
+// Function to handle request deletion
 function deleteRequest(requestId) {
-    if (confirm('Apakah Anda yakin ingin menghapus request ini?')) {
-        $.ajax({
-            url: '/admin/request-barang/delete',  // Pastikan URL untuk hapus sesuai
-            type: 'DELETE',  // Gunakan DELETE
-            data: {
-                _token: $('meta[name="csrf-token"]').attr('content'),
-                request_id: requestId
-            },
-            success: function(response) {
-                console.log('Delete Response:', response);
-                if (response.success) {
-                    alert('Request berhasil dihapus!');
-                    location.reload();  // Reload halaman setelah penghapusan
-                } else {
-                    alert('Error: ' + response.message);
+    Swal.fire({
+        title: 'Konfirmasi',
+        text: "Apakah Anda yakin ingin menghapus request ini?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '/admin/request-barang/delete',
+                type: 'DELETE',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    request_id: requestId
+                },
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire(
+                            'Terhapus!',
+                            'Request berhasil dihapus.',
+                            'success'
+                        ).then(() => {
+                            $('#table-1').DataTable().ajax.reload();
+                        });
+                    } else {
+                        Swal.fire(
+                            'Error!',
+                            response.message,
+                            'error'
+                        );
+                    }
+                },
+                error: function(xhr) {
+                    const response = xhr.responseJSON;
+                    Swal.fire(
+                        'Error!',
+                        response?.message || 'Terjadi kesalahan saat menghapus data!',
+                        'error'
+                    );
                 }
-            },
-            error: function(xhr, status, error) {
-                console.error('Delete Error:', xhr.responseText);
-                alert('Terjadi kesalahan saat menghapus data!');
-            }
-        });
-    }
+            });
+        }
+    });
 }
 
+// Function to check and add request
+function checkAndAddRequest() {
+    $.ajax({
+        url: '/admin/request-barang/check-status',
+        type: 'GET',
+        success: function(response) {
+            if (response.success) {
+                if (response.can_create_request) {
+                    // Can create new request
+                    addRequest();
+                } else {
+                    // Show warning about pending/draft request
+                    Swal.fire({
+                        title: 'Tidak dapat membuat request baru',
+                        text: 'Anda masih memiliki request dengan status ' + response.current_status,
+                        icon: 'warning',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            }
+        },
+        error: function() {
+            Swal.fire(
+                'Error!',
+                'Terjadi kesalahan saat memeriksa status request',
+                'error'
+            );
+        }
+    });
+}
+
+// Function to check and add barang masuk
+function checkAndAddBarangMasuk() {
+    $.ajax({
+        url: '/admin/request-barang/check-status',
+        type: 'GET',
+        success: function(response) {
+            if (response.success) {
+                if (response.can_add_barang) {
+                    // Redirect to barang masuk page
+                    window.location.href = "{{ route('barang-masuk.index') }}";
+                } else {
+                    Swal.fire({
+                        title: 'Tidak dapat menambah barang',
+                        text: 'Anda harus membuat request terlebih dahulu',
+                        icon: 'warning',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            }
+        },
+        error: function() {
+            Swal.fire(
+                'Error!',
+                'Terjadi kesalahan saat memeriksa status',
+                'error'
+            );
+        }
+    });
+}
 </script>
 @endsection
