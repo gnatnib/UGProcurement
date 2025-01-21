@@ -54,15 +54,7 @@ Route::group(['middleware' => 'userlogin'], function () {
         Route::get('/admin', [DashboardController::class, 'index']);
         Route::get('/admin/dashboard', [DashboardController::class, 'index']);
     });
-    Route::middleware(['checkRoleUser:/approve,submenu'])->group(function () {
-        Route::prefix('admin/approve')->group(function () {
-            Route::get('/', [ApproveController::class, 'index']);
-            Route::get('/show', [ApproveController::class, 'show'])->name('approve.show');
-            Route::get('/detail/{request_id}', [ApproveController::class, 'getDetail'])->name('approve.detail');
-            Route::post('/bulk-update', [ApproveController::class, 'bulkUpdate'])->name('approve.bulk-update');
-        });
-    });
-    
+
     Route::middleware(['checkRoleUser:/jenisbarang,submenu'])->group(function () {
         // Route yang sudah ada
         Route::get('/admin/jenisbarang', [JenisBarangController::class, 'index']);
@@ -70,10 +62,9 @@ Route::group(['middleware' => 'userlogin'], function () {
         Route::post('/admin/jenisbarang/proses_tambah/', [JenisBarangController::class, 'proses_tambah'])->name('jenisbarang.store');
         Route::post('/admin/jenisbarang/proses_ubah/{jenisbarang}', [JenisBarangController::class, 'proses_ubah']);
         Route::post('/admin/jenisbarang/proses_hapus/{jenisbarang}', [JenisBarangController::class, 'proses_hapus']);
-        
     });
-            // Tambahkan route untuk getData
-            Route::get('/admin/jenisbarang/get-data', [JenisBarangController::class, 'getData'])->name('jenisbarang.get');
+    // Tambahkan route untuk getData
+    Route::get('/admin/jenisbarang/get-data', [JenisBarangController::class, 'getData'])->name('jenisbarang.get');
 
     Route::middleware(['checkRoleUser:/satuan,submenu'])->group(function () {
         // Satuan
@@ -101,7 +92,6 @@ Route::group(['middleware' => 'userlogin'], function () {
         Route::post('/admin/barang/proses_tambah/', [BarangController::class, 'proses_tambah'])->name('barang.store');
         Route::post('/admin/barang/proses_ubah/{barang}', [BarangController::class, 'proses_ubah']);
         Route::post('/admin/barang/proses_hapus/{barang}', [BarangController::class, 'proses_hapus']);
-        
     });
 
     Route::middleware(['checkRoleUser:/customer,menu'])->group(function () {
@@ -169,8 +159,17 @@ Route::group(['middleware' => 'userlogin'], function () {
             Route::get('/getbarang', [RequestBarangController::class, 'getBarang'])->name('request-barang.getbarang');
         });
     });
-   
-    
+
+    Route::middleware(['checkRoleUser:/approval,menu'])->group(function () {
+        Route::prefix('admin/approval')->group(function () {
+            Route::get('/', [ApproveController::class, 'index']);
+            Route::get('/show', [ApproveController::class, 'show'])->name('approve.show');
+            Route::get('/detail/{request_id}', [ApproveController::class, 'getDetail'])->name('approve.detail');
+            Route::post('/bulk-update', [ApproveController::class, 'bulkUpdate'])->name('approve.bulk-update');
+        });
+    });
+
+
     Route::middleware(['checkRoleUser:1,othermenu'])->group(function () {
 
         Route::middleware(['checkRoleUser:2,othermenu'])->group(function () {
