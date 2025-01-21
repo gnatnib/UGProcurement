@@ -18,6 +18,7 @@ use App\Http\Controllers\Master\MenuController;
 use App\Http\Controllers\Master\RoleController;
 use App\Http\Controllers\Master\UserController;
 use App\Http\Controllers\Admin\ApproveController;
+use App\Http\Controllers\Admin\RequestBarangController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -154,6 +155,20 @@ Route::group(['middleware' => 'userlogin'], function () {
         Route::get('/admin/lap-stok-barang/show/', [LapStokBarangController::class, 'show'])->name('lap-sb.getlap-sb');
     });
 
+    Route::middleware(['checkRoleUser:/request-barang,menu'])->group(function () {
+        Route::prefix('admin/request-barang')->group(function () {
+            Route::get('/', [RequestBarangController::class, 'index']);
+            Route::get('/getdata', [RequestBarangController::class, 'getdata'])->name('request-barang.getdata');
+            Route::get('/show', [RequestBarangController::class, 'show'])->name('request-barang.show');
+            Route::post('/store', [RequestBarangController::class, 'store'])->name('request-barang.store');
+            Route::get('/detail/{id}', [RequestBarangController::class, 'detail'])->name('request-barang.detail');
+            // Ubah method delete menjadi DELETE
+            Route::delete('/delete', [RequestBarangController::class, 'delete'])->name('request-barang.delete');
+            Route::get('/getbarang', [RequestBarangController::class, 'getBarang'])->name('request-barang.getbarang');
+        });
+    });
+   
+    
     Route::middleware(['checkRoleUser:1,othermenu'])->group(function () {
 
         Route::middleware(['checkRoleUser:2,othermenu'])->group(function () {

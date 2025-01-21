@@ -51,6 +51,17 @@ class MenuTableSeeder extends Seeder
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
             [
+                'menu_id' => '1675123456', // Menu ID baru dengan timestamp yang berbeda
+                'menu_judul' => 'Request Barang',
+                'menu_slug' => 'request-barang',
+                'menu_icon' => 'shopping-cart', // Menggunakan icon yang sesuai
+                'menu_redirect' => '/request-barang',
+                'menu_sort' => '5',
+                'menu_type' => '1', // Tipe 1 untuk menu langsung
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+            ],
+            [
                 'menu_id' => '1668510568',
                 'menu_judul' => 'Laporan',
                 'menu_slug' => 'laporan',
@@ -72,6 +83,7 @@ class MenuTableSeeder extends Seeder
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ]
+
         ]);
     }
 }
