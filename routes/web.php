@@ -55,12 +55,14 @@ Route::group(['middleware' => 'userlogin'], function () {
         Route::get('/admin/dashboard', [DashboardController::class, 'index']);
     });
     Route::middleware(['checkRoleUser:/approve,submenu'])->group(function () {
-        // Approve routes - only accessible by manager (role_id = 4)
-        Route::get('/admin/approve', [ApproveController::class, 'index']);
-        Route::get('/admin/approve/show/', [ApproveController::class, 'show'])->name('approve.getapprove');
-        Route::post('/admin/approve/{barangmasuk}', [ApproveController::class, 'approve']);
-        Route::post('/admin/approve/reject/{barangmasuk}', [ApproveController::class, 'reject']);
+        Route::prefix('admin/approve')->group(function () {
+            Route::get('/', [ApproveController::class, 'index']);
+            Route::get('/show', [ApproveController::class, 'show'])->name('approve.show');
+            Route::get('/detail/{request_id}', [ApproveController::class, 'getDetail'])->name('approve.detail');
+            Route::post('/bulk-update', [ApproveController::class, 'bulkUpdate'])->name('approve.bulk-update');
+        });
     });
+    
     Route::middleware(['checkRoleUser:/jenisbarang,submenu'])->group(function () {
         // Route yang sudah ada
         Route::get('/admin/jenisbarang', [JenisBarangController::class, 'index']);
