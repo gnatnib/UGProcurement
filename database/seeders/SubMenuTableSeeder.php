@@ -116,6 +116,16 @@ class SubMenuTableSeeder extends Seeder
                 'submenu_sort' => '3',
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+            ],
+            [
+                'submenu_id' => 24, // ID berikutnya setelah 23
+                'menu_id' => '1675123456', // Sesuai menu_id Request Barang
+                'submenu_judul' => 'Request Barang',
+                'submenu_slug' => 'request-barang',
+                'submenu_redirect' => '/admin/request-barang',
+                'submenu_sort' => '1',
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ]
         ]);
     }

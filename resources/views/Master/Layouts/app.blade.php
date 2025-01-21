@@ -14,6 +14,9 @@ $appreance = AppreanceModel::where('user_id', '=', Session::get('user')->user_id
 
 <head>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
     <!-- META DATA -->
     <meta charset="UTF-8">
     <meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=0'>
@@ -42,6 +45,13 @@ $appreance = AppreanceModel::where('user_id', '=', Session::get('user')->user_id
     <link href="{{ url('/assets/css/dark-style.css') }}" rel="stylesheet" />
     <link href="{{ url('/assets/css/transparent-style.css') }}" rel="stylesheet">
     <link href="{{ url('/assets/css/skin-modes.css') }}" rel="stylesheet" />
+
+    <!-- CSS Bootstrap Datepicker -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" rel="stylesheet">
+
+<!-- JS Bootstrap Datepicker -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+
 
     <!--- FONT-ICONS CSS -->
     <link href="{{ url('/assets/css/icons.css') }}" rel="stylesheet" />

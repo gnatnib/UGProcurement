@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class BarangmasukController extends Controller
 {
@@ -91,21 +92,36 @@ class BarangmasukController extends Controller
         // Mendapatkan data user yang sedang login
         $user = Session::get('user'); // Karena aplikasi menggunakan Session::get('user')
 
-        // Debug
+        // Debugging log
         Log::info('User data:', ['user' => $user]);
         Log::info('Request data:', $request->all());
 
-        // Insert data
+        // Cari request_id terbaru berdasarkan user_id di tbl_request_barang
+        $latestRequest = DB::table('tbl_request_barang')
+            ->where('user_id', $user->user_id)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        // Jika tidak ada request, kembalikan error
+        if (!$latestRequest) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak ditemukan request yang sesuai untuk user ini.'
+            ], 404);
+        }
+
+        // Insert data ke tabel tbl_barangmasuk
         $barangmasuk = BarangmasukModel::create([
             'bm_tanggal' => $request->tglmasuk,
             'bm_kode' => $request->bmkode,
             'barang_kode' => $request->barang,
+            'request_id' => $latestRequest->request_id, // Menggunakan request_id terbaru
             'keterangan' => $request->keterangan,
             'bm_jumlah' => $request->jml,
             'user_id' => $user->user_id,
             'divisi' => $user->divisi,
             'status' => null,
-            'approval' => null
+            'approval' => null,
         ]);
 
         Log::info('Saved data:', $barangmasuk->toArray());
@@ -119,6 +135,7 @@ class BarangmasukController extends Controller
         ], 500);
     }
 }
+
 
     public function proses_ubah(Request $request, BarangmasukModel $barangmasuk)
     {

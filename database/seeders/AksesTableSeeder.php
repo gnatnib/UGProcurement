@@ -23,13 +23,16 @@ class AksesTableSeeder extends Seeder
         // Part 4: Transaksi Menu Permissions
         $this->seedTransaksiPermissions();
 
-        // Part 5: Laporan Menu Permissions
+        // Part 5: Request Barang Menu Permissions
+        $this->seedRequestBarangPermissions(); // Tambahkan ini
+
+        // Part 6: Laporan Menu Permissions
         $this->seedLaporanPermissions();
 
-        // Part 6: Other Menu Permissions (Settings, etc)
+        // Part 7: Other Menu Permissions (Settings, etc)
         $this->seedOtherMenuPermissions();
 
-        // Part 7: Submenu Permissions
+        // Part 8: Submenu Permissions
         $this->seedSubmenuPermissions();
     }
 
@@ -61,6 +64,43 @@ class AksesTableSeeder extends Seeder
                 ],
                 [
                     'menu_id' => '1667444041',
+                    'role_id' => $role_id,
+                    'akses_type' => 'delete',
+                    'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+                ]
+            ]);
+        }
+    }
+
+    private function seedRequestBarangPermissions()
+    {
+        $roles = [1, 2, 3, 4, 5]; // Super Admin, Admin, Operator, Manager
+        foreach ($roles as $role_id) {
+            DB::table('tbl_akses')->insert([
+                [
+                    'menu_id' => '1675123456', // Sesuaikan dengan menu_id yang dibuat sebelumnya
+                    'role_id' => $role_id,
+                    'akses_type' => 'view',
+                    'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+                ],
+                [
+                    'menu_id' => '1675123456',
+                    'role_id' => $role_id,
+                    'akses_type' => 'create',
+                    'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+                ],
+                [
+                    'menu_id' => '1675123456',
+                    'role_id' => $role_id,
+                    'akses_type' => 'update',
+                    'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+                ],
+                [
+                    'menu_id' => '1675123456',
                     'role_id' => $role_id,
                     'akses_type' => 'delete',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
@@ -220,7 +260,7 @@ class AksesTableSeeder extends Seeder
 
     private function seedSubmenuPermissions()
     {
-        $submenuIds = [9, 10,11, 17, 18, 19, 20, 21, 22, 23];
+        $submenuIds = [9, 10,11, 17, 18, 19, 20, 21, 22, 23,24];
         $roles = [1, 2, 3, 4,5];
 
         foreach ($roles as $role_id) {
