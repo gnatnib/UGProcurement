@@ -86,7 +86,7 @@
         </div>
         <!-- COL END -->
         <div class="col-sm-6 col-md-6 col-lg-6 col-xl-3">
-            <div class="card bg-danger img-card box-danger-shadow">
+            <div class="card bg-danger-gradient img-card box-danger-shadow">
                 <div class="card-body">
                     <div class="d-flex">
                         <div class="text-white">
@@ -100,21 +100,21 @@
         </div>
         <!-- COL END -->
         <div class="col-sm-6 col-md-6 col-lg-6 col-xl-3">
-            <div class="card bg-purple img-card box-purple-shadow">
+            <div class="card bg-warning-gradient img-card box-warning-shadow">
                 <div class="card-body">
                     <div class="d-flex">
                         <div class="text-white">
-                            <h2 class="mb-0 number-font">{{ $user }}</h2>
-                            <p class="text-white mb-0">User</p>
+                            <h2 class="mb-0 number-font">{{ $active_requests }}</h2>
+                            <p class="text-white mb-0">Active Requests</p>
                         </div>
-                        <div class="ms-auto"> <i class="fe fe-user text-white fs-40 me-2 mt-2"></i> </div>
+                        <div class="ms-auto"> <i class="fe fe-file-text text-white fs-40 me-2 mt-2"></i> </div>
                     </div>
                 </div>
             </div>
         </div>
         <!-- COL END -->
         <div class="col-sm-6 col-md-6 col-lg-6 col-xl-3">
-            <div class="card bg-warning img-card box-warning-shadow">
+            <div class="card bg-indigo-darker img-card box-warning-shadow">
                 <div class="card-body">
                     <div class="d-flex">
                         <div class="text-white">
