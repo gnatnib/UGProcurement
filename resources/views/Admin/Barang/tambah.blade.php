@@ -10,11 +10,14 @@
                 <div class="row">
                     <div class="col-md-7">
                         <div class="form-group">
-                            <label for="kode" class="form-label">Kode Barang <span class="text-danger">*</span></label>
-                            <input type="text" name="kode" readonly class="form-control">
+                            <label for="kode" class="form-label">Kode Barang <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="kode" class="form-control" placeholder="Format: PL-01">
+                            <small class="text-muted">Format kode: PL-XX (XX adalah angka)</small>
                         </div>
                         <div class="form-group">
-                            <label for="nama" class="form-label">Nama Barang <span class="text-danger">*</span></label>
+                            <label for="nama" class="form-label">Nama Barang <span
+                                    class="text-danger">*</span></label>
                             <input type="text" name="nama" class="form-control">
                         </div>
                         <div class="form-group">
@@ -22,7 +25,7 @@
                             <select name="jenisbarang" class="form-control">
                                 <option value="">-- Pilih --</option>
                                 @foreach ($jenisbarang as $jb)
-                                    <option value="{{$jb->jenisbarang_id}}">{{$jb->jenisbarang_nama}}</option>
+                                    <option value="{{ $jb->jenisbarang_id }}">{{ $jb->jenisbarang_nama }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -31,7 +34,7 @@
                             <select name="satuan" class="form-control">
                                 <option value="">-- Pilih --</option>
                                 @foreach ($satuan as $s)
-                                    <option value="{{$s->satuan_id}}">{{$s->satuan_nama}}</option>
+                                    <option value="{{ $s->satuan_id }}">{{ $s->satuan_nama }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -53,8 +56,8 @@
                         <div class="form-group">
                             <label for="title" class="form-label">Foto</label>
                             <center>
-                                <img src="{{url('/assets/default/barang/image.png')}}" width="80%" alt="profile-user"
-                                    id="outputImg" class="">
+                                <img src="{{ url('/assets/default/barang/image.png') }}" width="80%"
+                                    alt="profile-user" id="outputImg" class="">
                             </center>
                             <input class="form-control mt-5" id="GetFile" name="photo" type="file"
                                 onchange="VerifyFileNameAndFileSize()" accept=".png,.jpeg,.jpg,.svg">
@@ -77,171 +80,201 @@
 </div>
 
 @section('formTambahJS')
-<script>
-$(document).ready(function() {
-    $("select[name='jenisbarang']").on('change', function() {
-        const jenisbarang_id = $(this).val();
-        if(jenisbarang_id) {
-            updateMerkOptions(jenisbarang_id);
-        } else {
-            // Reset dropdown merk ke default
-            $("select[name='merk']").html('<option value="">-- Pilih --</option>');
-        }
-    });
-});
-
-function updateMerkOptions(jenisbarang_id) {
-    $.ajax({
-        type: 'GET',
-        url: "{{ url('admin/merk/get-by-jenis') }}/" + jenisbarang_id,
-        beforeSend: function() {
-            $("select[name='merk']").html('<option value="">Loading...</option>');
-        },
-        success: function(data) {
-            let html = '<option value="">-- Pilih --</option>';
-            if(data && data.length > 0) {
-                data.forEach(function(item) {
-                    html += `<option value="${item.merk_id}">${item.merk_nama}</option>`;
-                });
-            }
-            $("select[name='merk']").html(html);
-        },
-        error: function(xhr, status, error) {
-            console.error('Error:', error);
-            $("select[name='merk']").html('<option value="">-- Pilih --</option>');
-            validasi('Gagal memuat data merk', 'error');
-        }
-    });
-}
-
-    function checkForm() {
-        const kode = $("input[name='kode']").val();
-        const nama = $("input[name='nama']").val();
-        const harga = $("input[name='harga']").val();
-        setLoading(true);
-        resetValid();
-        if (kode == "") {
-            validasi('Kode Barang wajib di isi!', 'warning');
-            $("input[name='kode']").addClass('is-invalid');
-            setLoading(false);
-            return false;
-        } else if (nama == "") {
-            validasi('Nama Barang wajib di isi!', 'warning');
-            $("input[name='nama']").addClass('is-invalid');
-            setLoading(false);
-            return false;
-        } else if (harga == "") {
-            validasi('Harga Barang wajib di isi!', 'warning');
-            $("input[name='harga']").addClass('is-invalid');
-            setLoading(false);
-            return false;
-        } else {
-            submitForm();
-        }
-    }
-    function submitForm() {
-        const kode = $("input[name='kode']").val();
-        const nama = $("input[name='nama']").val();
-        const jenisbarang = $("select[name='jenisbarang']").val();
-        const satuan = $("select[name='satuan']").val();
-        const merk = $("select[name='merk']").val();
-        const harga = $("input[name='harga']").val();
-        const foto = $('#GetFile')[0].files;
-        var fd = new FormData();
-        // Append data 
-        fd.append('foto', foto[0]);
-        fd.append('kode', kode);
-        fd.append('nama', nama);
-        fd.append('jenisbarang', jenisbarang);
-        fd.append('satuan', satuan);
-        fd.append('merk', merk);
-        fd.append('harga', harga);
-        $.ajax({
-            type: 'POST',
-            url: "{{route('barang.store')}}",
-            processData: false,
-            contentType: false,
-            dataType: 'json',
-            data: fd,
-            success: function (data) {
-                $('#modaldemo8').modal('toggle');
-                swal({
-                    title: "Berhasil ditambah!",
-                    type: "success"
-                });
-                table.ajax.reload(null, false);
-                reset();
-            }
+    <script>
+        $(document).ready(function() {
+            $("select[name='jenisbarang']").on('change', function() {
+                const jenisbarang_id = $(this).val();
+                if (jenisbarang_id) {
+                    updateMerkOptions(jenisbarang_id);
+                } else {
+                    // Reset dropdown merk ke default
+                    $("select[name='merk']").html('<option value="">-- Pilih --</option>');
+                }
+            });
         });
-    }
-    function resetValid() {
-        $("input[name='kode']").removeClass('is-invalid');
-        $("input[name='nama']").removeClass('is-invalid');
-        $("select[name='jenisbarang']").removeClass('is-invalid');
-        $("select[name='satuan']").removeClass('is-invalid');
-        $("select[name='merk']").removeClass('is-invalid');
-        $("input[name='harga']").removeClass('is-invalid');
-    };
-    function reset() {
-    resetValid();
-    $("input[name='kode']").val('');
-    $("input[name='nama']").val('');
-    $("select[name='jenisbarang']").val('');
-    $("select[name='satuan']").val('');
-    $("select[name='merk']").html('<option value="">-- Pilih --</option>'); // Diubah
-    $("input[name='harga']").val('');
-    $("#outputImg").attr("src", "{{url('/assets/default/barang/image.png')}}");
-    $("#GetFile").val('');
-    setLoading(false);
-}
-    function setLoading(bool) {
-        if (bool == true) {
-            $('#btnLoader').removeClass('d-none');
-            $('#btnSimpan').addClass('d-none');
-        } else {
-            $('#btnSimpan').removeClass('d-none');
-            $('#btnLoader').addClass('d-none');
+
+        function updateMerkOptions(jenisbarang_id) {
+            $.ajax({
+                type: 'GET',
+                url: "{{ url('admin/merk/get-by-jenis') }}/" + jenisbarang_id,
+                beforeSend: function() {
+                    $("select[name='merk']").html('<option value="">Loading...</option>');
+                },
+                success: function(data) {
+                    let html = '<option value="">-- Pilih --</option>';
+                    if (data && data.length > 0) {
+                        data.forEach(function(item) {
+                            html += `<option value="${item.merk_id}">${item.merk_nama}</option>`;
+                        });
+                    }
+                    $("select[name='merk']").html(html);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                    $("select[name='merk']").html('<option value="">-- Pilih --</option>');
+                    validasi('Gagal memuat data merk', 'error');
+                }
+            });
         }
-    }
-    function fileIsValid(fileName) {
-        var ext = fileName.match(/\.([^\.]+)$/)[1];
-        ext = ext.toLowerCase();
-        var isValid = true;
-        switch (ext) {
-            case 'png':
-            case 'jpeg':
-            case 'jpg':
-            case 'svg':
-                break;
-            default:
-                this.value = '';
-                isValid = false;
+
+        function checkForm() {
+            const kode = $("input[name='kode']").val();
+            const nama = $("input[name='nama']").val();
+            const harga = $("input[name='harga']").val();
+
+            setLoading(true);
+            resetValid();
+
+            const kodeFormat = /^PL-\d{2}$/;
+            if (kode == "") {
+                validasi('Kode Barang wajib di isi!', 'warning');
+                $("input[name='kode']").addClass('is-invalid');
+                setLoading(false);
+                return false;
+            } else if (!kodeFormat.test(kode)) {
+                validasi('Format Kode Barang tidak sesuai! Gunakan format PL-XX', 'warning');
+                $("input[name='kode']").addClass('is-invalid');
+                setLoading(false);
+                return false;
+            } else {
+                $.ajax({
+                    type: 'GET',
+                    url: "{{ route('barang.check-kode', ['kode' => ':kode']) }}".replace(':kode', kode),
+                    success: function(response) {
+                        if (response.exists) {
+                            validasi('Kode Barang sudah ada!', 'warning');
+                            $("input[name='kode']").addClass('is-invalid');
+                            setLoading(false);
+                        } else {
+                            if (nama == "") {
+                                validasi('Nama Barang wajib di isi!', 'warning');
+                                $("input[name='nama']").addClass('is-invalid');
+                                setLoading(false);
+                            } else if (harga == "") {
+                                validasi('Harga Barang wajib di isi!', 'warning');
+                                $("input[name='harga']").addClass('is-invalid');
+                                setLoading(false);
+                            } else {
+                                submitForm();
+                            }
+                        }
+                    },
+                    error: function() {
+                        validasi('Terjadi kesalahan!', 'error');
+                        setLoading(false);
+                    }
+                });
+            }
         }
-        return isValid;
-    }
-    function VerifyFileNameAndFileSize() {
-        var file = document.getElementById('GetFile').files[0];
-        if (file != null) {
-            var fileName = file.name;
-            if (fileIsValid(fileName) == false) {
-                validasi('Format bukan gambar!', 'warning');
-                document.getElementById('GetFile').value = null;
-                return false;
+
+        function submitForm() {
+            const kode = $("input[name='kode']").val();
+            const nama = $("input[name='nama']").val();
+            const jenisbarang = $("select[name='jenisbarang']").val();
+            const satuan = $("select[name='satuan']").val();
+            const merk = $("select[name='merk']").val();
+            const harga = $("input[name='harga']").val();
+            const foto = $('#GetFile')[0].files;
+            var fd = new FormData();
+            // Append data 
+            fd.append('foto', foto[0]);
+            fd.append('kode', kode);
+            fd.append('nama', nama);
+            fd.append('jenisbarang', jenisbarang);
+            fd.append('satuan', satuan);
+            fd.append('merk', merk);
+            fd.append('harga', harga);
+            $.ajax({
+                type: 'POST',
+                url: "{{ route('barang.store') }}",
+                processData: false,
+                contentType: false,
+                dataType: 'json',
+                data: fd,
+                success: function(data) {
+                    $('#modaldemo8').modal('toggle');
+                    swal({
+                        title: "Berhasil ditambah!",
+                        type: "success"
+                    });
+                    table.ajax.reload(null, false);
+                    reset();
+                }
+            });
+        }
+
+        function resetValid() {
+            $("input[name='kode']").removeClass('is-invalid');
+            $("input[name='nama']").removeClass('is-invalid');
+            $("select[name='jenisbarang']").removeClass('is-invalid');
+            $("select[name='satuan']").removeClass('is-invalid');
+            $("select[name='merk']").removeClass('is-invalid');
+            $("input[name='harga']").removeClass('is-invalid');
+        };
+
+        function reset() {
+            resetValid();
+            $("input[name='kode']").val('');
+            $("input[name='nama']").val('');
+            $("select[name='jenisbarang']").val('');
+            $("select[name='satuan']").val('');
+            $("select[name='merk']").html('<option value="">-- Pilih --</option>'); // Diubah
+            $("input[name='harga']").val('');
+            $("#outputImg").attr("src", "{{ url('/assets/default/barang/image.png') }}");
+            $("#GetFile").val('');
+            setLoading(false);
+        }
+
+        function setLoading(bool) {
+            if (bool == true) {
+                $('#btnLoader').removeClass('d-none');
+                $('#btnSimpan').addClass('d-none');
+            } else {
+                $('#btnSimpan').removeClass('d-none');
+                $('#btnLoader').addClass('d-none');
             }
-            var content;
-            var size = file.size;
-            if ((size != null) && ((size / (1024 * 1024)) > 3)) {
-                validasi('Ukuran Maximum 1 MB', 'warning');
-                document.getElementById('GetFile').value = null;
-                return false;
-            }
+        }
+
+        function fileIsValid(fileName) {
             var ext = fileName.match(/\.([^\.]+)$/)[1];
             ext = ext.toLowerCase();
-            // $(".custom-file-label").addClass("selected").html(file.name);
-            document.getElementById('outputImg').src = window.URL.createObjectURL(file);
-            return true;
-        } else
-            return false;
-    }
-</script>
+            var isValid = true;
+            switch (ext) {
+                case 'png':
+                case 'jpeg':
+                case 'jpg':
+                case 'svg':
+                    break;
+                default:
+                    this.value = '';
+                    isValid = false;
+            }
+            return isValid;
+        }
+
+        function VerifyFileNameAndFileSize() {
+            var file = document.getElementById('GetFile').files[0];
+            if (file != null) {
+                var fileName = file.name;
+                if (fileIsValid(fileName) == false) {
+                    validasi('Format bukan gambar!', 'warning');
+                    document.getElementById('GetFile').value = null;
+                    return false;
+                }
+                var content;
+                var size = file.size;
+                if ((size != null) && ((size / (1024 * 1024)) > 3)) {
+                    validasi('Ukuran Maximum 1 MB', 'warning');
+                    document.getElementById('GetFile').value = null;
+                    return false;
+                }
+                var ext = fileName.match(/\.([^\.]+)$/)[1];
+                ext = ext.toLowerCase();
+                // $(".custom-file-label").addClass("selected").html(file.name);
+                document.getElementById('outputImg').src = window.URL.createObjectURL(file);
+                return true;
+            } else
+                return false;
+        }
+    </script>
 @endsection
