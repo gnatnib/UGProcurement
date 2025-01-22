@@ -34,11 +34,14 @@ class AksesTableSeeder extends Seeder
 
         // Part 8: Submenu Permissions
         $this->seedSubmenuPermissions();
+
+        //Part 9: Approval Permissions
+        $this->seedApprovalPermissions();
     }
 
     private function seedDashboardPermissions()
     {
-        $roles = [1, 2, 3, 4,5]; // Super Admin, Admin, Operator, Manager
+        $roles = [1, 2, 3, 4, 5]; // Super Admin, Admin, Operator, Manager
         foreach ($roles as $role_id) {
             DB::table('tbl_akses')->insert([
                 [
@@ -112,7 +115,7 @@ class AksesTableSeeder extends Seeder
 
     private function seedMasterBarangPermissions()
     {
-        $roles = [1, 2, 3, 4,5];
+        $roles = [1, 2, 3, 4, 5];
         foreach ($roles as $role_id) {
             DB::table('tbl_akses')->insert([
                 [
@@ -149,7 +152,7 @@ class AksesTableSeeder extends Seeder
 
     private function seedCustomerPermissions()
     {
-        $roles = [1, 2, 3, 4 ,5];
+        $roles = [1, 2, 3, 4, 5];
         foreach ($roles as $role_id) {
             DB::table('tbl_akses')->insert([
                 [
@@ -186,7 +189,7 @@ class AksesTableSeeder extends Seeder
 
     private function seedTransaksiPermissions()
     {
-        $roles = [1, 2, 3, 4,5];
+        $roles = [1, 2, 3, 4, 5];
         foreach ($roles as $role_id) {
             DB::table('tbl_akses')->insert([
                 [
@@ -223,7 +226,7 @@ class AksesTableSeeder extends Seeder
 
     private function seedLaporanPermissions()
     {
-        $roles = [1, 2, 3, 4,5];
+        $roles = [1, 2, 3, 4, 5];
         foreach ($roles as $role_id) {
             DB::table('tbl_akses')->insert([
                 [
@@ -262,55 +265,16 @@ class AksesTableSeeder extends Seeder
     {
         // Submenu untuk semua role kecuali approval
         $submenuIds = [9, 10, 17, 18, 19, 20, 21, 22, 23, 24];
-        
-        // Submenu approval (11) hanya untuk role 1-4
-        $submenuApproval = [11];
-        
+
         // Role user
         $userRole = 5;
-        
+
         // Role admin dan lainnya
         $adminRoles = [1, 2, 3, 4];
-    
+
         // Insert permissions untuk semua submenu (kecuali approval) ke semua role
         foreach ([...$adminRoles, $userRole] as $role_id) {
             foreach ($submenuIds as $submenu_id) {
-                DB::table('tbl_akses')->insert([
-                    [
-                        'submenu_id' => $submenu_id,
-                        'role_id' => $role_id,
-                        'akses_type' => 'view',
-                        'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                        'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-                    ],
-                    [
-                        'submenu_id' => $submenu_id,
-                        'role_id' => $role_id,
-                        'akses_type' => 'create',
-                        'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                        'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-                    ],
-                    [
-                        'submenu_id' => $submenu_id,
-                        'role_id' => $role_id,
-                        'akses_type' => 'update',
-                        'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                        'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-                    ],
-                    [
-                        'submenu_id' => $submenu_id,
-                        'role_id' => $role_id,
-                        'akses_type' => 'delete',
-                        'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                        'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-                    ]
-                ]);
-            }
-        }
-    
-        // Insert permissions untuk submenu approval hanya ke role admin
-        foreach ($adminRoles as $role_id) {
-            foreach ($submenuApproval as $submenu_id) {
                 DB::table('tbl_akses')->insert([
                     [
                         'submenu_id' => $submenu_id,
@@ -383,6 +347,43 @@ class AksesTableSeeder extends Seeder
                     ]
                 ]);
             }
+        }
+    }
+
+    private function seedApprovalPermissions()
+    {
+        $roles = [4]; // General Manager
+        foreach ($roles as $role_id) {
+            DB::table('tbl_akses')->insert([
+                [
+                    'menu_id' => '1675199999', // Sesuaikan dengan menu_id yang dibuat sebelumnya
+                    'role_id' => $role_id,
+                    'akses_type' => 'view',
+                    'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+                ],
+                [
+                    'menu_id' => '1675199999',
+                    'role_id' => $role_id,
+                    'akses_type' => 'create',
+                    'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+                ],
+                [
+                    'menu_id' => '1675199999',
+                    'role_id' => $role_id,
+                    'akses_type' => 'update',
+                    'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+                ],
+                [
+                    'menu_id' => '1675199999',
+                    'role_id' => $role_id,
+                    'akses_type' => 'delete',
+                    'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+                ]
+            ]);
         }
     }
 }

@@ -62,6 +62,17 @@ class MenuTableSeeder extends Seeder
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
             [
+                'menu_id' => '1675199999', // Menu ID baru dengan timestamp yang berbeda
+                'menu_judul' => 'Approval',
+                'menu_slug' => 'approval',
+                'menu_icon' => 'check-square', // Menggunakan icon yang sesuai
+                'menu_redirect' => '/approval',
+                'menu_sort' => '2',
+                'menu_type' => '1', // Tipe 1 untuk menu langsung
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+            ],
+            [
                 'menu_id' => '1668510568',
                 'menu_judul' => 'Laporan',
                 'menu_slug' => 'laporan',
