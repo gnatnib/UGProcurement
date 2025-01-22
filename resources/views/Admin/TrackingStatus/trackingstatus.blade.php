@@ -124,30 +124,47 @@
         });
 
         function showDetail(request_id) {
-            $('#current_request_id').val(request_id); // Simpan request_id
+            $('#current_request_id').val(request_id);
 
             $.get("{{ url('admin/tracking/detail') }}/" + request_id, function(data) {
                 let html = '';
                 data.forEach(item => {
+                    let badgeClass;
+                    let currentStatus = item.tracking_status || 'Pending';
+
+                    switch (currentStatus) {
+                        case 'Diproses':
+                            badgeClass = 'warning';
+                            break;
+                        case 'Dikirim':
+                            badgeClass = 'info';
+                            break;
+                        case 'Diterima':
+                            badgeClass = 'success';
+                            break;
+                        default:
+                            badgeClass = 'secondary';
+                    }
+
                     html += `
                 <tr id="row-${item.bm_id}">
-    <td>${item.barang_kode}</td>
-    <td>${item.barang_nama}</td>
-    <td>${item.bm_jumlah}</td>
-    <td>${item.divisi}</td>
-    <td>${item.keterangan}</td>
-    <td id="status-${item.bm_id}">
-        <span class="badge bg-warning">Pending</span>
-    </td>
-    <td>
-        <select class="form-select form-select-sm" onchange="setItemStatus(${item.bm_id}, this.value)">
-            <option value="">Pilih Status</option>
-            <option value="Diproses">Diproses</option>
-            <option value="Dikirim">Dikirim</option>
-            <option value="Diterima">Diterima</option>
-        </select>
-    </td>
-</tr>
+                    <td>${item.barang_kode}</td>
+                    <td>${item.barang_nama}</td>
+                    <td>${item.bm_jumlah}</td>
+                    <td>${item.divisi}</td>
+                    <td>${item.keterangan}</td>
+                    <td id="status-${item.bm_id}">
+                        <span class="badge bg-${badgeClass}">${currentStatus}</span>
+                    </td>
+                    <td>
+                        <select class="form-select form-select-sm" onchange="setItemStatus(${item.bm_id}, this.value)">
+                            <option value="">Pilih Status</option>
+                            <option value="Diproses" ${currentStatus === 'Diproses' ? 'selected' : ''}>Diproses</option>
+                            <option value="Dikirim" ${currentStatus === 'Dikirim' ? 'selected' : ''}>Dikirim</option>
+                            <option value="Diterima" ${currentStatus === 'Diterima' ? 'selected' : ''}>Diterima</option>
+                        </select>
+                    </td>
+                </tr>
             `;
                 });
                 $('#detail-content').html(html);
@@ -161,7 +178,7 @@
         function setItemStatus(bm_id, status) {
             itemApprovals[bm_id] = status;
 
-            // Update tampilan status
+            // Update badge display
             let badgeClass;
             switch (status) {
                 case 'Diproses':
@@ -177,17 +194,11 @@
                     badgeClass = 'secondary';
             }
 
-            $(`#status-${bm_id}`).html(`<span class="badge bg-${badgeClass}">${status}</span>`);
+            $(`#status-${bm_id}`).html(`<span class="badge bg-${badgeClass}">${status || 'Pending'}</span>`);
         }
 
         function simpanApproval() {
             const request_id = $('#current_request_id').val();
-
-            // Debug log
-            console.log('Saving approvals:', {
-                request_id: request_id,
-                approvals: itemApprovals
-            });
 
             if (Object.keys(itemApprovals).length === 0) {
                 swal("Peringatan!", "Silakan pilih status approval untuk setiap item", "warning");
@@ -203,7 +214,6 @@
                     approvals: itemApprovals
                 },
                 beforeSend: function() {
-                    // Tampilkan loading
                     swal({
                         title: "Loading...",
                         text: "Sedang memproses data",
@@ -213,17 +223,27 @@
                     });
                 },
                 success: function(response) {
-                    console.log('Response:', response);
                     if (response.success) {
                         swal({
                             title: "Berhasil!",
                             text: "Status tracking terbaru berhasil disimpan",
                             icon: "success",
-                            timer: 2000
+                            timer: 1500,
+                            buttons: false
                         }).then(() => {
+                            // Close the modal
                             $('#modalDetail').modal('hide');
-                            itemApprovals = {}; // Reset approvals
-                            table.ajax.reload();
+
+                            // Reset approvals
+                            itemApprovals = {};
+
+                            // Refresh the table
+                            table.ajax.reload(null, false);
+
+                            // Reopen the detail modal with updated data
+                            setTimeout(() => {
+                                showDetail(request_id);
+                            }, 500);
                         });
                     } else {
                         swal("Error!", response.message, "error");
@@ -242,13 +262,24 @@
 
         function setItemStatus(bm_id, status) {
             itemApprovals[bm_id] = status;
-            console.log('Updated approvals:', itemApprovals); // Debug log
 
-            // Update tampilan status
-            let badgeClass = status === 'Approve' ? 'success' : 'danger';
-            let statusText = status === 'Approve' ? 'Disetujui' : 'Ditolak';
+            // Update badge display
+            let badgeClass;
+            switch (status) {
+                case 'Diproses':
+                    badgeClass = 'warning';
+                    break;
+                case 'Dikirim':
+                    badgeClass = 'info';
+                    break;
+                case 'Diterima':
+                    badgeClass = 'success';
+                    break;
+                default:
+                    badgeClass = 'secondary';
+            }
 
-            $(`#status-${bm_id}`).html(`<span class="badge bg-${badgeClass}">${statusText}</span>`);
+            $(`#status-${bm_id}`).html(`<span class="badge bg-${badgeClass}">${status}</span>`);
         }
 
         function reject(id) {

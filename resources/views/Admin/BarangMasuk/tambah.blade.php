@@ -3,22 +3,26 @@
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content modal-content-demo">
             <div class="modal-header">
-                <h6 class="modal-title">Tambah Barang Masuk</h6><button onclick="reset()" aria-label="Close" class="btn-close" data-bs-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                <h6 class="modal-title">Tambah Barang Masuk</h6><button onclick="reset()" aria-label="Close"
+                    class="btn-close" data-bs-dismiss="modal"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="bmkode" class="form-label">Kode Barang Masuk <span class="text-danger">*</span></label>
+                            <label for="bmkode" class="form-label">Kode Barang Masuk <span
+                                    class="text-danger">*</span></label>
                             <input type="text" name="bmkode" readonly class="form-control" placeholder="">
                         </div>
                         <div class="form-group">
-                            <label for="tglmasuk" class="form-label">Tanggal Masuk <span class="text-danger">*</span></label>
+                            <label for="tglmasuk" class="form-label">Tanggal Masuk <span
+                                    class="text-danger">*</span></label>
                             <input type="text" name="tglmasuk" class="form-control datepicker-date" placeholder="">
                         </div>
-                       
+
                         <div class="form-group">
-                            <label for="keterangan" class="form-label">Keterangan <span class="text-danger">*</span></label>
+                            <label for="keterangan" class="form-label">Keterangan <span
+                                    class="text-danger">*</span></label>
                             <textarea name="keterangan" class="form-control" rows="3" placeholder="Masukkan keterangan"></textarea>
                         </div>
                     </div>
@@ -31,9 +35,12 @@
                                 </div>
                             </label>
                             <div class="input-group">
-                                <input type="text" class="form-control" autocomplete="off" name="kdbarang" placeholder="">
-                                <button class="btn btn-primary-light" onclick="searchBarang()" type="button"><i class="fe fe-search"></i></button>
-                                <button class="btn btn-success-light" onclick="modalBarang()" type="button"><i class="fe fe-box"></i></button>
+                                <input type="text" class="form-control" autocomplete="off" name="kdbarang"
+                                    placeholder="">
+                                <button class="btn btn-primary-light" onclick="searchBarang()" type="button"><i
+                                        class="fe fe-search"></i></button>
+                                <button class="btn btn-success-light" onclick="modalBarang()" type="button"><i
+                                        class="fe fe-box"></i></button>
                             </div>
                         </div>
                         <div class="form-group">
@@ -55,8 +62,11 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="jml" class="form-label">Jumlah Masuk <span class="text-danger">*</span></label>
-                            <input type="text" name="jml" value="0" class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" placeholder="">
+                            <label for="jml" class="form-label">Jumlah Masuk <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="jml" value="0" class="form-control"
+                                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');"
+                                placeholder="">
                         </div>
                     </div>
                 </div>
@@ -67,8 +77,10 @@
                     <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
                     Loading...
                 </button>
-                <a href="javascript:void(0)" onclick="checkForm()" id="btnSimpan" class="btn btn-primary">Simpan <i class="fe fe-check"></i></a>
-                <a href="javascript:void(0)" class="btn btn-light" onclick="reset()" data-bs-dismiss="modal">Batal <i class="fe fe-x"></i></a>
+                <a href="javascript:void(0)" onclick="checkForm()" id="btnSimpan" class="btn btn-primary">Simpan <i
+                        class="fe fe-check"></i></a>
+                <a href="javascript:void(0)" class="btn btn-light" onclick="reset()" data-bs-dismiss="modal">Batal
+                    <i class="fe fe-x"></i></a>
             </div>
         </div>
     </div>
@@ -76,54 +88,65 @@
 
 
 @section('formTambahJS')
-<script>
-    $('input[name="kdbarang"]').keypress(function(event) {
-        var keycode = (event.keyCode ? event.keyCode : event.which);
-        if (keycode == '13') {
-            getbarangbyid($('input[name="kdbarang"]').val());
-        }
-    });
+    <script>
+        $('document').ready(function() {
+            // Set the datepicker with today's date
+            const today = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+            $("input[name='tglmasuk']").val(today); // Set the input value
+            $('.datepicker-date').datepicker({
+                autoclose: true,
+                todayHighlight: true, // Highlight today's date
+                format: 'yyyy-mm-dd'
+            }).datepicker('update', today); // Update the datepicker to today's date
+        });
 
-    function modalBarang() {
-        $('#modalBarang').modal('show');
-        $('#modaldemo8').addClass('d-none');
-        $('input[name="param"]').val('tambah');
-        resetValid();
-        table2.ajax.reload();
-    }
-
-    function searchBarang() {
-        getbarangbyid($('input[name="kdbarang"]').val());
-        resetValid();
-    }
-
-    function getbarangbyid(id) {
-        $("#loaderkd").removeClass('d-none');
-        $.ajax({
-            type: 'GET',
-            url: "{{ url('admin/barang/getbarang') }}/" + id,
-            processData: false,
-            contentType: false,
-            dataType: 'json',
-            success: function(data) {
-                if (data.length > 0) {
-                    $("#loaderkd").addClass('d-none');
-                    $("#status").val("true");
-                    $("#nmbarang").val(data[0].barang_nama);
-                    $("#satuan").val(data[0].satuan_nama);
-                    $("#jenis").val(data[0].jenisbarang_nama);
-                } else {
-                    $("#loaderkd").addClass('d-none');
-                    $("#status").val("false");
-                    $("#nmbarang").val('');
-                    $("#satuan").val('');
-                    $("#jenis").val('');
-                }
+        $('input[name="kdbarang"]').keypress(function(event) {
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            if (keycode == '13') {
+                getbarangbyid($('input[name="kdbarang"]').val());
             }
         });
-    }
 
-    function checkForm() {
+        function modalBarang() {
+            $('#modalBarang').modal('show');
+            $('#modaldemo8').addClass('d-none');
+            $('input[name="param"]').val('tambah');
+            resetValid();
+            table2.ajax.reload();
+        }
+
+        function searchBarang() {
+            getbarangbyid($('input[name="kdbarang"]').val());
+            resetValid();
+        }
+
+        function getbarangbyid(id) {
+            $("#loaderkd").removeClass('d-none');
+            $.ajax({
+                type: 'GET',
+                url: "{{ url('admin/barang/getbarang') }}/" + id,
+                processData: false,
+                contentType: false,
+                dataType: 'json',
+                success: function(data) {
+                    if (data.length > 0) {
+                        $("#loaderkd").addClass('d-none');
+                        $("#status").val("true");
+                        $("#nmbarang").val(data[0].barang_nama);
+                        $("#satuan").val(data[0].satuan_nama);
+                        $("#jenis").val(data[0].jenisbarang_nama);
+                    } else {
+                        $("#loaderkd").addClass('d-none');
+                        $("#status").val("false");
+                        $("#nmbarang").val('');
+                        $("#satuan").val('');
+                        $("#jenis").val('');
+                    }
+                }
+            });
+        }
+
+        function checkForm() {
             const tglmasuk = $("input[name='tglmasuk']").val();
             const status = $("#status").val();
             const keterangan = $("textarea[name='keterangan']").val();
@@ -156,7 +179,7 @@
             }
         }
 
-       function submitForm() {
+        function submitForm() {
             const bmkode = $("input[name='bmkode']").val();
             const tglmasuk = $("input[name='tglmasuk']").val();
             const kdbarang = $("input[name='kdbarang']").val();
@@ -175,7 +198,7 @@
                     jml: jml
                 },
                 dataType: 'json',
-                success: function (response) {
+                success: function(response) {
                     if (response.success) {
                         $('#modaldemo8').modal('hide');
                         swal({
@@ -186,7 +209,7 @@
                         reset();
                     }
                 },
-                error: function (xhr, status, error) {
+                error: function(xhr, status, error) {
                     console.error(xhr.responseText);
                     swal({
                         title: "Error!",
@@ -218,16 +241,16 @@
             setLoading(false);
         }
 
-    
 
-    function setLoading(bool) {
-        if (bool == true) {
-            $('#btnLoader').removeClass('d-none');
-            $('#btnSimpan').addClass('d-none');
-        } else {
-            $('#btnSimpan').removeClass('d-none');
-            $('#btnLoader').addClass('d-none');
+
+        function setLoading(bool) {
+            if (bool == true) {
+                $('#btnLoader').removeClass('d-none');
+                $('#btnSimpan').addClass('d-none');
+            } else {
+                $('#btnSimpan').removeClass('d-none');
+                $('#btnLoader').addClass('d-none');
+            }
         }
-    }
-</script>
+    </script>
 @endsection

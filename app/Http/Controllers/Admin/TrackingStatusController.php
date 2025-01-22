@@ -89,7 +89,7 @@ class TrackingStatusController extends Controller
     {
         $detail = DB::table('tbl_barangmasuk as bm')
             ->join('tbl_barang as b', 'b.barang_kode', '=', 'bm.barang_kode')
-            ->select('bm.*', 'b.barang_nama')
+            ->select('bm.*', 'b.barang_nama', 'bm.tracking_status')
             ->where('bm.request_id', $request_id)
             ->get();
 
@@ -163,11 +163,6 @@ class TrackingStatusController extends Controller
     public function bulkUpdate(Request $request)
     {
         try {
-            Log::info('Received tracking status update:', [
-                'request_id' => $request->request_id,
-                'status_updates' => $request->approvals
-            ]);
-
             DB::beginTransaction();
 
             if (empty($request->request_id) || empty($request->approvals)) {
@@ -176,26 +171,19 @@ class TrackingStatusController extends Controller
 
             // Update individual items
             foreach ($request->approvals as $bm_id => $status) {
-                Log::info('Updating barang masuk tracking:', [
-                    'bm_id' => $bm_id,
-                    'status' => $status
-                ]);
-
-                $updated = DB::table('tbl_barangmasuk')
+                DB::table('tbl_barangmasuk')
                     ->where('bm_id', $bm_id)
                     ->update([
                         'tracking_status' => $status,
                         'updated_at' => now()
                     ]);
-
-                Log::info('Update result:', ['updated' => $updated]);
             }
 
             // Get the most recent status to update the main request
             $latestStatus = collect($request->approvals)->last();
 
             // Update request status
-            $updated = DB::table('tbl_request_barang')
+            DB::table('tbl_request_barang')
                 ->where('request_id', $request->request_id)
                 ->update([
                     'status' => $latestStatus,
@@ -203,7 +191,6 @@ class TrackingStatusController extends Controller
                 ]);
 
             DB::commit();
-
             return response()->json([
                 'success' => true,
                 'message' => 'Status tracking berhasil diupdate'
