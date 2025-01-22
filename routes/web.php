@@ -89,8 +89,9 @@
         Route::middleware(['checkRoleUser:/barang,submenu'])->group(function () {
             // Barang
             Route::resource('/admin/barang', \App\Http\Controllers\Admin\BarangController::class);
-            Route::get('/admin/barang/show/', [BarangController::class, 'show'])->name('barang.getbarang');
-            Route::post('/admin/barang/proses_tambah/', [BarangController::class, 'proses_tambah'])->name('barang.store');
+            Route::get('/admin/barang/show', [BarangController::class, 'show'])->name('barang.show');
+            Route::get('/admin/barang/check-kode/{kode}', [BarangController::class, 'getbarang'])->name('barang.check-kode');
+            Route::post('/admin/barang/proses_tambah', [BarangController::class, 'proses_tambah'])->name('barang.store');
             Route::post('/admin/barang/proses_ubah/{barang}', [BarangController::class, 'proses_ubah']);
             Route::post('/admin/barang/proses_hapus/{barang}', [BarangController::class, 'proses_hapus']);
         });

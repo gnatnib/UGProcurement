@@ -29,6 +29,15 @@ class BarangController extends Controller
 
     public function getbarang($id)
     {
+        if ($id) {
+            // Check if code exists
+            $data = BarangModel::where('barang_kode', $id)->get();
+            return response()->json([
+                'exists' => $data->count() > 0,
+                'data' => $data
+            ]);
+        }
+
         $data = BarangModel::leftJoin('tbl_jenisbarang', 'tbl_jenisbarang.jenisbarang_id', '=', 'tbl_barang.jenisbarang_id')->leftJoin('tbl_satuan', 'tbl_satuan.satuan_id', '=', 'tbl_barang.satuan_id')->leftJoin('tbl_merk', 'tbl_merk.merk_id', '=', 'tbl_barang.merk_id')->where('tbl_barang.barang_kode', '=', $id)->get();
         return json_encode($data);
     }
@@ -87,14 +96,14 @@ class BarangController extends Controller
                     }
 
                     $totalstok = $row->barang_stok + ($jmlmasuk - $jmlkeluar);
-                    if($totalstok == 0){
-                        $result = '<span class="">'.$totalstok.'</span>';
-                    }else if($totalstok > 0){
-                        $result = '<span class="text-success">'.$totalstok.'</span>';
-                    }else{
-                        $result = '<span class="text-danger">'.$totalstok.'</span>';
+                    if ($totalstok == 0) {
+                        $result = '<span class="">' . $totalstok . '</span>';
+                    } else if ($totalstok > 0) {
+                        $result = '<span class="text-success">' . $totalstok . '</span>';
+                    } else {
+                        $result = '<span class="text-danger">' . $totalstok . '</span>';
                     }
-                    
+
 
                     return $result;
                 })
@@ -104,7 +113,6 @@ class BarangController extends Controller
                         "jenisbarang_id" => $row->jenisbarang_id,
                         "satuan_id" => $row->satuan_id,
                         "merk_id" => $row->merk_id,
-                        "barang_id" => $row->barang_id,
                         "barang_kode" => $row->barang_kode,
                         "barang_nama" => trim(preg_replace('/[^A-Za-z0-9-]+/', '_', $row->barang_nama)),
                         "barang_harga" => $row->barang_harga,
@@ -200,14 +208,14 @@ class BarangController extends Controller
                     }
 
                     $totalstok = $row->barang_stok + ($jmlmasuk - $jmlkeluar);
-                    if($totalstok == 0){
-                        $result = '<span class="">'.$totalstok.'</span>';
-                    }else if($totalstok > 0){
-                        $result = '<span class="text-success">'.$totalstok.'</span>';
-                    }else{
-                        $result = '<span class="text-danger">'.$totalstok.'</span>';
+                    if ($totalstok == 0) {
+                        $result = '<span class="">' . $totalstok . '</span>';
+                    } else if ($totalstok > 0) {
+                        $result = '<span class="text-success">' . $totalstok . '</span>';
+                    } else {
+                        $result = '<span class="text-danger">' . $totalstok . '</span>';
                     }
-                    
+
 
                     return $result;
                 })
