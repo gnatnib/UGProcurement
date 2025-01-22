@@ -19,6 +19,7 @@ use App\Http\Controllers\Master\RoleController;
 use App\Http\Controllers\Master\UserController;
 use App\Http\Controllers\Admin\ApproveController;
 use App\Http\Controllers\Admin\RequestBarangController;
+use App\Http\Controllers\Admin\TrackingStatusController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -159,14 +160,24 @@ Route::group(['middleware' => 'userlogin'], function () {
             Route::get('/check-status', [RequestBarangController::class, 'checkRequestStatus'])->name('request-barang.check-status');
         });
     });
-    
 
+    //Approval Sidebar
     Route::middleware(['checkRoleUser:/approval,menu'])->group(function () {
         Route::prefix('admin/approval')->group(function () {
             Route::get('/', [ApproveController::class, 'index']);
             Route::get('/show', [ApproveController::class, 'show'])->name('approve.show');
             Route::get('/detail/{request_id}', [ApproveController::class, 'getDetail'])->name('approve.detail');
             Route::post('/bulk-update', [ApproveController::class, 'bulkUpdate'])->name('approve.bulk-update');
+        });
+    });
+
+    //Tracking Sidebar
+    Route::middleware(['checkRoleUser:/tracking,menu'])->group(function () {
+        Route::prefix('admin/tracking')->group(function () {
+            Route::get('/', [TrackingStatusController::class, 'index']);
+            Route::get('/show', [TrackingStatusController::class, 'show'])->name('tracking.show');
+            Route::get('/detail/{request_id}', [TrackingStatusController::class, 'getDetail'])->name('tracking.detail');
+            Route::post('/bulk-update', [TrackingStatusController::class, 'bulkUpdate'])->name('tracking.bulk-update');
         });
     });
 
