@@ -124,63 +124,63 @@
         });
 
         function showDetail(request_id) {
-    $('#current_request_id').val(request_id);
-    
-    $.get("{{ url('admin/approval/detail') }}/" + request_id, function(data) {
-        let html = '';
-        data.forEach(item => {
-            // Tentukan status badge berdasarkan approval dari database
-            let statusBadge = '';
-            if (item.approval === 'Approve') {
-                statusBadge = '<span class="badge bg-success">Disetujui</span>';
-            } else if (item.approval === 'Reject') {
-                statusBadge = '<span class="badge bg-danger">Ditolak</span>';
-            } else {
-                statusBadge = '<span class="badge bg-warning">Pending</span>';
-            }
+            $('#current_request_id').val(request_id);
+            
+            $.get("{{ url('admin/approval/detail') }}/" + request_id, function(data) {
+                let html = '';
+                data.forEach(item => {
+                    // Tentukan status badge berdasarkan approval dari database
+                    let statusBadge = '';
+                    if (item.approval === 'Approve') {
+                        statusBadge = '<span class="badge bg-success">Disetujui</span>';
+                    } else if (item.approval === 'Reject') {
+                        statusBadge = '<span class="badge bg-danger">Ditolak</span>';
+                    } else {
+                        statusBadge = '<span class="badge bg-warning">Pending</span>';
+                    }
 
-            // Tentukan apakah tombol action harus ditampilkan
-            let actionButtons = '';
-            if (!item.approval || item.approval === 'Pending') {
-                actionButtons = `
-                    <button class="btn btn-sm btn-success" onclick="setItemStatus(${item.bm_id}, 'Approve')">
-                        <i class="fe fe-check"></i>
-                    </button>
-                    <button class="btn btn-sm btn-danger" onclick="setItemStatus(${item.bm_id}, 'Reject')">
-                        <i class="fe fe-x"></i>
-                    </button>
-                `;
-            }
+                    // Tentukan apakah tombol action harus ditampilkan
+                    let actionButtons = '';
+                    if (!item.approval || item.approval === 'Pending') {
+                        actionButtons = `
+                            <button class="btn btn-sm btn-success" onclick="setItemStatus(${item.bm_id}, 'Approve')">
+                                <i class="fe fe-check"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="setItemStatus(${item.bm_id}, 'Reject')">
+                                <i class="fe fe-x"></i>
+                            </button>
+                        `;
+                    }
 
-            html += `
-                <tr id="row-${item.bm_id}">
-                    <td>${item.barang_kode}</td>
-                    <td>${item.barang_nama}</td>
-                    <td>${item.bm_jumlah}</td>
-                    <td>${item.divisi}</td>
-                    <td>${item.keterangan}</td>
-                    <td id="status-${item.bm_id}">
-                        ${statusBadge}
-                    </td>
-                    <td>
-                        ${actionButtons}
-                    </td>
-                </tr>
-            `;
-        });
-        $('#detail-content').html(html);
-        $('#modalDetail').modal('show');
+                    html += `
+                        <tr id="row-${item.bm_id}">
+                            <td>${item.barang_kode}</td>
+                            <td>${item.barang_nama}</td>
+                            <td>${item.bm_jumlah}</td>
+                            <td>${item.divisi}</td>
+                            <td>${item.keterangan}</td>
+                            <td id="status-${item.bm_id}">
+                                ${statusBadge}
+                            </td>
+                            <td>
+                                ${actionButtons}
+                            </td>
+                        </tr>
+                    `;
+                });
+                $('#detail-content').html(html);
+                $('#modalDetail').modal('show');
 
-        // Reset itemApprovals untuk request baru
-        itemApprovals = {};
-        
-        // Inisialisasi itemApprovals dengan status yang sudah ada
-        data.forEach(item => {
-            if (item.approval) {
-                itemApprovals[item.bm_id] = item.approval;
-            }
-        });
-    });
+                // Reset itemApprovals untuk request baru
+                itemApprovals = {};
+                
+                // Inisialisasi itemApprovals dengan status yang sudah ada
+                data.forEach(item => {
+                    if (item.approval) {
+                        itemApprovals[item.bm_id] = item.approval;
+                    }
+                });
+            });
 }
 
         // Object untuk menyimpan status approval per item
@@ -255,6 +255,7 @@
                     swal("Error!", "Terjadi kesalahan saat menyimpan data", "error");
                 }
             });
+            location.reload();
         }
 
         function setItemStatus(bm_id, status) {
