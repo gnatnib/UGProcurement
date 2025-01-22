@@ -245,9 +245,11 @@
                                 showDetail(request_id);
                             }, 500);
                         });
+                        
                     } else {
                         swal("Error!", response.message, "error");
                     }
+                    
                 },
                 error: function(xhr, status, error) {
                     console.error('Error:', {
@@ -257,7 +259,9 @@
                     });
                     swal("Error!", "Terjadi kesalahan saat menyimpan data", "error");
                 }
+                
             });
+           location.reload();
         }
 
         function setItemStatus(bm_id, status) {
