@@ -46,12 +46,18 @@ $appreance = AppreanceModel::where('user_id', '=', Session::get('user')->user_id
     <link href="{{ url('/assets/css/transparent-style.css') }}" rel="stylesheet">
     <link href="{{ url('/assets/css/skin-modes.css') }}" rel="stylesheet" />
 
-    <!-- CSS Bootstrap Datepicker -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" rel="stylesheet">
+    {{-- <!-- CSS Bootstrap Datepicker -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" rel="stylesheet">
 
-<!-- JS Bootstrap Datepicker -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+    <!-- JS Bootstrap Datepicker -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script> --}}
 
+    <!-- In the head section -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.0/dist/sweetalert2.min.css" rel="stylesheet">
+
+    <!-- Just before closing </body> tag, after jQuery but before your other scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.0/dist/sweetalert2.all.min.js"></script>
 
     <!--- FONT-ICONS CSS -->
     <link href="{{ url('/assets/css/icons.css') }}" rel="stylesheet" />

@@ -113,53 +113,89 @@ private function generateRequestCode() {
 }
 
 
+// public function store(Request $request)
+// {
+//     try {
+//         if (!Session::has('user')) {
+//             return response()->json([
+//                 'success' => false,
+//                 'message' => 'Silakan login terlebih dahulu'
+//             ], 401);
+//         }
+
+//         $user = Session::get('user');
+//         $requestCode = $this->generateRequestCode();
+
+//         // Insert header data dengan tanggal hari ini
+//         $inserted = DB::table('tbl_request_barang')->insert([
+//             'request_id' => $requestCode,
+//             'request_kode' => $requestCode,
+//             'request_tanggal' => now(), // Set tanggal hari ini
+//             'user_id' => $user->user_id,
+//             'departemen' => $user->departemen ?? 'DEFAULT',
+//             'status' => 'draft',
+//             'keterangan' => 'Request Barang Baru',
+//             'created_at' => now(),
+//             'updated_at' => now(),
+//         ]);
+
+//         DB::commit();
+        
+//         return response()->json([
+//             'success' => true,
+//             'message' => 'Request barang berhasil ditambahkan',
+//             'data' => ['request_kode' => $requestCode]
+//         ]);
+
+//     } catch (\Exception $e) {
+//         DB::rollback();
+//         Log::error('Error saat menyimpan request barang:', [
+//             'message' => $e->getMessage(),
+//             'trace' => $e->getTraceAsString()
+//         ]);
+        
+//         return response()->json([
+//             'success' => false,
+//             'message' => 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage()
+//         ], 500);
+//     }
+// }
+
 public function store(Request $request)
 {
     try {
-        if (!Session::has('user')) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Silakan login terlebih dahulu'
-            ], 401);
-        }
-
+        DB::beginTransaction();
+        
         $user = Session::get('user');
-        $requestCode = $this->generateRequestCode();
-
-        // Insert header data dengan tanggal hari ini
-        $inserted = DB::table('tbl_request_barang')->insert([
-            'request_id' => $requestCode,
-            'request_kode' => $requestCode,
-            'request_tanggal' => now(), // Set tanggal hari ini
+        $requestKode = 'REQ' . date('Ymd') . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
+        
+        DB::table('tbl_request_barang')->insert([
+            'request_id' => $requestKode,
             'user_id' => $user->user_id,
-            'departemen' => $user->departemen ?? 'DEFAULT',
+            'request_kode' => $requestKode,
+            'request_tanggal' => date('Y-m-d'),
+            'departemen' => 'Risk', // Or get from user's department
             'status' => 'draft',
             'keterangan' => 'Request Barang Baru',
             'created_at' => now(),
-            'updated_at' => now(),
+            'updated_at' => now()
         ]);
-
+        
         DB::commit();
         
         return response()->json([
             'success' => true,
-            'message' => 'Request barang berhasil ditambahkan',
-            'data' => ['request_kode' => $requestCode]
+            'message' => 'Request berhasil ditambahkan'
         ]);
-
     } catch (\Exception $e) {
         DB::rollback();
-        Log::error('Error saat menyimpan request barang:', [
-            'message' => $e->getMessage(),
-            'trace' => $e->getTraceAsString()
-        ]);
-        
         return response()->json([
             'success' => false,
-            'message' => 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage()
+            'message' => 'Error: ' . $e->getMessage()
         ], 500);
     }
 }
+
 public function getdata(Request $request)
 {
     if ($request->ajax()) {
@@ -168,27 +204,29 @@ public function getdata(Request $request)
         // Query dasar
         $query = DB::table('tbl_request_barang as r')
             ->leftJoin('tbl_user as u', 'u.user_id', '=', 'r.user_id')
-            ->select(
+            ->select([
                 'r.request_id',
                 'r.request_kode',
                 'r.request_tanggal',
                 'r.departemen',
                 'r.status',
-                'r.created_at'
-            );
+                'r.created_at',
+                DB::raw('(SELECT COUNT(1) FROM tbl_barangmasuk WHERE request_id = r.request_id) > 0 as has_barang_masuk')
+            ]);
 
         // Jika role_id = 5 (User), hanya tampilkan request miliknya
         if ($user->role_id == 5) {
             $query->where('r.user_id', $user->user_id);
         }
 
-        // Eksekusi query
-        $data = $query->orderBy('r.created_at', 'DESC')->get();
+        $query->orderBy('r.created_at', 'DESC');
 
-        return DataTables::of($data)
-            ->addIndexColumn()
+        return DataTables::of($query)
+            ->addColumn('DT_RowIndex', function ($row) {
+                return '';  // Will be automatically filled by DataTables
+            })
             ->addColumn('tanggal_format', function($row) {
-                return $row->request_tanggal ? date('d F Y', strtotime($row->request_tanggal)) : '-';
+                return date('d F Y', strtotime($row->request_tanggal));
             })
             ->addColumn('status', function($row) {
                 $badge = '';
@@ -211,15 +249,18 @@ public function getdata(Request $request)
             ->addColumn('action', function($row) use ($user) {
                 $button = '';
                 
-                // Jika role_id = 5, hanya bisa menghapus request miliknya yang masih draft
-                if ($user->role_id == 5) {
-                    if ($row->status == 'draft') {
+                // Only show delete button if:
+                // 1. There are no barang masuk records
+                // 2. Status is 'draft' for role_id = 5
+                if (!$row->has_barang_masuk) {
+                    if ($user->role_id == 5) {
+                        if ($row->status == 'draft') {
+                            $button = '<button onclick="deleteRequest(\''.$row->request_id.'\')" class="btn btn-sm btn-danger">Delete</button>';
+                        }
+                    } else {
                         $button = '<button onclick="deleteRequest(\''.$row->request_id.'\')" class="btn btn-sm btn-danger">Delete</button>';
+                        $button .= ' <button onclick="editRequest(\''.$row->request_id.'\')" class="btn btn-sm btn-primary">Edit</button>';
                     }
-                } else {
-                    // Untuk role selain user, bisa edit dan hapus semua request
-                    $button = '<button onclick="deleteRequest(\''.$row->request_id.'\')" class="btn btn-sm btn-danger">Delete</button>';
-                    $button .= ' <button onclick="editRequest(\''.$row->request_id.'\')" class="btn btn-sm btn-primary">Edit</button>';
                 }
                 
                 return $button;
@@ -228,6 +269,75 @@ public function getdata(Request $request)
             ->make(true);
     }
 }
+
+// public function getdata(Request $request)
+// {
+//     if ($request->ajax()) {
+//         $user = Session::get('user');
+
+//         // Query dasar
+//         $query = DB::table('tbl_request_barang as r')
+//             ->leftJoin('tbl_user as u', 'u.user_id', '=', 'r.user_id')
+//             ->select(
+//                 'r.request_id',
+//                 'r.request_kode',
+//                 'r.request_tanggal',
+//                 'r.departemen',
+//                 'r.status',
+//                 'r.created_at'
+//             );
+
+//         // Jika role_id = 5 (User), hanya tampilkan request miliknya
+//         if ($user->role_id == 5) {
+//             $query->where('r.user_id', $user->user_id);
+//         }
+
+//         // Eksekusi query
+//         $data = $query->orderBy('r.created_at', 'DESC')->get();
+
+//         return DataTables::of($data)
+//             ->addIndexColumn()
+//             ->addColumn('tanggal_format', function($row) {
+//                 return $row->request_tanggal ? date('d F Y', strtotime($row->request_tanggal)) : '-';
+//             })
+//             ->addColumn('status', function($row) {
+//                 $badge = '';
+//                 switch($row->status) {
+//                     case 'draft':
+//                         $badge = '<span class="badge bg-warning">Draft</span>';
+//                         break;
+//                     case 'pending':
+//                         $badge = '<span class="badge bg-info">Pending</span>';
+//                         break;
+//                     case 'approved':
+//                         $badge = '<span class="badge bg-success">Approved</span>';
+//                         break;
+//                     case 'rejected':
+//                         $badge = '<span class="badge bg-danger">Rejected</span>';
+//                         break;
+//                 }
+//                 return $badge;
+//             })
+//             ->addColumn('action', function($row) use ($user) {
+//                 $button = '';
+                
+//                 // Jika role_id = 5, hanya bisa menghapus request miliknya yang masih draft
+//                 if ($user->role_id == 5) {
+//                     if ($row->status == 'draft') {
+//                         $button = '<button onclick="deleteRequest(\''.$row->request_id.'\')" class="btn btn-sm btn-danger">Delete</button>';
+//                     }
+//                 } else {
+//                     // Untuk role selain user, bisa edit dan hapus semua request
+//                     $button = '<button onclick="deleteRequest(\''.$row->request_id.'\')" class="btn btn-sm btn-danger">Delete</button>';
+//                     $button .= ' <button onclick="editRequest(\''.$row->request_id.'\')" class="btn btn-sm btn-primary">Edit</button>';
+//                 }
+                
+//                 return $button;
+//             })
+//             ->rawColumns(['status', 'action'])
+//             ->make(true);
+//     }
+// }
 
     public function proses_tambah(Request $request)
     {
@@ -390,22 +500,46 @@ public function deleteItem(Request $request)
     }
 }
 
-
 public function delete(Request $request)
 {
     try {
         DB::beginTransaction();
-
-        DB::table('tbl_request_barang')
-            ->where('request_id', $request->request_id)
-            ->where('user_id', auth()->user()->user_id)
+        
+        $requestId = $request->request_id;
+        
+        // Check if there are any barang masuk records
+        $hasBarangMasuk = DB::table('tbl_barangmasuk')
+            ->where('request_id', $requestId)
+            ->exists();
+            
+        if ($hasBarangMasuk) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak dapat menghapus request karena memiliki data barang masuk!'
+            ], 400);
+        }
+        
+        // If no barang masuk records exist, proceed with deletion
+        $deleted = DB::table('tbl_request_barang')
+            ->where('request_id', $requestId)
             ->delete();
-
+            
+        if (!$deleted) {
+            throw new \Exception('Request tidak ditemukan');
+        }
+            
         DB::commit();
-        return response()->json(['success' => true]);
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Request berhasil dihapus'
+        ]);
     } catch (\Exception $e) {
         DB::rollback();
-        return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        return response()->json([
+            'success' => false,
+            'message' => 'Error: ' . $e->getMessage()
+        ], 500);
     }
 }
 
@@ -452,4 +586,42 @@ public function getBarang(Request $request)
     }
 }
 
+public function checkRequestStatus()
+{
+    try {
+        $user = Session::get('user');
+        
+        // Get user's latest request status
+        $latestRequest = DB::table('tbl_request_barang')
+            ->where('user_id', $user->user_id)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if (!$latestRequest) {
+            // If no requests exist, allow creating new request
+            return response()->json([
+                'success' => true,
+                'can_create_request' => true,
+                'can_add_barang' => false,
+                'message' => null
+            ]);
+        }
+
+        // Check if status is draft or pending
+        $isPendingOrDraft = in_array($latestRequest->status, ['draft', 'pending']);
+        
+        return response()->json([
+            'success' => true,
+            'can_create_request' => !$isPendingOrDraft,
+            'can_add_barang' => true,
+            'current_status' => $latestRequest->status,
+            'message' => $isPendingOrDraft ? 'Anda masih memiliki request yang belum selesai' : null
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Terjadi kesalahan saat memeriksa status'
+        ], 500);
+    }
+}
 }

@@ -154,11 +154,12 @@ Route::group(['middleware' => 'userlogin'], function () {
             Route::get('/show', [RequestBarangController::class, 'show'])->name('request-barang.show');
             Route::post('/store', [RequestBarangController::class, 'store'])->name('request-barang.store');
             Route::get('/detail/{id}', [RequestBarangController::class, 'detail'])->name('request-barang.detail');
-            // Ubah method delete menjadi DELETE
             Route::delete('/delete', [RequestBarangController::class, 'delete'])->name('request-barang.delete');
             Route::get('/getbarang', [RequestBarangController::class, 'getBarang'])->name('request-barang.getbarang');
+            Route::get('/check-status', [RequestBarangController::class, 'checkRequestStatus'])->name('request-barang.check-status');
         });
     });
+    
 
     Route::middleware(['checkRoleUser:/approval,menu'])->group(function () {
         Route::prefix('admin/approval')->group(function () {
