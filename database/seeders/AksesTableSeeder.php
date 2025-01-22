@@ -37,6 +37,9 @@ class AksesTableSeeder extends Seeder
 
         //Part 9: Approval Permissions
         $this->seedApprovalPermissions();
+
+        //Part 10: Tracking Status Permissions for HCGA
+        $this->seedTrackingStatusPermissions();
     }
 
     private function seedDashboardPermissions()
@@ -45,28 +48,28 @@ class AksesTableSeeder extends Seeder
         foreach ($roles as $role_id) {
             DB::table('tbl_akses')->insert([
                 [
-                    'menu_id' => '1667444041',
+                    'menu_id' => '1',
                     'role_id' => $role_id,
                     'akses_type' => 'view',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
                 ],
                 [
-                    'menu_id' => '1667444041',
+                    'menu_id' => '1',
                     'role_id' => $role_id,
                     'akses_type' => 'create',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
                 ],
                 [
-                    'menu_id' => '1667444041',
+                    'menu_id' => '1',
                     'role_id' => $role_id,
                     'akses_type' => 'update',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
                 ],
                 [
-                    'menu_id' => '1667444041',
+                    'menu_id' => '1',
                     'role_id' => $role_id,
                     'akses_type' => 'delete',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
@@ -82,28 +85,28 @@ class AksesTableSeeder extends Seeder
         foreach ($roles as $role_id) {
             DB::table('tbl_akses')->insert([
                 [
-                    'menu_id' => '1675123456', // Sesuaikan dengan menu_id yang dibuat sebelumnya
+                    'menu_id' => '4', // Sesuaikan dengan menu_id yang dibuat sebelumnya
                     'role_id' => $role_id,
                     'akses_type' => 'view',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
                 ],
                 [
-                    'menu_id' => '1675123456',
+                    'menu_id' => '4',
                     'role_id' => $role_id,
                     'akses_type' => 'create',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
                 ],
                 [
-                    'menu_id' => '1675123456',
+                    'menu_id' => '4',
                     'role_id' => $role_id,
                     'akses_type' => 'update',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
                 ],
                 [
-                    'menu_id' => '1675123456',
+                    'menu_id' => '4',
                     'role_id' => $role_id,
                     'akses_type' => 'delete',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
@@ -119,28 +122,28 @@ class AksesTableSeeder extends Seeder
         foreach ($roles as $role_id) {
             DB::table('tbl_akses')->insert([
                 [
-                    'menu_id' => '1668509889',
+                    'menu_id' => '2',
                     'role_id' => $role_id,
                     'akses_type' => 'view',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
                 ],
                 [
-                    'menu_id' => '1668509889',
+                    'menu_id' => '2',
                     'role_id' => $role_id,
                     'akses_type' => 'create',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
                 ],
                 [
-                    'menu_id' => '1668509889',
+                    'menu_id' => '2',
                     'role_id' => $role_id,
                     'akses_type' => 'update',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
                 ],
                 [
-                    'menu_id' => '1668509889',
+                    'menu_id' => '2',
                     'role_id' => $role_id,
                     'akses_type' => 'delete',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
@@ -152,32 +155,32 @@ class AksesTableSeeder extends Seeder
 
     private function seedCustomerPermissions()
     {
-        $roles = [1, 2, 3, 4, 5];
+        $roles = [];
         foreach ($roles as $role_id) {
             DB::table('tbl_akses')->insert([
                 [
-                    'menu_id' => '1669390641',
+                    'menu_id' => '8',
                     'role_id' => $role_id,
                     'akses_type' => 'view',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
                 ],
                 [
-                    'menu_id' => '1669390641',
+                    'menu_id' => '8',
                     'role_id' => $role_id,
                     'akses_type' => 'create',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
                 ],
                 [
-                    'menu_id' => '1669390641',
+                    'menu_id' => '8',
                     'role_id' => $role_id,
                     'akses_type' => 'update',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
                 ],
                 [
-                    'menu_id' => '1669390641',
+                    'menu_id' => '8',
                     'role_id' => $role_id,
                     'akses_type' => 'delete',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
@@ -193,28 +196,28 @@ class AksesTableSeeder extends Seeder
         foreach ($roles as $role_id) {
             DB::table('tbl_akses')->insert([
                 [
-                    'menu_id' => '1668510437',
+                    'menu_id' => '3',
                     'role_id' => $role_id,
                     'akses_type' => 'view',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
                 ],
                 [
-                    'menu_id' => '1668510437',
+                    'menu_id' => '3',
                     'role_id' => $role_id,
                     'akses_type' => 'create',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
                 ],
                 [
-                    'menu_id' => '1668510437',
+                    'menu_id' => '3',
                     'role_id' => $role_id,
                     'akses_type' => 'update',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
                 ],
                 [
-                    'menu_id' => '1668510437',
+                    'menu_id' => '3',
                     'role_id' => $role_id,
                     'akses_type' => 'delete',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
@@ -230,28 +233,28 @@ class AksesTableSeeder extends Seeder
         foreach ($roles as $role_id) {
             DB::table('tbl_akses')->insert([
                 [
-                    'menu_id' => '1668510568',
+                    'menu_id' => '7',
                     'role_id' => $role_id,
                     'akses_type' => 'view',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
                 ],
                 [
-                    'menu_id' => '1668510568',
+                    'menu_id' => '7',
                     'role_id' => $role_id,
                     'akses_type' => 'create',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
                 ],
                 [
-                    'menu_id' => '1668510568',
+                    'menu_id' => '7',
                     'role_id' => $role_id,
                     'akses_type' => 'update',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
                 ],
                 [
-                    'menu_id' => '1668510568',
+                    'menu_id' => '7',
                     'role_id' => $role_id,
                     'akses_type' => 'delete',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
@@ -356,28 +359,65 @@ class AksesTableSeeder extends Seeder
         foreach ($roles as $role_id) {
             DB::table('tbl_akses')->insert([
                 [
-                    'menu_id' => '1675199999', // Sesuaikan dengan menu_id yang dibuat sebelumnya
+                    'menu_id' => '5', // Sesuaikan dengan menu_id yang dibuat sebelumnya
                     'role_id' => $role_id,
                     'akses_type' => 'view',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
                 ],
                 [
-                    'menu_id' => '1675199999',
+                    'menu_id' => '5',
                     'role_id' => $role_id,
                     'akses_type' => 'create',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
                 ],
                 [
-                    'menu_id' => '1675199999',
+                    'menu_id' => '5',
                     'role_id' => $role_id,
                     'akses_type' => 'update',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
                 ],
                 [
-                    'menu_id' => '1675199999',
+                    'menu_id' => '5',
+                    'role_id' => $role_id,
+                    'akses_type' => 'delete',
+                    'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+                ]
+            ]);
+        }
+    }
+
+    private function seedTrackingStatusPermissions()
+    {
+        $roles = [1]; //Hanya untuk HCGA (Superadmin)
+        foreach ($roles as $role_id) {
+            DB::table('tbl_akses')->insert([
+                [
+                    'menu_id' => '6',
+                    'role_id' => $role_id,
+                    'akses_type' => 'view',
+                    'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+                ],
+                [
+                    'menu_id' => '6',
+                    'role_id' => $role_id,
+                    'akses_type' => 'create',
+                    'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+                ],
+                [
+                    'menu_id' => '6',
+                    'role_id' => $role_id,
+                    'akses_type' => 'update',
+                    'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+                ],
+                [
+                    'menu_id' => '6',
                     'role_id' => $role_id,
                     'akses_type' => 'delete',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),

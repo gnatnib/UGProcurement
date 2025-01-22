@@ -18,7 +18,7 @@ class MenuTableSeeder extends Seeder
     {
         DB::table('tbl_menu')->insert([
             [
-                'menu_id' => '1667444041',
+                'menu_id' => '1',
                 'menu_judul' => 'Dashboard',
                 'menu_slug' => 'dashboard',
                 'menu_icon' => 'home',
@@ -29,7 +29,7 @@ class MenuTableSeeder extends Seeder
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
             [
-                'menu_id' => '1668509889',
+                'menu_id' => '2',
                 'menu_judul' => 'Master Barang',
                 'menu_slug' => 'master-barang',
                 'menu_icon' => 'package',
@@ -40,7 +40,7 @@ class MenuTableSeeder extends Seeder
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
             [
-                'menu_id' => '1668510437',
+                'menu_id' => '3',
                 'menu_judul' => 'Transaksi',
                 'menu_slug' => 'transaksi',
                 'menu_icon' => 'repeat',
@@ -51,7 +51,7 @@ class MenuTableSeeder extends Seeder
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
             [
-                'menu_id' => '1675123456', // Menu ID baru dengan timestamp yang berbeda
+                'menu_id' => '4', // Menu ID baru dengan timestamp yang berbeda
                 'menu_judul' => 'Request Barang',
                 'menu_slug' => 'request-barang',
                 'menu_icon' => 'shopping-cart', // Menggunakan icon yang sesuai
@@ -62,7 +62,7 @@ class MenuTableSeeder extends Seeder
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
             [
-                'menu_id' => '1675199999', // Menu ID baru dengan timestamp yang berbeda
+                'menu_id' => '5', // Menu ID baru dengan timestamp yang berbeda
                 'menu_judul' => 'Approval',
                 'menu_slug' => 'approval',
                 'menu_icon' => 'check-square', // Menggunakan icon yang sesuai
@@ -73,7 +73,18 @@ class MenuTableSeeder extends Seeder
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
             [
-                'menu_id' => '1668510568',
+                'menu_id' => '6', // Menu ID baru dengan timestamp yang berbeda
+                'menu_judul' => 'Tracking Status',
+                'menu_slug' => 'tracking-status',
+                'menu_icon' => 'truck', // Menggunakan icon yang sesuai
+                'menu_redirect' => '/tracking',
+                'menu_sort' => '1',
+                'menu_type' => '1', // Tipe 1 untuk menu langsung
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+            ],
+            [
+                'menu_id' => '7',
                 'menu_judul' => 'Laporan',
                 'menu_slug' => 'laporan',
                 'menu_icon' => 'printer',
@@ -84,7 +95,7 @@ class MenuTableSeeder extends Seeder
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
             [
-                'menu_id' => '1669390641',
+                'menu_id' => '8',
                 'menu_judul' => 'Customer',
                 'menu_slug' => 'customer',
                 'menu_icon' => 'user',

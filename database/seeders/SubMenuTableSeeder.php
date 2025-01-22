@@ -19,7 +19,7 @@ class SubMenuTableSeeder extends Seeder
         DB::table('tbl_submenu')->insert([
             [
                 'submenu_id' => 9,
-                'menu_id' => '1668510437',
+                'menu_id' => '3',
                 'submenu_judul' => 'Barang Masuk',
                 'submenu_slug' => 'barang-masuk',
                 'submenu_redirect' => '/barang-masuk',
@@ -29,7 +29,7 @@ class SubMenuTableSeeder extends Seeder
             ],
             [
                 'submenu_id' => 10,
-                'menu_id' => '1668510437',
+                'menu_id' => '3',
                 'submenu_judul' => 'Barang Keluar',
                 'submenu_slug' => 'barang-keluar',
                 'submenu_redirect' => '/barang-keluar',
@@ -39,7 +39,7 @@ class SubMenuTableSeeder extends Seeder
             ],
             [
                 'submenu_id' => 11,
-                'menu_id' => '1668510437',
+                'menu_id' => '3',
                 'submenu_judul' => 'Approval',
                 'submenu_slug' => 'approve',
                 'submenu_redirect' => '/approve',
@@ -49,7 +49,7 @@ class SubMenuTableSeeder extends Seeder
             ],
             [
                 'submenu_id' => 17,
-                'menu_id' => '1668509889',
+                'menu_id' => '2',
                 'submenu_judul' => 'Jenis',
                 'submenu_slug' => 'jenis',
                 'submenu_redirect' => '/jenisbarang',
@@ -59,7 +59,7 @@ class SubMenuTableSeeder extends Seeder
             ],
             [
                 'submenu_id' => 18,
-                'menu_id' => '1668509889',
+                'menu_id' => '2',
                 'submenu_judul' => 'Satuan',
                 'submenu_slug' => 'satuan',
                 'submenu_redirect' => '/satuan',
@@ -69,7 +69,7 @@ class SubMenuTableSeeder extends Seeder
             ],
             [
                 'submenu_id' => 19,
-                'menu_id' => '1668509889',
+                'menu_id' => '2',
                 'submenu_judul' => 'Merk',
                 'submenu_slug' => 'merk',
                 'submenu_redirect' => '/merk',
@@ -79,7 +79,7 @@ class SubMenuTableSeeder extends Seeder
             ],
             [
                 'submenu_id' => 20,
-                'menu_id' => '1668509889',
+                'menu_id' => '2',
                 'submenu_judul' => 'Barang',
                 'submenu_slug' => 'barang',
                 'submenu_redirect' => '/barang',
@@ -89,7 +89,7 @@ class SubMenuTableSeeder extends Seeder
             ],
             [
                 'submenu_id' => 21,
-                'menu_id' => '1668510568',
+                'menu_id' => '7',
                 'submenu_judul' => 'Lap Barang Masuk',
                 'submenu_slug' => 'lap-barang-masuk',
                 'submenu_redirect' => '/lap-barang-masuk',
@@ -99,7 +99,7 @@ class SubMenuTableSeeder extends Seeder
             ],
             [
                 'submenu_id' => 22,
-                'menu_id' => '1668510568',
+                'menu_id' => '7',
                 'submenu_judul' => 'Lap Barang Keluar',
                 'submenu_slug' => 'lap-barang-keluar',
                 'submenu_redirect' => '/lap-barang-keluar',
@@ -109,7 +109,7 @@ class SubMenuTableSeeder extends Seeder
             ],
             [
                 'submenu_id' => 23,
-                'menu_id' => '1668510568',
+                'menu_id' => '7',
                 'submenu_judul' => 'Lap Stok Barang',
                 'submenu_slug' => 'lap-stok-barang',
                 'submenu_redirect' => '/lap-stok-barang',
@@ -119,7 +119,7 @@ class SubMenuTableSeeder extends Seeder
             ],
             [
                 'submenu_id' => 24, // ID berikutnya setelah 23
-                'menu_id' => '1675123456', // Sesuai menu_id Request Barang
+                'menu_id' => '4', // Sesuai menu_id Request Barang
                 'submenu_judul' => 'Request Barang',
                 'submenu_slug' => 'request-barang',
                 'submenu_redirect' => '/admin/request-barang',
