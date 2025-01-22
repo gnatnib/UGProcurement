@@ -124,12 +124,35 @@
         });
 
         function showDetail(request_id) {
-            $('#current_request_id').val(request_id); // Simpan request_id
+    $('#current_request_id').val(request_id);
+    
+    $.get("{{ url('admin/approval/detail') }}/" + request_id, function(data) {
+        let html = '';
+        data.forEach(item => {
+            // Tentukan status badge berdasarkan approval dari database
+            let statusBadge = '';
+            if (item.approval === 'Approve') {
+                statusBadge = '<span class="badge bg-success">Disetujui</span>';
+            } else if (item.approval === 'Reject') {
+                statusBadge = '<span class="badge bg-danger">Ditolak</span>';
+            } else {
+                statusBadge = '<span class="badge bg-warning">Pending</span>';
+            }
 
-            $.get("{{ url('admin/approval/detail') }}/" + request_id, function(data) {
-                let html = '';
-                data.forEach(item => {
-                    html += `
+            // Tentukan apakah tombol action harus ditampilkan
+            let actionButtons = '';
+            if (!item.approval || item.approval === 'Pending') {
+                actionButtons = `
+                    <button class="btn btn-sm btn-success" onclick="setItemStatus(${item.bm_id}, 'Approve')">
+                        <i class="fe fe-check"></i>
+                    </button>
+                    <button class="btn btn-sm btn-danger" onclick="setItemStatus(${item.bm_id}, 'Reject')">
+                        <i class="fe fe-x"></i>
+                    </button>
+                `;
+            }
+
+            html += `
                 <tr id="row-${item.bm_id}">
                     <td>${item.barang_kode}</td>
                     <td>${item.barang_nama}</td>
@@ -137,23 +160,28 @@
                     <td>${item.divisi}</td>
                     <td>${item.keterangan}</td>
                     <td id="status-${item.bm_id}">
-                        <span class="badge bg-warning">Pending</span>
+                        ${statusBadge}
                     </td>
                     <td>
-                        <button class="btn btn-sm btn-success" onclick="setItemStatus(${item.bm_id}, 'Approve')">
-                            <i class="fe fe-check"></i>
-                        </button>
-                        <button class="btn btn-sm btn-danger" onclick="setItemStatus(${item.bm_id}, 'Reject')">
-                            <i class="fe fe-x"></i>
-                        </button>
+                        ${actionButtons}
                     </td>
                 </tr>
             `;
-                });
-                $('#detail-content').html(html);
-                $('#modalDetail').modal('show');
-            });
-        }
+        });
+        $('#detail-content').html(html);
+        $('#modalDetail').modal('show');
+
+        // Reset itemApprovals untuk request baru
+        itemApprovals = {};
+        
+        // Inisialisasi itemApprovals dengan status yang sudah ada
+        data.forEach(item => {
+            if (item.approval) {
+                itemApprovals[item.bm_id] = item.approval;
+            }
+        });
+    });
+}
 
         // Object untuk menyimpan status approval per item
         let itemApprovals = {};
