@@ -89,7 +89,7 @@ class ApproveController extends Controller
             ->select('bm.*', 'b.barang_nama')
             ->where('bm.request_id', $request_id)
             ->get();
-
+    
         return response()->json($detail);
     }
 
