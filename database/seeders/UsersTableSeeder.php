@@ -103,7 +103,7 @@ class UsersTableSeeder extends Seeder
             ],
             [
                 'user_id' => 7,
-                'role_id' => '5',
+                'role_id' => '5', //User
                 'user_nmlengkap' => 'rsc1',
                 'user_nama' => 'rsc1',
                 'user_email' => 'rsc1@gmail.com',
