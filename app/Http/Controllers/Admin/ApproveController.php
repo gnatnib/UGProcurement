@@ -154,65 +154,52 @@ class ApproveController extends Controller
     }
 
     public function bulkUpdate(Request $request)
-    {
-        try {
-            // Debug log
-            Log::info('Received approval data:', [
-                'request_id' => $request->request_id,
-                'approvals' => $request->approvals
-            ]);
-    
-            DB::beginTransaction();
-            
-            // Validasi data
-            if (empty($request->request_id) || empty($request->approvals)) {
-                throw new \Exception('Data tidak lengkap');
-            }
-    
-            foreach ($request->approvals as $bm_id => $status) {
-                Log::info('Updating barang masuk:', [
-                    'bm_id' => $bm_id,
-                    'status' => $status
-                ]);
-    
-                $updated = DB::table('tbl_barangmasuk')
-                    ->where('bm_id', $bm_id)
-                    ->update([
-                        'approval' => $status,
-                        'updated_at' => now()
-                    ]);
-    
-                Log::info('Update result:', ['updated' => $updated]);
-            }
-    
-            // Update status request menjadi Approve
-            $updated = DB::table('tbl_request_barang')
-                ->where('request_id', $request->request_id)
+{
+    try {
+        DB::beginTransaction();
+        
+        // Validasi data
+        if (empty($request->request_id) || empty($request->approvals)) {
+            throw new \Exception('Data tidak lengkap');
+        }
+
+        // Update barangmasuk records
+        foreach ($request->approvals as $bm_id => $status) {
+            $updated = DB::table('tbl_barangmasuk')
+                ->where('bm_id', $bm_id)
                 ->update([
-                    'status' => 'approved',
+                    'approval' => $status,
+                    'tracking_status' => $status === 'Approve' ? 'Diproses' : 'Ditolak',
                     'updated_at' => now()
                 ]);
-    
-            Log::info('Request update result:', ['updated' => $updated]);
-    
-            DB::commit();
-            
-            return response()->json([
-                'success' => true,
-                'message' => 'Status approval berhasil diupdate'
-            ]);
-    
-        } catch (\Exception $e) {
-            DB::rollback();
-            Log::error('Error in bulkUpdate:', [
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
-            ], 500);
         }
+
+        // Update request status to 'Diproses' instead of 'approved'
+        $updated = DB::table('tbl_request_barang')
+            ->where('request_id', $request->request_id)
+            ->update([
+                'status' => 'Diproses', // Changed from 'approved' to 'Diproses'
+                'updated_at' => now()
+            ]);
+
+        DB::commit();
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Status approval berhasil diupdate'
+        ]);
+
+    } catch (\Exception $e) {
+        DB::rollback();
+        Log::error('Error in bulkUpdate:', [
+            'message' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+        return response()->json([
+            'success' => false,
+            'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+        ], 500);
     }
+}
 
 }
