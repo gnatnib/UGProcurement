@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('request_kode');
             $table->date('request_tanggal');
             $table->string('departemen');
-            $table->enum('status', ['draft', 'pending', 'approved', 'rejected'])->default('draft');
+            $table->enum('status', ['draft', 'pending', 'approved', 'rejected', 'Diproses', 'Dikirim', 'Diterima'])->default('draft');
             $table->string('keterangan')->nullable();
             $table->timestamps();
         

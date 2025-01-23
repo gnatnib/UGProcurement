@@ -175,13 +175,17 @@
         //Tracking Sidebar
         Route::middleware(['checkRoleUser:/tracking,menu'])->group(function () {
             Route::prefix('admin/tracking')->group(function () {
+                // Route yang sudah ada
                 Route::get('/', [TrackingStatusController::class, 'index']);
                 Route::get('/show', [TrackingStatusController::class, 'show'])->name('tracking.show');
                 Route::get('/detail/{request_id}', [TrackingStatusController::class, 'getDetail'])->name('tracking.detail');
                 Route::post('/bulk-update', [TrackingStatusController::class, 'bulkUpdate'])->name('tracking.bulk-update');
+                
+                // Route baru yang perlu ditambahkan untuk handling status tracking
+                Route::post('/update-status', [TrackingStatusController::class, 'updateStatus'])->name('tracking.update-status');
+                Route::get('/get-status/{request_id}', [TrackingStatusController::class, 'getStatus'])->name('tracking.get-status');
             });
         });
-
 
         Route::middleware(['checkRoleUser:1,othermenu'])->group(function () {
 

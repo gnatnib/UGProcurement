@@ -27,72 +27,86 @@ class TrackingStatusController extends Controller
     {
         if ($request->ajax()) {
             $user = Session::get('user');
-
-            // Query untuk mendapatkan request yang perlu diapprove
-            $data = DB::table('tbl_barangmasuk as bm')
-                ->join('tbl_user as creator', 'creator.user_id', '=', 'bm.user_id')
-                ->join('tbl_request_barang as r', 'r.request_id', '=', 'bm.request_id')
-                ->select(
-                    'r.request_id',
-                    'r.request_tanggal',
-                    'r.request_kode',
-                    'creator.divisi',
-                    'creator.departemen',
-                    'r.status'
-                )
-                ->where([
-                    ['creator.divisi', 'LIKE', trim($user->divisi)],
-                    ['creator.departemen', '=', $user->departemen]
-                ])
-                ->groupBy('r.request_id', 'r.request_tanggal', 'r.request_kode', 'creator.divisi', 'creator.departemen', 'r.status')
-                ->orderBy('r.request_tanggal', 'DESC')
-                ->get();
-
-            return DataTables::of($data)
-                ->addIndexColumn()
-                ->addColumn('tanggal_format', function ($row) {
-                    return Carbon::parse($row->request_tanggal)->format('d/m/Y');
-                })
-                ->addColumn('status_badge', function ($row) {
-                    switch ($row->status) {
-                        case 'Diproses':
-                            return '<span class="badge bg-warning">Diproses</span>';
-                        case 'Dikirim':
-                            return '<span class="badge bg-info">Dikirim</span>';
-                        case 'Diterima':
-                            return '<span class="badge bg-success">Diterima</span>';
-                        case 'pending':
-                        case null:
-                            return '<span class="badge bg-secondary">Pending</span>';
-                        default:
-                            return '<span class="badge bg-secondary">-</span>';
-                    }
-                })
-                ->addColumn('action', function ($row) {
-                    // Untuk requests yang belum disetujui/ditolak
-                    if ($row->status != 'approved' && $row->status != 'rejected') {
-                        return '<button class="btn btn-success btn-sm" onclick="showDetail(\'' . $row->request_id . '\')">
+            
+            try {
+                $data = DB::table('tbl_barangmasuk as bm')
+                    ->join('tbl_user as creator', 'creator.user_id', '=', 'bm.user_id')
+                    ->join('tbl_request_barang as r', 'r.request_id', '=', 'bm.request_id')
+                    ->select(
+                        'r.request_id',
+                        'r.request_tanggal',
+                        'r.request_kode',
+                        'creator.divisi',
+                        'creator.departemen',
+                        'r.status'
+                    )
+                    ->whereIn('r.status', ['Diproses', 'Dikirim', 'Diterima']) // Ubah ini untuk menampilkan semua status
+                    ->groupBy('r.request_id', 'r.request_tanggal', 'r.request_kode', 'creator.divisi', 'creator.departemen', 'r.status')
+                    ->get();
+    
+                return DataTables::of($data)
+                    ->addIndexColumn()
+                    ->addColumn('tanggal_format', function($row) {
+                        return date('d/m/Y', strtotime($row->request_tanggal));
+                    })
+                    ->addColumn('status_badge', function($row) {
+                        switch ($row->status) {
+                            case 'Diproses':
+                                return '<span class="badge bg-warning">Sedang Diproses</span>';
+                            case 'Dikirim':
+                                return '<span class="badge bg-info">Sedang Dikirim</span>';
+                            case 'Diterima':
+                                return '<span class="badge bg-success">Selesai</span>';
+                            default:
+                                return '<span class="badge bg-secondary">Menunggu Proses</span>';
+                        }
+                    })
+                    ->addColumn('action', function($row) {
+                        return '<button class="btn btn-primary btn-sm" onclick="showDetail(\''.$row->request_id.'\')">
                                 <i class="fe fe-eye"></i> Detail
                                </button>';
-                    }
-                    // Untuk requests yang sudah disetujui/ditolak
-                    return '<button class="btn btn-info btn-sm" onclick="showDetail(\'' . $row->request_id . '\')">
-                            <i class="fe fe-eye"></i> Detail
-                           </button>';
-                })
-                ->rawColumns(['action', 'status_badge'])
-                ->make(true);
+                    })
+                    ->rawColumns(['status_badge', 'action'])
+                    ->make(true);
+                    
+            } catch (\Exception $e) {
+                Log::error('Error in tracking show:', [
+                    'message' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+                
+                return response()->json([
+                    'error' => true,
+                    'message' => $e->getMessage()
+                ], 500);
+            }
         }
+        
+        return abort(404);
     }
 
     public function getDetail($request_id)
     {
         $detail = DB::table('tbl_barangmasuk as bm')
             ->join('tbl_barang as b', 'b.barang_kode', '=', 'bm.barang_kode')
-            ->select('bm.*', 'b.barang_nama', 'bm.tracking_status')
-            ->where('bm.request_id', $request_id)
+            ->join('tbl_request_barang as r', 'r.request_id', '=', 'bm.request_id')
+            ->select(
+                'bm.bm_id',
+                'bm.barang_kode',
+                'b.barang_nama',
+                'bm.bm_jumlah',
+                'bm.divisi',
+                'bm.keterangan',
+                'bm.tracking_status',
+                'bm.approval',
+                'r.status as request_status'
+            )
+            ->where([
+                ['bm.request_id', '=', $request_id],
+                ['bm.approval', '=', 'Approve'] // Tambahkan filter ini
+            ])
             ->get();
-
+    
         return response()->json($detail);
     }
 
@@ -164,11 +178,11 @@ class TrackingStatusController extends Controller
     {
         try {
             DB::beginTransaction();
-
+    
             if (empty($request->request_id) || empty($request->approvals)) {
                 throw new \Exception('Data tidak lengkap');
             }
-
+    
             // Update individual items
             foreach ($request->approvals as $bm_id => $status) {
                 DB::table('tbl_barangmasuk')
@@ -178,18 +192,35 @@ class TrackingStatusController extends Controller
                         'updated_at' => now()
                     ]);
             }
-
-            // Get the most recent status to update the main request
-            $latestStatus = collect($request->approvals)->last();
-
+    
+            // Cek status semua item dalam request
+            $allItems = DB::table('tbl_barangmasuk')
+                ->where('request_id', $request->request_id)
+                ->where('approval', 'Approve')
+                ->pluck('tracking_status');
+    
+            // Tentukan status request berdasarkan status item
+            if ($allItems->every(function($status) { return $status === 'Diterima'; })) {
+                $newStatus = 'Diterima';
+            } elseif ($allItems->contains('Dikirim')) {
+                $newStatus = 'Dikirim';
+            } elseif ($allItems->contains('Diproses')) {
+                $newStatus = 'Diproses';
+            } else {
+                // Biarkan status request tetap sama
+                $newStatus = DB::table('tbl_request_barang')
+                    ->where('request_id', $request->request_id)
+                    ->value('status');
+            }
+    
             // Update request status
             DB::table('tbl_request_barang')
                 ->where('request_id', $request->request_id)
                 ->update([
-                    'status' => $latestStatus,
+                    'status' => $newStatus,
                     'updated_at' => now()
                 ]);
-
+    
             DB::commit();
             return response()->json([
                 'success' => true,
@@ -207,4 +238,64 @@ class TrackingStatusController extends Controller
             ], 500);
         }
     }
+    public function updateStatus(Request $request)
+{
+    try {
+        DB::beginTransaction();
+
+        // Update status barang
+        DB::table('tbl_barangmasuk')
+            ->where('bm_id', $request->bm_id)
+            ->update([
+                'tracking_status' => $request->status,
+                'updated_at' => now()
+            ]);
+
+        // Get request_id
+        $barangMasuk = DB::table('tbl_barangmasuk')
+            ->where('bm_id', $request->bm_id)
+            ->first();
+
+        // Update status request berdasarkan status semua item
+        $allItems = DB::table('tbl_barangmasuk')
+            ->where('request_id', $barangMasuk->request_id)
+            ->pluck('tracking_status');
+
+        // Tentukan status request
+        if ($allItems->every(function($status) { return $status === 'Diterima'; })) {
+            $newStatus = 'Diterima';
+        } elseif ($allItems->contains('Dikirim')) {
+            $newStatus = 'Dikirim';
+        } elseif ($allItems->contains('Diproses')) {
+            $newStatus = 'Diproses';
+        } else {
+            $newStatus = 'approved';
+        }
+
+        // Update request
+        DB::table('tbl_request_barang')
+            ->where('request_id', $barangMasuk->request_id)
+            ->update([
+                'status' => $newStatus,
+                'updated_at' => now()
+            ]);
+
+        DB::commit();
+        return response()->json([
+            'success' => true,
+            'message' => 'Status berhasil diupdate'
+        ]);
+    } catch (\Exception $e) {
+        DB::rollback();
+        Log::error('Error in updateStatus:', [
+            'message' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+        return response()->json([
+            'success' => false,
+            'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+        ], 500);
+    }
+}
+
 }

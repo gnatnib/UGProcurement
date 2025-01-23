@@ -17,7 +17,7 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header justify-content-between">
-                    <h3 class="card-title">Data Approval Request</h3>
+                    <h3 class="card-title">Data Tracking Status</h3>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -46,7 +46,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Detail Request Barang</h5>
+                    <h5 class="modal-title">Detail Status Tracking</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -69,7 +69,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-red" data-bs-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                     <button type="button" class="btn btn-primary" onclick="simpanApproval()">Simpan Status</button>
                 </div>
             </div>
@@ -78,21 +78,27 @@
 @endsection
 
 @section('scripts')
-    <script>
+<script>
+    $(document).ready(function() {
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
 
-        var table = $('#table-1').DataTable({
+        // Deklarasikan table sebagai variabel global
+        window.table = $('#table-1').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('tracking.show') }}",
+            ajax: {
+                url: "{{ route('tracking.show') }}",
+                error: function(xhr, error, thrown) {
+                    console.log('Error:', error);
+                }
+            },
             columns: [{
                     data: 'DT_RowIndex',
-                    name: 'DT_RowIndex',
-                    searchable: false
+                    name: 'DT_RowIndex'
                 },
                 {
                     data: 'tanggal_format',
@@ -122,197 +128,132 @@
                 }
             ]
         });
+    });
 
-        function showDetail(request_id) {
-            $('#current_request_id').val(request_id);
+    // Object untuk menyimpan status tracking per item
+    let itemApprovals = {};
 
-            $.get("{{ url('admin/tracking/detail') }}/" + request_id, function(data) {
-                let html = '';
-                data.forEach(item => {
-                    let badgeClass;
-                    let currentStatus = item.tracking_status || 'Pending';
+    function showDetail(request_id) {
+        $('#current_request_id').val(request_id);
 
-                    switch (currentStatus) {
-                        case 'Diproses':
-                            badgeClass = 'warning';
-                            break;
-                        case 'Dikirim':
-                            badgeClass = 'info';
-                            break;
-                        case 'Diterima':
-                            badgeClass = 'success';
-                            break;
-                        default:
-                            badgeClass = 'secondary';
-                    }
+        $.get("{{ url('admin/tracking/detail') }}/" + request_id, function(data) {
+            let html = '';
+            data.forEach(item => {
+                let badgeClass;
+                let currentStatus = item.tracking_status || 'Pending';
 
-                    html += `
-                <tr id="row-${item.bm_id}">
-                    <td>${item.barang_kode}</td>
-                    <td>${item.barang_nama}</td>
-                    <td>${item.bm_jumlah}</td>
-                    <td>${item.divisi}</td>
-                    <td>${item.keterangan}</td>
-                    <td id="status-${item.bm_id}">
-                        <span class="badge bg-${badgeClass}">${currentStatus}</span>
-                    </td>
-                    <td>
-                        <select class="form-select form-select-sm" onchange="setItemStatus(${item.bm_id}, this.value)">
-                            <option value="">Pilih Status</option>
-                            <option value="Diproses" ${currentStatus === 'Diproses' ? 'selected' : ''}>Diproses</option>
-                            <option value="Dikirim" ${currentStatus === 'Dikirim' ? 'selected' : ''}>Dikirim</option>
-                            <option value="Diterima" ${currentStatus === 'Diterima' ? 'selected' : ''}>Diterima</option>
-                        </select>
-                    </td>
-                </tr>
-            `;
-                });
-                $('#detail-content').html(html);
-                $('#modalDetail').modal('show');
-            });
-        }
-
-        // Object untuk menyimpan status approval per item
-        let itemApprovals = {};
-
-        function setItemStatus(bm_id, status) {
-            itemApprovals[bm_id] = status;
-
-            // Update badge display
-            let badgeClass;
-            switch (status) {
-                case 'Diproses':
-                    badgeClass = 'warning';
-                    break;
-                case 'Dikirim':
-                    badgeClass = 'info';
-                    break;
-                case 'Diterima':
-                    badgeClass = 'success';
-                    break;
-                default:
-                    badgeClass = 'secondary';
-            }
-
-            $(`#status-${bm_id}`).html(`<span class="badge bg-${badgeClass}">${status || 'Pending'}</span>`);
-        }
-
-        function simpanApproval() {
-            const request_id = $('#current_request_id').val();
-
-            if (Object.keys(itemApprovals).length === 0) {
-                swal("Peringatan!", "Silakan pilih status approval untuk setiap item", "warning");
-                return;
-            }
-
-            $.ajax({
-                url: "/admin/tracking/bulk-update",
-                type: 'POST',
-                data: {
-                    _token: $('meta[name="csrf-token"]').attr('content'),
-                    request_id: request_id,
-                    approvals: itemApprovals
-                },
-                beforeSend: function() {
-                    swal({
-                        title: "Loading...",
-                        text: "Sedang memproses data",
-                        icon: "info",
-                        buttons: false,
-                        closeOnClickOutside: false
-                    });
-                },
-                success: function(response) {
-                    if (response.success) {
-                        swal({
-                            title: "Berhasil!",
-                            text: "Status tracking terbaru berhasil disimpan",
-                            icon: "success",
-                            timer: 1500,
-                            buttons: false
-                        }).then(() => {
-                            // Close the modal
-                            $('#modalDetail').modal('hide');
-
-                            // Reset approvals
-                            itemApprovals = {};
-
-                            // Refresh the table
-                            table.ajax.reload(null, false);
-
-                            // Reopen the detail modal with updated data
-                            setTimeout(() => {
-                                showDetail(request_id);
-                            }, 500);
-                        });
-                        
-                    } else {
-                        swal("Error!", response.message, "error");
-                    }
-                    
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error:', {
-                        status: status,
-                        error: error,
-                        response: xhr.responseText
-                    });
-                    swal("Error!", "Terjadi kesalahan saat menyimpan data", "error");
+                switch (currentStatus) {
+                    case 'Diproses':
+                        badgeClass = 'warning';
+                        break;
+                    case 'Dikirim':
+                        badgeClass = 'info';
+                        break;
+                    case 'Diterima':
+                        badgeClass = 'success';
+                        break;
+                    default:
+                        badgeClass = 'secondary';
                 }
-                
+
+                html += `
+                    <tr id="row-${item.bm_id}">
+                        <td>${item.barang_kode}</td>
+                        <td>${item.barang_nama}</td>
+                        <td>${item.bm_jumlah}</td>
+                        <td>${item.divisi}</td>
+                        <td>${item.keterangan}</td>
+                        <td id="status-${item.bm_id}">
+                            <span class="badge bg-${badgeClass}">${currentStatus}</span>
+                        </td>
+                        <td>
+                            <select class="form-select form-select-sm" onchange="setItemStatus(${item.bm_id}, this.value)">
+                                <option value="">Pilih Status</option>
+                                <option value="Diproses" ${currentStatus === 'Diproses' ? 'selected' : ''}>Sedang Diproses</option>
+                                <option value="Dikirim" ${currentStatus === 'Dikirim' ? 'selected' : ''}>Sedang Dikirim</option>
+                                <option value="Diterima" ${currentStatus === 'Diterima' ? 'selected' : ''}>Diterima</option>
+                            </select>
+                        </td>
+                    </tr>
+                `;
             });
-           location.reload();
+            $('#detail-content').html(html);
+            $('#modalDetail').modal('show');
+        });
+    }
+
+    function setItemStatus(bm_id, status) {
+        itemApprovals[bm_id] = status;
+
+        let badgeClass;
+        switch (status) {
+            case 'Diproses':
+                badgeClass = 'warning';
+                break;
+            case 'Dikirim':
+                badgeClass = 'info';
+                break;
+            case 'Diterima':
+                badgeClass = 'success';
+                break;
+            default:
+                badgeClass = 'secondary';
         }
 
-        function setItemStatus(bm_id, status) {
-            itemApprovals[bm_id] = status;
+        $(`#status-${bm_id}`).html(`<span class="badge bg-${badgeClass}">${status || 'Pending'}</span>`);
+    }
 
-            // Update badge display
-            let badgeClass;
-            switch (status) {
-                case 'Diproses':
-                    badgeClass = 'warning';
-                    break;
-                case 'Dikirim':
-                    badgeClass = 'info';
-                    break;
-                case 'Diterima':
-                    badgeClass = 'success';
-                    break;
-                default:
-                    badgeClass = 'secondary';
-            }
+    function simpanApproval() {
+        const request_id = $('#current_request_id').val();
 
-            $(`#status-${bm_id}`).html(`<span class="badge bg-${badgeClass}">${status}</span>`);
+        if (Object.keys(itemApprovals).length === 0) {
+            swal("Peringatan!", "Silakan pilih status untuk setiap item", "warning");
+            return;
         }
 
-        function reject(id) {
-            swal({
-                    title: "Konfirmasi",
-                    text: "Apakah anda yakin ingin menolak request ini?",
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                })
-                .then((willReject) => {
-                    if (willReject) {
-                        $.ajax({
-                            url: "{{ url('admin/tracking/reject') }}/" + id,
-                            type: 'POST',
-                            success: function(response) {
-                                if (response.success) {
-                                    swal("Berhasil!", response.message, "success");
-                                    table.ajax.reload();
-                                } else {
-                                    swal("Error!", response.message, "error");
-                                }
-                            },
-                            error: function(xhr) {
-                                swal("Error!", "Terjadi kesalahan", "error");
-                            }
-                        });
-                    }
+        $.ajax({
+            url: "{{ url('admin/tracking/bulk-update') }}",
+            type: 'POST',
+            data: {
+                request_id: request_id,
+                approvals: itemApprovals
+            },
+            beforeSend: function() {
+                swal({
+                    title: "Loading...",
+                    text: "Sedang memproses data",
+                    icon: "info",
+                    buttons: false,
+                    closeOnClickOutside: false
                 });
-        }
-    </script>
-@endsection
+            },
+            success: function(response) {
+                if (response.success) {
+                    swal({
+                        title: "Berhasil!",
+                        text: "Status tracking berhasil diupdate",
+                        icon: "success",
+                        timer: 1500,
+                        buttons: false
+                    }).then(() => {
+                        // Reset item approvals
+                        itemApprovals = {};
+                        
+                        // Refresh table tanpa reload halaman
+                        window.table.ajax.reload(null, false);
+                        
+                        // Close modal
+                        $('#modalDetail').modal('hide');
+                    });
+                } else {
+                    swal("Error!", response.message, "error");
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+                swal("Error!", "Terjadi kesalahan saat menyimpan data", "error");
+            }
+        });
+    }
+</script>
+@endsection 
