@@ -28,12 +28,28 @@ class BarangmasukController extends Controller
     public function show(Request $request)
     {
        if ($request->ajax()) {
-           $data = BarangmasukModel::leftJoin('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')
-               ->leftJoin('tbl_user', 'tbl_user.user_id', '=', 'tbl_barangmasuk.user_id')
+           $user = Session::get('user');
+           $query = BarangmasukModel::leftJoin('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')
                ->leftJoin('tbl_request_barang', 'tbl_request_barang.request_id', '=', 'tbl_barangmasuk.request_id')
-               ->select('tbl_barangmasuk.*', 'tbl_barang.barang_nama', 'tbl_request_barang.status as request_status')
-               ->orderBy('tbl_barangmasuk.request_id', 'DESC')
-               ->get();
+               ->leftJoin('tbl_user', 'tbl_user.user_id', '=', 'tbl_barangmasuk.user_id');
+    
+           // Filter data berdasarkan role
+           if ($user->role_id == 4) { // GM
+               $query->where([
+                   'tbl_user.divisi' => $user->divisi,
+                   'tbl_user.departemen' => $user->departemen
+               ]);
+           } else {
+               $query->where('tbl_barangmasuk.user_id', $user->user_id);
+           }
+    
+           $data = $query->select(
+               'tbl_barangmasuk.*',
+               'tbl_barang.barang_nama',
+               'tbl_request_barang.status as request_status'
+           )
+           ->orderBy('tbl_barangmasuk.request_id', 'DESC')
+           ->get();
     
            return DataTables::of($data)
                ->addIndexColumn()
@@ -55,7 +71,7 @@ class BarangmasukController extends Controller
                        "bm_kode" => $row->bm_kode,
                        "barang_kode" => $row->barang_kode,
                        "user_id" => $row->user_id,
-                       "bm_tanggal" => $row->bm_tanggal,  
+                       "bm_tanggal" => $row->bm_tanggal,
                        "bm_jumlah" => $row->bm_jumlah
                    );
                    
