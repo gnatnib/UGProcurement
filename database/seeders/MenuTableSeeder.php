@@ -34,7 +34,7 @@ class MenuTableSeeder extends Seeder
                 'menu_slug' => 'master-barang',
                 'menu_icon' => 'package',
                 'menu_redirect' => '-',
-                'menu_sort' => '2',
+                'menu_sort' => '6',
                 'menu_type' => '2',
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
@@ -45,7 +45,7 @@ class MenuTableSeeder extends Seeder
                 'menu_slug' => 'transaksi',
                 'menu_icon' => 'repeat',
                 'menu_redirect' => '-',
-                'menu_sort' => '4',
+                'menu_sort' => '5',
                 'menu_type' => '2',
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
@@ -56,7 +56,7 @@ class MenuTableSeeder extends Seeder
                 'menu_slug' => 'request-barang',
                 'menu_icon' => 'shopping-cart', // Menggunakan icon yang sesuai
                 'menu_redirect' => '/request-barang',
-                'menu_sort' => '5',
+                'menu_sort' => '4',
                 'menu_type' => '1', // Tipe 1 untuk menu langsung
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
@@ -89,22 +89,22 @@ class MenuTableSeeder extends Seeder
                 'menu_slug' => 'laporan',
                 'menu_icon' => 'printer',
                 'menu_redirect' => '-',
-                'menu_sort' => '5',
+                'menu_sort' => '7',
                 'menu_type' => '2',
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
-            [
-                'menu_id' => '8',
-                'menu_judul' => 'Customer',
-                'menu_slug' => 'customer',
-                'menu_icon' => 'user',
-                'menu_redirect' => '/customer',
-                'menu_sort' => '3',
-                'menu_type' => '1',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ]
+            // [
+            //     'menu_id' => '8',
+            //     'menu_judul' => 'Customer',
+            //     'menu_slug' => 'customer',
+            //     'menu_icon' => 'user',
+            //     'menu_redirect' => '/customer',
+            //     'menu_sort' => '3',
+            //     'menu_type' => '1',
+            //     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            //     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+            // ]
 
         ]);
     }

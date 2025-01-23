@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('approval')->nullable();
             $table->string('status')->nullable();
             $table->string('keterangan');
+            $table->decimal('harga', 15, 2)->default(0);
             $table->timestamps();
         });
     }

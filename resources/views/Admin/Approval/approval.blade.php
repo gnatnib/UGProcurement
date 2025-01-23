@@ -58,6 +58,7 @@
                                     <th>Kode Barang</th>
                                     <th>Nama Barang</th>
                                     <th>Jumlah</th>
+                                    <th>Harga Satuan</th>
                                     <th>Divisi</th>
                                     <th>Keterangan</th>
                                     <th>Status</th>
@@ -125,7 +126,7 @@
 
         function showDetail(request_id) {
             $('#current_request_id').val(request_id);
-            
+
             $.get("{{ url('admin/approval/detail') }}/" + request_id, function(data) {
                 let html = '';
                 data.forEach(item => {
@@ -157,6 +158,7 @@
                             <td>${item.barang_kode}</td>
                             <td>${item.barang_nama}</td>
                             <td>${item.bm_jumlah}</td>
+                            <td>Rp ${parseFloat(item.harga).toLocaleString('id-ID')}</td>
                             <td>${item.divisi}</td>
                             <td>${item.keterangan}</td>
                             <td id="status-${item.bm_id}">
@@ -173,7 +175,7 @@
 
                 // Reset itemApprovals untuk request baru
                 itemApprovals = {};
-                
+
                 // Inisialisasi itemApprovals dengan status yang sudah ada
                 data.forEach(item => {
                     if (item.approval) {
@@ -181,7 +183,7 @@
                     }
                 });
             });
-}
+        }
 
         // Object untuk menyimpan status approval per item
         let itemApprovals = {};

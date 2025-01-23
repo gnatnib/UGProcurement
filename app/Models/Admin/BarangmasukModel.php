@@ -17,9 +17,10 @@ class BarangmasukModel extends Model
         'request_id',
         'bm_tanggal',
         'bm_jumlah',
+        'harga',
         'approval',
         'status',
         'divisi',
         'keterangan',
-    ]; 
+    ];
 }
