@@ -27,63 +27,77 @@ class BarangmasukController extends Controller
 
     public function show(Request $request)
     {
-        if ($request->ajax()) {
-            $data = BarangmasukModel::leftJoin('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')->leftJoin('tbl_user', 'tbl_user.user_id', '=', 'tbl_barangmasuk.user_id')->orderBy('bm_id', 'DESC')->get();
-            return DataTables::of($data)
-                ->addIndexColumn()
-                ->addColumn('tgl', function ($row) {
-                    $tgl = $row->bm_tanggal == '' ? '-' : Carbon::parse($row->bm_tanggal)->translatedFormat('d F Y');
-
-                    return $tgl;
-                })
-                ->addColumn('user', function ($row) {
-                    $user = $row->user_id == '' ? '-' : $row->user_nama;
-
-                    return $user;
-                })
-                ->addColumn('barang', function ($row) {
-                    $barang = $row->barang_id == '' ? '-' : $row->barang_nama;
-
-                    return $barang;
-                })
-                ->addColumn('action', function ($row) {
-                    $array = array(
-                        "bm_id" => $row->bm_id,
-                        "bm_kode" => $row->bm_kode,
-                        "barang_kode" => $row->barang_kode,
-                        "user_id" => $row->user_id, // Menggunakan user_id
-                        "bm_tanggal" => $row->bm_tanggal,
-                        "bm_jumlah" => $row->bm_jumlah
-                    );
-                    $button = '';
-                    $hakEdit = AksesModel::leftJoin('tbl_submenu', 'tbl_submenu.submenu_id', '=', 'tbl_akses.submenu_id')->where(array('tbl_akses.role_id' => Session::get('user')->role_id, 'tbl_submenu.submenu_judul' => 'Barang Masuk', 'tbl_akses.akses_type' => 'update'))->count();
-                    $hakDelete = AksesModel::leftJoin('tbl_submenu', 'tbl_submenu.submenu_id', '=', 'tbl_akses.submenu_id')->where(array('tbl_akses.role_id' => Session::get('user')->role_id, 'tbl_submenu.submenu_judul' => 'Barang Masuk', 'tbl_akses.akses_type' => 'delete'))->count();
-                    if ($hakEdit > 0 && $hakDelete > 0) {
-                        $button .= '
-                        <div class="g-2">
-                        <a class="btn modal-effect text-primary btn-sm" data-bs-effect="effect-super-scaled" data-bs-toggle="modal" href="#Umodaldemo8" data-bs-toggle="tooltip" data-bs-original-title="Edit" onclick=update(' . json_encode($array) . ')><span class="fe fe-edit text-success fs-14"></span></a>
-                        <a class="btn modal-effect text-danger btn-sm" data-bs-effect="effect-super-scaled" data-bs-toggle="modal" href="#Hmodaldemo8" onclick=hapus(' . json_encode($array) . ')><span class="fe fe-trash-2 fs-14"></span></a>
-                        </div>
-                        ';
-                    } else if ($hakEdit > 0 && $hakDelete == 0) {
-                        $button .= '
-                        <div class="g-2">
-                            <a class="btn modal-effect text-primary btn-sm" data-bs-effect="effect-super-scaled" data-bs-toggle="modal" href="#Umodaldemo8" data-bs-toggle="tooltip" data-bs-original-title="Edit" onclick=update(' . json_encode($array) . ')><span class="fe fe-edit text-success fs-14"></span></a>
-                        </div>
-                        ';
-                    } else if ($hakEdit == 0 && $hakDelete > 0) {
-                        $button .= '
-                        <div class="g-2">
-                        <a class="btn modal-effect text-danger btn-sm" data-bs-effect="effect-super-scaled" data-bs-toggle="modal" href="#Hmodaldemo8" onclick=hapus(' . json_encode($array) . ')><span class="fe fe-trash-2 fs-14"></span></a>
-                        </div>
-                        ';
-                    } else {
-                        $button .= '-';
-                    }
-                    return $button;
-                })
-                ->rawColumns(['action', 'tgl', 'user', 'barang'])->make(true);
-        }
+       if ($request->ajax()) {
+           $data = BarangmasukModel::leftJoin('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')
+               ->leftJoin('tbl_user', 'tbl_user.user_id', '=', 'tbl_barangmasuk.user_id')
+               ->leftJoin('tbl_request_barang', 'tbl_request_barang.request_id', '=', 'tbl_barangmasuk.request_id')
+               ->select('tbl_barangmasuk.*', 'tbl_barang.barang_nama', 'tbl_request_barang.status as request_status')
+               ->orderBy('tbl_barangmasuk.request_id', 'DESC')
+               ->get();
+    
+           return DataTables::of($data)
+               ->addIndexColumn()
+               ->addColumn('tgl', function ($row) {
+                   return $row->bm_tanggal ? Carbon::parse($row->bm_tanggal)->translatedFormat('d F Y') : '-';
+               })
+               ->addColumn('barang', function ($row) {
+                   return $row->barang_nama ?? '-';
+               })
+               ->addColumn('approval', function ($row) {
+                   return $row->approval ?? 'PENDING';
+               })
+               ->addColumn('tracking_status', function ($row) {
+                   return $row->tracking_status ?? 'PENDING';
+               })
+               ->addColumn('action', function ($row) {
+                   $array = array(
+                       "bm_id" => $row->bm_id,
+                       "bm_kode" => $row->bm_kode,
+                       "barang_kode" => $row->barang_kode,
+                       "user_id" => $row->user_id,
+                       "bm_tanggal" => $row->bm_tanggal,  
+                       "bm_jumlah" => $row->bm_jumlah
+                   );
+                   
+                   $button = '';
+                   $hakEdit = AksesModel::leftJoin('tbl_submenu', 'tbl_submenu.submenu_id', '=', 'tbl_akses.submenu_id')
+                       ->where([
+                           'tbl_akses.role_id' => Session::get('user')->role_id,
+                           'tbl_submenu.submenu_judul' => 'Barang Masuk',
+                           'tbl_akses.akses_type' => 'update'
+                       ])->count();
+                       
+                   $hakDelete = AksesModel::leftJoin('tbl_submenu', 'tbl_submenu.submenu_id', '=', 'tbl_akses.submenu_id')
+                       ->where([
+                           'tbl_akses.role_id' => Session::get('user')->role_id,
+                           'tbl_submenu.submenu_judul' => 'Barang Masuk',
+                           'tbl_akses.akses_type' => 'delete'
+                       ])->count();
+    
+                   if ($hakEdit > 0 && $hakDelete > 0) {
+                       $button .= '
+                       <div class="g-2">
+                           <a class="btn modal-effect text-primary btn-sm" data-bs-effect="effect-super-scaled" data-bs-toggle="modal" href="#Umodaldemo8" data-bs-toggle="tooltip" data-bs-original-title="Edit" onclick=update(' . json_encode($array) . ')><span class="fe fe-edit text-success fs-14"></span></a>
+                           <a class="btn modal-effect text-danger btn-sm" data-bs-effect="effect-super-scaled" data-bs-toggle="modal" href="#Hmodaldemo8" onclick=hapus(' . json_encode($array) . ')><span class="fe fe-trash-2 fs-14"></span></a>
+                       </div>';
+                   } else if ($hakEdit > 0) {
+                       $button .= '
+                       <div class="g-2">
+                           <a class="btn modal-effect text-primary btn-sm" data-bs-effect="effect-super-scaled" data-bs-toggle="modal" href="#Umodaldemo8" data-bs-toggle="tooltip" data-bs-original-title="Edit" onclick=update(' . json_encode($array) . ')><span class="fe fe-edit text-success fs-14"></span></a>
+                       </div>';
+                   } else if ($hakDelete > 0) {
+                       $button .= '
+                       <div class="g-2">
+                           <a class="btn modal-effect text-danger btn-sm" data-bs-effect="effect-super-scaled" data-bs-toggle="modal" href="#Hmodaldemo8" onclick=hapus(' . json_encode($array) . ')><span class="fe fe-trash-2 fs-14"></span></a>
+                       </div>';
+                   } else {
+                       $button .= '-';
+                   }
+                   return $button;
+               })
+               ->rawColumns(['action'])
+               ->make(true);
+       }
     }
 
     public function proses_tambah(Request $request)
