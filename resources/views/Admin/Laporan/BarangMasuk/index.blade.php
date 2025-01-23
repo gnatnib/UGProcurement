@@ -57,7 +57,7 @@
                                 <th class="border-bottom-0">Kode Barang Masuk</th>
                                 <th class="border-bottom-0">Kode Barang</th>
                                 <th class="border-bottom-0">Barang</th>
-                                <th class="border-bottom-0">Jumlah Unit</th>
+                                <th class="border-bottom-0">Jumlah Item</th>
                             </thead>
                             <tbody></tbody>
                         </table>

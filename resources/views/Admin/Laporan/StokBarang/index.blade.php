@@ -56,7 +56,7 @@
                                 <th class="border-bottom-0">Kode Barang</th>
                                 <th class="border-bottom-0">Barang</th>
                                 <th class="border-bottom-0">Stok Awal</th>
-                                <th class="border-bottom-0">Jumlah Unit</th>
+                                <th class="border-bottom-0">Jumlah Item</th>
                                 <th class="border-bottom-0">Jumlah Keluar</th>
                                 <th class="border-bottom-0">Total Stok</th>
                             </thead>

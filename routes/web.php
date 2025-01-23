@@ -169,6 +169,9 @@
                 Route::get('/show', [ApproveController::class, 'show'])->name('approve.show');
                 Route::get('/detail/{request_id}', [ApproveController::class, 'getDetail'])->name('approve.detail');
                 Route::post('/bulk-update', [ApproveController::class, 'bulkUpdate'])->name('approve.bulk-update');
+                Route::post('/set-status/{bm_id}/{status}', [ApproveController::class, 'setItemStatus']);
+                Route::post('/store-signature', [ApproveController::class, 'storeSignature'])->name('approve.store-signature');
+                Route::get('/view-signature/{request_id}', [ApproveController::class, 'viewSignature'])->name('approve.view-signature');
             });
         });
 
@@ -180,7 +183,7 @@
                 Route::get('/show', [TrackingStatusController::class, 'show'])->name('tracking.show');
                 Route::get('/detail/{request_id}', [TrackingStatusController::class, 'getDetail'])->name('tracking.detail');
                 Route::post('/bulk-update', [TrackingStatusController::class, 'bulkUpdate'])->name('tracking.bulk-update');
-                
+
                 // Route baru yang perlu ditambahkan untuk handling status tracking
                 Route::post('/update-status', [TrackingStatusController::class, 'updateStatus'])->name('tracking.update-status');
                 Route::get('/get-status/{request_id}', [TrackingStatusController::class, 'getStatus'])->name('tracking.get-status');
