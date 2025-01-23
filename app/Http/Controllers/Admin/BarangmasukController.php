@@ -21,7 +21,7 @@ class BarangmasukController extends Controller
     {
         $data["title"] = "Barang Masuk";
         $data["hakTambah"] = AksesModel::leftJoin('tbl_submenu', 'tbl_submenu.submenu_id', '=', 'tbl_akses.submenu_id')->where(array('tbl_akses.role_id' => Session::get('user')->role_id, 'tbl_submenu.submenu_judul' => 'Barang Masuk', 'tbl_akses.akses_type' => 'create'))->count();
-        
+
         return view('Admin.BarangMasuk.index', $data);
     }
 
@@ -87,54 +87,49 @@ class BarangmasukController extends Controller
     }
 
     public function proses_tambah(Request $request)
-{
-    try {
-        // Mendapatkan data user yang sedang login
-        $user = Session::get('user'); // Karena aplikasi menggunakan Session::get('user')
+    {
+        try {
+            $user = Session::get('user');
 
-        // Debugging log
-        Log::info('User data:', ['user' => $user]);
-        Log::info('Request data:', $request->all());
+            $latestRequest = DB::table('tbl_request_barang')
+                ->where('user_id', $user->user_id)
+                ->orderBy('created_at', 'desc')
+                ->first();
 
-        // Cari request_id terbaru berdasarkan user_id di tbl_request_barang
-        $latestRequest = DB::table('tbl_request_barang')
-            ->where('user_id', $user->user_id)
-            ->orderBy('created_at', 'desc')
-            ->first();
+            if (!$latestRequest) {
+                return response()->json([
+                    'success' => false,
+                    'title' => 'Tidak dapat menambah barang!',
+                    'message' => 'Anda harus membuat request terlebih dahulu sebelum menambah barang masuk.',
+                    'type' => 'warning'
+                ], 400); // Using 400 Bad Request status code
+            }
 
-        // Jika tidak ada request, kembalikan error
-        if (!$latestRequest) {
+            $barangmasuk = BarangmasukModel::create([
+                'bm_tanggal' => $request->tglmasuk,
+                'bm_kode' => $request->bmkode,
+                'barang_kode' => $request->barang,
+                'request_id' => $latestRequest->request_id,
+                'keterangan' => $request->keterangan,
+                'bm_jumlah' => $request->jml,
+                'harga' => $request->harga,
+                'user_id' => $user->user_id,
+                'divisi' => $user->divisi,
+                'status' => null,
+                'approval' => null,
+            ]);
+
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            Log::error('Error saving data: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => 'Tidak ditemukan request yang sesuai untuk user ini.'
-            ], 404);
+                'title' => 'Error!',
+                'message' => 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage(),
+                'type' => 'error'
+            ], 500);
         }
-
-        // Insert data ke tabel tbl_barangmasuk
-        $barangmasuk = BarangmasukModel::create([
-            'bm_tanggal' => $request->tglmasuk,
-            'bm_kode' => $request->bmkode,
-            'barang_kode' => $request->barang,
-            'request_id' => $latestRequest->request_id, // Menggunakan request_id terbaru
-            'keterangan' => $request->keterangan,
-            'bm_jumlah' => $request->jml,
-            'user_id' => $user->user_id,
-            'divisi' => $user->divisi,
-            'status' => null,
-            'approval' => null,
-        ]);
-
-        Log::info('Saved data:', $barangmasuk->toArray());
-
-        return response()->json(['success' => true]);
-    } catch (\Exception $e) {
-        Log::error('Error saving data: ' . $e->getMessage());
-        return response()->json([
-            'success' => false,
-            'message' => $e->getMessage()
-        ], 500);
     }
-}
 
 
     public function proses_ubah(Request $request, BarangmasukModel $barangmasuk)

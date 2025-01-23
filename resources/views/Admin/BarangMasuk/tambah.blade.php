@@ -25,6 +25,12 @@
                                     class="text-danger">*</span></label>
                             <textarea name="keterangan" class="form-control" rows="3" placeholder="Masukkan keterangan"></textarea>
                         </div>
+                        <div class="form-group">
+                            <label for="harga" class="form-label">Harga <span class="text-danger">*</span></label>
+                            <input type="text" name="harga" value="0" class="form-control"
+                                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');"
+                                placeholder="Masukkan harga barang">
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
@@ -62,7 +68,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="jml" class="form-label">Jumlah Masuk <span
+                            <label for="jml" class="form-label">Jumlah Unit <span
                                     class="text-danger">*</span></label>
                             <input type="text" name="jml" value="0" class="form-control"
                                 oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');"
@@ -151,6 +157,8 @@
             const status = $("#status").val();
             const keterangan = $("textarea[name='keterangan']").val();
             const jml = $("input[name='jml']").val();
+            const harga = $("input[name='harga']").val();
+
             setLoading(true);
             resetValid();
 
@@ -170,8 +178,13 @@
                 setLoading(false);
                 return false;
             } else if (jml == "" || jml == "0") {
-                validasi('Jumlah Masuk wajib di isi!', 'warning');
+                validasi('Jumlah Unit wajib di isi!', 'warning');
                 $("input[name='jml']").addClass('is-invalid');
+                setLoading(false);
+                return false;
+            } else if (harga == "" || harga == "0") {
+                validasi('Harga wajib di isi!', 'warning');
+                $("input[name='harga']").addClass('is-invalid');
                 setLoading(false);
                 return false;
             } else {
@@ -185,6 +198,7 @@
             const kdbarang = $("input[name='kdbarang']").val();
             const keterangan = $("textarea[name='keterangan']").val();
             const jml = $("input[name='jml']").val();
+            const harga = $("input[name='harga']").val();
 
             $.ajax({
                 type: 'POST',
@@ -195,7 +209,8 @@
                     tglmasuk: tglmasuk,
                     barang: kdbarang,
                     keterangan: keterangan,
-                    jml: jml
+                    jml: jml,
+                    harga: harga
                 },
                 dataType: 'json',
                 success: function(response) {
@@ -209,13 +224,14 @@
                         reset();
                     }
                 },
-                error: function(xhr, status, error) {
-                    console.error(xhr.responseText);
+                error: function(xhr) {
+                    const response = xhr.responseJSON;
                     swal({
-                        title: "Error!",
-                        text: "Terjadi kesalahan saat menyimpan data",
-                        type: "error"
+                        title: response.title || "Error!",
+                        text: response.message || "Terjadi kesalahan saat menyimpan data",
+                        type: response.type || "error"
                     });
+                    setLoading(false);
                 }
             });
         }
@@ -234,6 +250,7 @@
             $("input[name='kdbarang']").val('');
             $("textarea[name='keterangan']").val('');
             $("input[name='jml']").val('0');
+            $("input[name='harga']").val('0');
             $("#nmbarang").val('');
             $("#satuan").val('');
             $("#jenis").val('');

@@ -27,16 +27,16 @@ class SubMenuTableSeeder extends Seeder
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
-            [
-                'submenu_id' => 10,
-                'menu_id' => '3',
-                'submenu_judul' => 'Barang Keluar',
-                'submenu_slug' => 'barang-keluar',
-                'submenu_redirect' => '/barang-keluar',
-                'submenu_sort' => '2',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
+            // [
+            //     'submenu_id' => 10,
+            //     'menu_id' => '3',
+            //     'submenu_judul' => 'Barang Keluar',
+            //     'submenu_slug' => 'barang-keluar',
+            //     'submenu_redirect' => '/barang-keluar',
+            //     'submenu_sort' => '2',
+            //     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            //     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+            // ],
             [
                 'submenu_id' => 11,
                 'menu_id' => '3',
@@ -97,16 +97,16 @@ class SubMenuTableSeeder extends Seeder
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
-            [
-                'submenu_id' => 22,
-                'menu_id' => '7',
-                'submenu_judul' => 'Lap Barang Keluar',
-                'submenu_slug' => 'lap-barang-keluar',
-                'submenu_redirect' => '/lap-barang-keluar',
-                'submenu_sort' => '2',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
+            // [
+            //     'submenu_id' => 22,
+            //     'menu_id' => '7',
+            //     'submenu_judul' => 'Lap Barang Keluar',
+            //     'submenu_slug' => 'lap-barang-keluar',
+            //     'submenu_redirect' => '/lap-barang-keluar',
+            //     'submenu_sort' => '2',
+            //     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            //     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+            // ],
             [
                 'submenu_id' => 23,
                 'menu_id' => '7',

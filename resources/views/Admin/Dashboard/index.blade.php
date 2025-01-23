@@ -30,7 +30,7 @@
         </div>
         <!-- COL END -->
         <div class="col-sm-6 col-md-6 col-lg-6 col-xl-3">
-            <div class="card bg-secondary img-card box-secondary-shadow">
+            <div class="card bg-azure img-card box-secondary-shadow">
                 <div class="card-body">
                     <div class="d-flex">
                         <div class="text-white">
@@ -114,7 +114,7 @@
         </div>
         <!-- COL END -->
         <div class="col-sm-6 col-md-6 col-lg-6 col-xl-3">
-            <div class="card bg-indigo-darker img-card box-warning-shadow">
+            <div class="card bg-lime-dark img-card box-warning-shadow">
                 <div class="card-body">
                     <div class="d-flex">
                         <div class="text-white">
