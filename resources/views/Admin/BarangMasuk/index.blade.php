@@ -33,15 +33,17 @@
                         <table id="table-1"
                             class="table table-bordered text-nowrap border-bottom dataTable no-footer dtr-inline collapsed">
                             <thead>
-                                <th class="border-bottom-0" width="1%">No</th>
-                                <th class="border-bottom-0">Tanggal Masuk</th>
-                                <th class="border-bottom-0">Kode Barang Masuk</th>
-                                <th class="border-bottom-0">Kode Barang</th>
-                                <th class="border-bottom-0">User ID</th>
-                                <th class="border-bottom-0">Barang</th>
-                                <th class="border-bottom-0">Jumlah Item</th>
-                                <th class="border-bottom-0">Harga Satuan</th>
-                                <th class="border-bottom-0" width="1%">Action</th>
+                                <tr>
+                                    <th width="1%">No</th>
+                                    <th>Tanggal Masuk</th>
+                                    <th>Barang</th>
+                                    <th>Jumlah Item</th>
+                                    <th>Harga Satuan</th>
+                                    <th>Approval</th>
+                                    <th>Request ID</th>
+                                    <th>Tracking Status</th>
+                                    <th width="1%">Action</th>
+                                </tr>
                             </thead>
                             <tbody></tbody>
                         </table>
@@ -76,11 +78,11 @@
                                             <div id="detail-barang" class="fs-6 fw-semibold"></div>
                                         </div>
                                         <div>
-                                            <label class="text-muted small mb-1">Jumlah Unit</label>
+                                            <label class="text-muted small mb-1">Jumlah Item</label>
                                             <div id="detail-jumlah" class="fs-6 fw-semibold"></div>
                                         </div>
                                         <div>
-                                            <label class="text-muted small mb-1">Harga</label>
+                                            <label class="text-muted small mb-1">Harga Satuan</label>
                                             <div id="detail-harga" class="fs-6 fw-semibold text-success"></div>
                                         </div>
                                     </div>
@@ -211,6 +213,13 @@
                     {
                         data: 'bm_jumlah',
                         name: 'bm_jumlah'
+                    },
+                    {
+                        data: 'harga',
+                        name: 'harga',
+                        render: function(data) {
+                            return 'Rp ' + parseFloat(data).toLocaleString('id-ID');
+                        }
                     },
                     {
                         data: 'approval',
