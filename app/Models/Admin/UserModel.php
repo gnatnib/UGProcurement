@@ -11,11 +11,14 @@ class UserModel extends Model
     protected $table = "tbl_user";
     protected $primaryKey = 'user_id';
     protected $fillable = [
-        'role_id',
-        'user_nama',
-        'user_nmlengkap',
-        'user_email',
-        'user_password',
         'user_foto',
+        'user_nmlengkap', 
+        'user_nama',
+        'user_email',
+        'role_id',
+        'divisi',
+        'departemen', 
+        'nomor_hp',
+        'user_password'
     ];
 }
