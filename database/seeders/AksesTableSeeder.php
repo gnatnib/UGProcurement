@@ -355,7 +355,7 @@ class AksesTableSeeder extends Seeder
 
     private function seedApprovalPermissions()
     {
-        $roles = [4]; // General Manager
+        $roles = [1, 4]; // GMHCGA, General Manager
         foreach ($roles as $role_id) {
             DB::table('tbl_akses')->insert([
                 [

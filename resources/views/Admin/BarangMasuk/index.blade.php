@@ -33,15 +33,17 @@
                         <table id="table-1"
                             class="table table-bordered text-nowrap border-bottom dataTable no-footer dtr-inline collapsed">
                             <thead>
-                                <th class="border-bottom-0" width="1%">No</th>
-                                <th class="border-bottom-0">Tanggal Masuk</th>
-                                <th class="border-bottom-0">Kode Barang Masuk</th>
-                                <th class="border-bottom-0">Kode Barang</th>
-                                <th class="border-bottom-0">User ID</th>
-                                <th class="border-bottom-0">Barang</th>
-                                <th class="border-bottom-0">Jumlah Unit</th>
-                                <th class="border-bottom-0">Harga Satuan</th>
-                                <th class="border-bottom-0" width="1%">Action</th>
+                                <tr>
+                                    <th width="1%">No</th>
+                                    <th>Tanggal Masuk</th>
+                                    <th>Barang</th>
+                                    <th>Jumlah Item</th>
+                                    <th>Harga Satuan</th>
+                                    <th>Approval</th>
+                                    <th>Request ID</th>
+                                    <th>Tracking Status</th>
+                                    <th width="1%">Action</th>
+                                </tr>
                             </thead>
                             <tbody></tbody>
                         </table>
@@ -50,6 +52,90 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal Detail -->
+    <div class="modal fade" id="detailModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary-gradient text-white">
+                    <h5 class="modal-title fw-bold">Detail Barang Masuk</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="row g-4">
+                        <!-- Informasi Barang -->
+                        <div class="col-md-6">
+                            <div class="card shadow-sm h-100">
+                                <div class="card-body">
+                                    <h6 class="fw-bold mb-4 text-primary">Informasi Barang</h6>
+                                    <div class="d-flex flex-column gap-3">
+                                        <div>
+                                            <label class="text-muted small mb-1">Kode BM</label>
+                                            <div id="detail-bmkode" class="fs-6 fw-semibold"></div>
+                                        </div>
+                                        <div>
+                                            <label class="text-muted small mb-1">Barang</label>
+                                            <div id="detail-barang" class="fs-6 fw-semibold"></div>
+                                        </div>
+                                        <div>
+                                            <label class="text-muted small mb-1">Jumlah Item</label>
+                                            <div id="detail-jumlah" class="fs-6 fw-semibold"></div>
+                                        </div>
+                                        <div>
+                                            <label class="text-muted small mb-1">Harga Satuan</label>
+                                            <div id="detail-harga" class="fs-6 fw-semibold text-success"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Status Transaksi -->
+                        <div class="col-md-6">
+                            <div class="card shadow-sm h-100">
+                                <div class="card-body">
+                                    <h6 class="fw-bold mb-4 text-primary">Detail Transaksi</h6>
+                                    <div class="d-flex flex-column gap-3">
+                                        <div>
+                                            <label class="text-muted small mb-1">Tanggal Masuk</label>
+                                            <div id="detail-tanggal" class="fs-6 fw-semibold"></div>
+                                        </div>
+                                        <div>
+                                            <label class="text-muted small mb-1">Request ID</label>
+                                            <div id="detail-requestid" class="fs-6 fw-semibold"></div>
+                                        </div>
+                                        <div>
+                                            <label class="text-muted small mb-1">Status Approval</label>
+                                            <div id="detail-approval" class="fs-6 mt-1"></div>
+                                        </div>
+                                        <div>
+                                            <label class="text-muted small mb-1">Status Pengiriman</label>
+                                            <div id="detail-tracking" class="fs-6 mt-1"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Keterangan -->
+                        <div class="col-12">
+                            <div class="card shadow-sm">
+                                <div class="card-body">
+                                    <h6 class="fw-bold mb-3 text-primary">Keterangan</h6>
+                                    <p id="detail-keterangan" class="text-muted mb-0 fs-6"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary px-5" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <!-- END ROW -->
 
     @include('Admin.BarangMasuk.tambah')
@@ -103,55 +189,30 @@
 
         var table;
         $(document).ready(function() {
-            //datatables
             table = $('#table-1').DataTable({
-
-                "processing": true,
-                "serverSide": true,
-                "info": true,
-                "order": [],
-                "scrollX": true,
-                "stateSave": true,
-                "lengthMenu": [
-                    [5, 10, 25, 50, 100],
-                    [5, 10, 25, 50, 100]
+                processing: true,
+                serverSide: true,
+                info: true,
+                order: [
+                    [5, 'desc']
                 ],
-                "pageLength": 10,
-
-                lengthChange: true,
-
-                "ajax": {
-                    "url": "{{ route('barang-masuk.getbarang-masuk') }}",
-                },
-
-                "columns": [{
+                ajax: "{{ route('barang-masuk.getbarang-masuk') }}",
+                columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
                         searchable: false
                     },
                     {
                         data: 'tgl',
-                        name: 'bm_tanggal',
-                    },
-                    {
-                        data: 'bm_kode',
-                        name: 'bm_kode',
-                    },
-                    {
-                        data: 'barang_kode',
-                        name: 'barang_kode',
-                    },
-                    {
-                        data: 'user_id',
-                        name: 'user_id',
+                        name: 'bm_tanggal'
                     },
                     {
                         data: 'barang',
-                        name: 'barang_nama',
+                        name: 'barang_nama'
                     },
                     {
                         data: 'bm_jumlah',
-                        name: 'bm_jumlah',
+                        name: 'bm_jumlah'
                     },
                     {
                         data: 'harga',
@@ -161,14 +222,66 @@
                         }
                     },
                     {
+                        data: 'approval',
+                        name: 'approval'
+                    },
+                    {
+                        data: 'request_id',
+                        name: 'request_id'
+                    },
+                    {
+                        data: 'tracking_status',
+                        name: 'tracking_status'
+                    },
+                    {
                         data: 'action',
                         name: 'action',
                         orderable: false,
                         searchable: false
-                    },
+                    }
                 ],
-
+                createdRow: function(row, data) {
+                    $(row).css('cursor', 'pointer');
+                    $(row).find('td:not(:last-child)').on('click', function() {
+                        showDetail(data);
+                    });
+                }
             });
         });
+
+        function showDetail(data) {
+            $('#detail-bmkode').text(data.bm_kode);
+            $('#detail-tanggal').text(data.tgl);
+            $('#detail-barang').text(data.barang);
+            $('#detail-jumlah').text(data.bm_jumlah + ' Unit');
+            $('#detail-requestid').text(data.request_id);
+            $('#detail-keterangan').text(data.keterangan || '-');
+            $('#detail-harga').text('Rp ' + parseInt(data.harga).toLocaleString('id-ID'));
+
+            let approvalStatus = data.approval || 'PENDING';
+            let approvalClass = data.approval ? 'bg-success' : 'bg-warning';
+            let approvalBadge = `
+       <div class="d-inline-block">
+           <span class="badge rounded-pill ${approvalClass}-gradient px-3 py-2">
+               <i class="fe fe-check-circle me-1"></i>
+               ${approvalStatus}
+           </span>
+       </div>`;
+
+            let trackingStatus = data.tracking_status || 'PENDING';
+            let trackingClass = data.tracking_status ? 'bg-info' : 'bg-warning';
+            let trackingBadge = `
+       <div class="d-inline-block">
+           <span class="badge rounded-pill ${trackingClass}-gradient px-3 py-2">
+               <i class="fe fe-truck me-1"></i>
+               ${trackingStatus}
+           </span>
+       </div>`;
+
+            $('#detail-approval').html(approvalBadge);
+            $('#detail-tracking').html(trackingBadge);
+
+            $('#detailModal').modal('show');
+        }
     </script>
 @endsection

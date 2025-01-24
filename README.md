@@ -15,9 +15,7 @@ This application uses the **Sash Admin** template (built with Bootstrap v5) for 
 - **Barang**: Add, update, or remove items.  
 - **Customer**: Manage customer data.  
 - **Barang Masuk**: Record incoming stock transactions.  
-- **Barang Keluar**: Record outgoing stock transactions.  
 - **Laporan Barang Masuk**: Generate reports for incoming stock.  
-- **Laporan Barang Keluar**: Generate reports for outgoing stock.  
 - **Laporan Stok Barang**: Generate stock reports.  
 - **Setting Website**: Configure website settings.  
 - **Setting Hak Akses User per Role**: Define user permissions by role.  
