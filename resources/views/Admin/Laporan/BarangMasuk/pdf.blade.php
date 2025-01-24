@@ -1,106 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<?php
-
-use Carbon\Carbon;
-?>
-
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="{{ $web->web_deskripsi }}">
-    <meta name="author" content="{{ $web->web_nama }}">
-    <meta name="keywords" content="">
-    <meta name="csrf-token" content="{{ csrf_token() }}" />
-
     <title>{{ $title }}</title>
-
     <style>
         * {
             font-family: Arial, Helvetica, sans-serif;
         }
 
-        #table1 {
-            border-collapse: collapse;
+        .header {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            max-width: 150px;
+        }
+
+        table {
             width: 100%;
-            margin-top: 32px;
+            border-collapse: collapse;
         }
 
-        #table1 td,
-        #table1 th {
-            border: 1px solid #ddd;
+        th,
+        td {
+            border: 1px solid black;
             padding: 8px;
+            text-align: left;
         }
 
-        #table1 th {
-            padding-top: 12px;
-            padding-bottom: 12px;
-            color: black;
-            font-size: 12px;
+        th {
+            background-color: #f2f2f2;
         }
 
-        #table1 td {
-            font-size: 11px;
+        .footer {
+            margin-top: 50px;
+            width: 100%;
         }
 
-        .font-medium {
-            font-weight: 500;
+        .signatures {
+            width: 100%;
+            display: table;
+            margin-top: 50px;
         }
 
-        .font-bold {
-            font-weight: 600;
+        .signature-cell {
+            display: table-cell;
+            width: 33.33%;
+            text-align: center;
+            padding: 10px;
         }
 
-        .d-2 {
-            display: flex;
-            align-items: flex-start;
-            margin-top: 32px;
+        .signature-line {
+            margin-top: 50px;
+            border-bottom: 1px solid black;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
         }
     </style>
-
 </head>
 
 <body>
+    <div class="header">
+        <h2>PT. USAHA GEDUNG MANDIRI</h2>
+        <p>WISMA MANDIRI Lantai XII</p>
+        <p>Jl. M.H Tamrin no. 5</p>
+        <p>Jakarta 10340</p>
+        <p>Phone: (021) 2300 8000, 390 2020</p>
+        <p>Fax: (0210 230 2752</p>
+    </div>
 
-    <center>
-        <h1 class="font-medium">Laporan Barang Masuk</h1>
-        @if ($tglawal == '')
-            <h4 class="font-medium">Semua Tanggal</h4>
-        @else
-            <h4 class="font-medium">{{ Carbon::parse($tglawal)->translatedFormat('d F Y') }} -
-                {{ Carbon::parse($tglakhir)->translatedFormat('d F Y') }}</h4>
-        @endif
-    </center>
+    <h1 style="text-align: center;">PERMINTAAN BARANG (PB)</h1>
+    <p>Tanggal: {{ Carbon\Carbon::parse($request->request_tanggal)->translatedFormat('d F Y') }}</p>
+    <p>Divisi: {{ $request->departemen }}</p>
 
-
-    <table border="1" id="table1">
+    <table>
         <thead>
             <tr>
-                <th align="center" width="1%">NO</th>
-                <th>TGL MASUK</th>
-                <th>KODE BRG MASUK</th>
-                <th>KODE BARANG</th>
-                <th>BARANG</th>
-                <th>JML MASUK</th>
+                <th>No</th>
+                <th>Kode Barang</th>
+                <th>Nama Barang</th>
+                <th>Jumlah Barang</th>
+                <th>Harga</th>
+                <th>Status</th>
+                <th>Keterangan</th>
             </tr>
         </thead>
         <tbody>
-            @php $no=1; @endphp
-            @foreach ($data as $d)
+            @php $total = 0; @endphp
+            @foreach($data as $key => $d)
+                @php $total += $d->harga * $d->bm_jumlah; @endphp
                 <tr>
-                    <td align="center">{{ $no++ }}</td>
-                    <td>{{ Carbon::parse($d->bm_tanggal)->translatedFormat('d F Y') }}</td>
-                    <td>{{ $d->bm_kode }}</td>
+                    <td>{{ $key + 1 }}</td>
                     <td>{{ $d->barang_kode }}</td>
                     <td>{{ $d->barang_nama }}</td>
-                    <td align="center">{{ $d->bm_jumlah }}</td>
+                    <td>{{ $d->bm_jumlah }}</td>
+                    <td>Rp {{ number_format($d->harga, 0, ',', '.') }}</td>
+                    <td>{{ $d->tracking_status }}</td>
+                    <td>{{ $d->keterangan }}</td>
                 </tr>
             @endforeach
+            <tr>
+                <td colspan="4" align="right"><strong>Total</strong></td>
+                <td colspan="3"><strong>Rp {{ number_format($total, 0, ',', '.') }}</strong></td>
+            </tr>
         </tbody>
     </table>
 
+    <div class="signatures">
+        <div class="signature-cell">
+            <p>Disetujui oleh,</p>
+            <div class="signature-line"></div>
+            <p><i>nama jelas & tanggal</i></p>
+        </div>
+        <div class="signature-cell">
+            <p>Penerima Barang,</p>
+            <div class="signature-line"></div>
+            <p><i>nama jelas & tanggal</i></p>
+        </div>
+        <div class="signature-cell">
+            <p>Permohonan Barang,</p>
+            <div class="signature-line"></div>
+            <p><i>nama jelas</i></p>
+        </div>
+    </div>
 </body>
 
 </html>

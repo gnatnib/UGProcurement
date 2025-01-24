@@ -53,11 +53,11 @@
                             class="table table-bordered text-nowrap border-bottom dataTable no-footer dtr-inline collapsed">
                             <thead>
                                 <th class="border-bottom-0" width="1%">No</th>
-                                <th class="border-bottom-0">Tanggal Masuk</th>
-                                <th class="border-bottom-0">Kode Barang Masuk</th>
-                                <th class="border-bottom-0">Kode Barang</th>
-                                <th class="border-bottom-0">Barang</th>
-                                <th class="border-bottom-0">Jumlah Unit</th>
+                                <th class="border-bottom-0">Tanggal Request</th>
+                                <th class="border-bottom-0">Kode Request</th>
+                                <th class="border-bottom-0">Departemen</th>
+                                <th class="border-bottom-0">Status</th>
+                                <th class="border-bottom-0">Action</th>
                             </thead>
                             <tbody></tbody>
                         </table>
@@ -108,31 +108,33 @@
                 },
 
                 "columns": [{
-                        data: 'DT_RowIndex',
-                        name: 'DT_RowIndex',
-                        searchable: false
-                    },
-                    {
-                        data: 'tgl',
-                        name: 'bm_tanggal',
-                    },
-                    {
-                        data: 'bm_kode',
-                        name: 'bm_kode',
-                    },
-                    {
-                        data: 'barang_kode',
-                        name: 'barang_kode',
-                    },
-                    {
-                        data: 'barang',
-                        name: 'barang_nama',
-                    },
-                    {
-                        data: 'bm_jumlah',
-                        name: 'bm_jumlah',
-                    },
-                ],
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex',
+                    searchable: false
+                },
+                {
+                    data: 'tgl',
+                    name: 'request_tanggal',
+                },
+                {
+                    data: 'request_kode',
+                    name: 'request_kode',
+                },
+                {
+                    data: 'departemen',
+                    name: 'departemen',
+                },
+                {
+                    data: 'status',
+                    name: 'status',
+                },
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false
+                },
+                ]
 
             });
         }
@@ -188,39 +190,9 @@
 
         }
 
-        function pdf() {
-            var tglawal = $('input[name="tglawal"]').val();
-            var tglakhir = $('input[name="tglakhir"]').val();
-            if (tglawal != '' && tglakhir != '') {
-                window.open(
-                    "{{ route('lap-bm.pdf') }}?tglawal=" + tglawal + "&tglakhir=" + tglakhir,
-                    '_blank'
-                );
-            } else {
-                swal({
-                    title: "Yakin export PDF Semua Data?",
-                    type: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                    confirmButtonText: "Yakin",
-                    cancelButtonText: 'Batal',
-                    showCancelButton: true,
-                    showConfirmButton: true,
-                    closeOnConfirm: false,
-                    confirmButtonColor: '#09ad95',
-                }, function(value) {
-                    if (value == true) {
-                        window.open(
-                            "{{ route('lap-bm.pdf') }}",
-                            '_blank'
-                        );
-                        swal.close();
-                    }
-                });
-
+        function pdf(id) {
+                window.open("{{ route('lap-bm.pdf') }}?id=" + id, '_blank');
             }
-
-        }
 
         function validasi(judul, status) {
             swal({

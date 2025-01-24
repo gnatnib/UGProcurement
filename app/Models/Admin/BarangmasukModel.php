@@ -23,4 +23,9 @@ class BarangmasukModel extends Model
         'divisi',
         'keterangan',
     ];
+
+    public function barang()
+    {
+        return $this->belongsTo(BarangModel::class, 'barang_kode', 'barang_kode');
+    }
 }
