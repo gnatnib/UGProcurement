@@ -57,7 +57,7 @@
                                 <tr>
                                     <th>Kode Barang</th>
                                     <th>Nama Barang</th>
-                                    <th>Jumlah</th>
+                                    <th>Jumlah Item</th>
                                     <th>Harga Satuan</th>
                                     <th>Divisi</th>
                                     <th>Keterangan</th>
@@ -138,8 +138,8 @@
             }
         }
 
-        function showSignatureModal(bm_id) {
-            $('#currentBmId').val(bm_id);
+        function showSignatureModal(request_id) {
+            $('#current_request_id').val(request_id);
             $('#signatureModal').modal('show');
         }
 
@@ -150,8 +150,7 @@
                 return;
             }
 
-            const bm_id = $('#currentBmId').val();
-            const request_id = $('#current_request_id').val(); // Add this
+            const request_id = $('#current_request_id').val();
             const signatureData = signaturePad.toDataURL();
 
             $.ajax({
@@ -165,7 +164,10 @@
                 success: function(response) {
                     if (response.success) {
                         $('#signatureModal').modal('hide');
-                        swal("Success!", "Signature saved successfully", "success");
+                        swal("Success!", "Signature saved successfully", "success").then(() => {
+                            // Refresh the detail view to show the new signature
+                            showDetail(request_id);
+                        });
                     } else {
                         swal("Error!", response.message, "error");
                     }
@@ -209,7 +211,12 @@
                     data: 'action',
                     name: 'action',
                     orderable: false,
-                    searchable: false
+                    searchable: false,
+                    render: function(data, type, row) {
+                        return `<button type="button" class="btn btn-success btn-sm" onclick="showDetail('${row.request_id}')">
+                    <i class="fe fe-eye"></i> Detail
+                </button>`;
+                    }
                 }
             ]
         });
@@ -219,58 +226,96 @@
 
             $.get("/admin/approval/detail/" + request_id, function(data) {
                 let html = '';
-                data.forEach(item => {
-                    let statusBadge = '';
-                    let signButton = '';
-                    let actionButtons = '';
 
-                    if (item.approval === 'Approve') {
-                        statusBadge = '<span class="badge bg-success">Disetujui</span>';
-                        // Fetch and display signature
-                        $.get(`/admin/approval/view-signature/${request_id}`, function(signatureData) {
-                            if (signatureData.success) {
-                                signButton = `
-                            <div>
-                                <span class="badge bg-success">Signed</span>
-                                <img src="${signatureData.signature}" 
-                                     style="max-width: 150px; margin-top: 5px; border: 1px solid #ddd;"
-                                     alt="Signature">
-                            </div>`;
-                                $(`#signature-${item.bm_id}`).html(signButton);
-                            }
+                $.get(`/admin/approval/view-signature/${request_id}`, function(signatureData) {
+                    let signatureSection = '';
+                    let hasGMSignature = false;
+                    let hasGMHCGASignature = false;
+                    let signatureHtml = '<div class="d-flex flex-column">';
+                    const currentUserRole = '{{ Session::get('user')->role_id }}';
+
+                    // Reset itemApprovals object
+                    itemApprovals = {};
+
+                    if (signatureData.success && signatureData.signatures && signatureData.signatures
+                        .length > 0) {
+                        signatureData.signatures.forEach(sig => {
+                            if (sig.signer_type === 'GM') hasGMSignature = true;
+                            if (sig.signer_type === 'GMHCGA') hasGMHCGASignature = true;
+
+                            signatureHtml += `
+                        <div class="mb-2">
+                            <span class="badge bg-success">Signed by ${sig.signer_type}</span>
+                            <img src="${sig.signature}" 
+                                 style="max-width: 150px; margin-top: 5px; border: 1px solid #ddd;"
+                                 alt="Signature ${sig.signer_type}">
+                        </div>`;
                         });
-                    } else if (item.approval === 'Reject') {
-                        statusBadge = '<span class="badge bg-danger">Ditolak</span>';
-                        signButton = '<span class="badge bg-danger">Rejected</span>';
-                    } else {
-                        statusBadge = '<span class="badge bg-warning">Pending</span>';
-                        signButton = `<button class="btn btn-sm btn-primary" onclick="showSignatureModal(${item.bm_id})">
-                    <i class="fe fe-edit"></i> Sign
-                </button>`;
-                        actionButtons = `
-                    <button class="btn btn-sm btn-success" onclick="setItemStatus(${item.bm_id}, 'Approve')">
-                        <i class="fe fe-check"></i>
-                    </button>
-                    <button class="btn btn-sm btn-danger" onclick="setItemStatus(${item.bm_id}, 'Reject')">
-                        <i class="fe fe-x"></i>
-                    </button>`;
                     }
+                    signatureHtml += '</div>';
 
-                    html += `
-            <tr id="row-${item.bm_id}">
-                <td>${item.barang_kode}</td>
-                <td>${item.barang_nama}</td>
-                <td>${item.bm_jumlah}</td>
-                <td>Rp ${parseFloat(item.harga).toLocaleString('id-ID')}</td>
-                <td>${item.divisi}</td>
-                <td>${item.keterangan}</td>
-                <td id="status-${item.bm_id}">${statusBadge}</td>
-                <td id="signature-${item.bm_id}">${signButton}</td>
-                <td>${actionButtons}</td>
-            </tr>`;
+                    data.forEach((item, index) => {
+                        let statusBadge = '';
+                        let actionButtons = '';
+                        let showActions = true; // Changed to default true
+
+                        // Only hide actions if the current role has already signed
+                        if (currentUserRole === '4' && hasGMSignature) showActions = false;
+                        if (currentUserRole === '1' && hasGMHCGASignature) showActions = false;
+
+                        if (item.approval === 'Approve') {
+                            statusBadge = '<span class="badge bg-success">Disetujui</span>';
+                        } else if (item.approval === 'Reject') {
+                            statusBadge = '<span class="badge bg-danger">Ditolak</span>';
+                        } else {
+                            statusBadge = '<span class="badge bg-warning">Pending</span>';
+                            if (showActions) {
+                                actionButtons = `
+                            <button class="btn btn-sm btn-success" onclick="setItemStatus(${item.bm_id}, 'Approve')">
+                                <i class="fe fe-check"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="setItemStatus(${item.bm_id}, 'Reject')">
+                                <i class="fe fe-x"></i>
+                            </button>`;
+                            }
+                        }
+
+                        let showSignButton = false;
+                        if (index === 0) {
+                            if (currentUserRole === '4' && !hasGMSignature) showSignButton = true;
+                            if (currentUserRole === '1' && !hasGMHCGASignature) showSignButton =
+                                true;
+
+                            signatureSection = signatureHtml;
+                            if (showSignButton) {
+                                signatureSection += `<button class="btn btn-sm btn-primary" onclick="showSignatureModal('${request_id}')">
+                            <i class="fe fe-edit"></i> Sign Request
+                        </button>`;
+                            }
+                        }
+
+                        html += `
+                <tr id="row-${item.bm_id}">
+                    <td>${item.barang_kode}</td>
+                    <td>${item.barang_nama}</td>
+                    <td>${item.bm_jumlah}</td>
+                    <td>Rp ${parseFloat(item.harga).toLocaleString('id-ID')}</td>
+                    <td>${item.divisi}</td>
+                    <td>${item.keterangan}</td>
+                    <td id="status-${item.bm_id}">${statusBadge}</td>
+                    <td>${index === 0 ? signatureSection : ''}</td>
+                    <td>${actionButtons}</td>
+                </tr>`;
+
+                        // Initialize approval status in itemApprovals if actions are shown
+                        if (showActions) {
+                            itemApprovals[item.bm_id] = item.approval || 'pending';
+                        }
+                    });
+
+                    $('#detail-content').html(html);
+                    $('#modalDetail').modal('show');
                 });
-                $('#detail-content').html(html);
-                $('#modalDetail').modal('show');
             });
         }
 
@@ -278,45 +323,28 @@
         let itemApprovals = {};
 
         function setItemStatus(bm_id, status) {
-            $.ajax({
-                url: `/admin/approval/set-status/${bm_id}/${status}`,
-                type: 'POST',
-                data: {
-                    _token: $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function(response) {
-                    if (response.success) {
-                        let badge = status === 'Approve' ?
-                            '<span class="badge bg-success">Disetujui</span>' :
-                            '<span class="badge bg-danger">Ditolak</span>';
-                        let signBadge = status === 'Approve' ?
-                            '<span class="badge bg-success">Signed</span>' :
-                            '<span class="badge bg-danger">Rejected</span>';
+            itemApprovals[bm_id] = status;
+            console.log('Updated approvals:', itemApprovals);
 
-                        $(`#status-${bm_id}`).html(badge);
-                        $(`#row-${bm_id} td:nth-child(8)`).html(signBadge); // Update signature column
-                        $(`#row-${bm_id} td:last-child`).html(''); // Clear action buttons
-                    } else {
-                        swal("Error!", response.message, "error");
-                    }
-                },
-                error: function() {
-                    swal("Error!", "Failed to update status", "error");
-                }
-            });
+            let badgeClass = status === 'Approve' ? 'success' : 'danger';
+            let statusText = status === 'Approve' ? 'Disetujui' : 'Ditolak';
+
+            $(`#status-${bm_id}`).html(`<span class="badge bg-${badgeClass}">${statusText}</span>`);
         }
 
         function simpanApproval() {
             const request_id = $('#current_request_id').val();
 
-            // Debug log
-            console.log('Saving approvals:', {
-                request_id: request_id,
-                approvals: itemApprovals
-            });
-
+            // Check if there are any items to approve
             if (Object.keys(itemApprovals).length === 0) {
-                swal("Peringatan!", "Silakan pilih status approval untuk setiap item", "warning");
+                swal("Peringatan!", "Tidak ada item untuk diapprove", "warning");
+                return;
+            }
+
+            // Check if all items have been processed
+            const hasUnprocessedItems = Object.values(itemApprovals).some(status => status === 'pending');
+            if (hasUnprocessedItems) {
+                swal("Peringatan!", "Silakan pilih status Approve/Reject untuk semua item", "warning");
                 return;
             }
 
@@ -329,7 +357,6 @@
                     approvals: itemApprovals
                 },
                 beforeSend: function() {
-                    // Tampilkan loading
                     swal({
                         title: "Loading...",
                         text: "Sedang memproses data",
@@ -339,7 +366,6 @@
                     });
                 },
                 success: function(response) {
-                    console.log('Response:', response);
                     if (response.success) {
                         swal({
                             title: "Berhasil!",
@@ -348,30 +374,25 @@
                             timer: 2000
                         }).then(() => {
                             $('#modalDetail').modal('hide');
-                            itemApprovals = {}; // Reset approvals
+                            itemApprovals = {};
                             table.ajax.reload();
                         });
                     } else {
                         swal("Error!", response.message, "error");
                     }
                 },
-                error: function(xhr, status, error) {
-                    console.error('Error:', {
-                        status: status,
-                        error: error,
-                        response: xhr.responseText
-                    });
-                    swal("Error!", "Terjadi kesalahan saat menyimpan data", "error");
+                error: function(xhr) {
+                    console.error('Error:', xhr);
+                    swal("Error!", xhr.responseJSON?.message || "Terjadi kesalahan saat menyimpan data",
+                        "error");
                 }
             });
-            location.reload();
         }
 
         function setItemStatus(bm_id, status) {
             itemApprovals[bm_id] = status;
             console.log('Updated approvals:', itemApprovals); // Debug log
 
-            // Update tampilan status
             let badgeClass = status === 'Approve' ? 'success' : 'danger';
             let statusText = status === 'Approve' ? 'Disetujui' : 'Ditolak';
 

@@ -32,13 +32,13 @@ class UsersTableSeeder extends Seeder
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
             [
-                'user_id' => 2,
+                'user_id' => 2, //Admin HCGA for change tracking status
                 'role_id' => '2',
-                'user_nmlengkap' => 'Administrator',
-                'user_nama' => 'admin',
-                'user_email' => 'admin@gmail.com',
+                'user_nmlengkap' => 'hcga1',
+                'user_nama' => 'hcga1',
+                'user_email' => 'hcga1@gmail.com',
                 'nomor_hp' => '0812222222',
-                'divisi' => 'Administration',
+                'divisi' => 'HCGA',
                 'departemen' => 'HR',
                 'user_foto' => 'undraw_profile.svg',
                 'user_password' => '25d55ad283aa400af464c76d713c07ad', // 12345678
