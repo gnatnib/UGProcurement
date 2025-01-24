@@ -38,7 +38,6 @@ class ApproveController extends Controller
                     ->select(
                         'r.request_id',
                         'r.request_tanggal',
-                        'r.request_kode',
                         'creator.divisi',
                         'creator.departemen',
                         'r.status'
@@ -57,7 +56,6 @@ class ApproveController extends Controller
                 $data = $query->groupBy(
                     'r.request_id',
                     'r.request_tanggal',
-                    'r.request_kode',
                     'creator.divisi',
                     'creator.departemen',
                     'r.status'
