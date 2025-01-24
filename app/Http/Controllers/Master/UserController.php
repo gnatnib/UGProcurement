@@ -87,9 +87,12 @@ class UserController extends Controller
         UserModel::create([
             'user_foto' => $img,
             'user_nmlengkap' => $request->nmlengkap,
-            'user_nama'   => $request->username,
+            'user_nama' => $request->username,
             'user_email' => $request->email,
             'role_id' => $request->role,
+            'divisi' => $request->divisi,
+            'departemen' => $request->departemen,
+            'nomor_hp' => '-', // Default value
             'user_password' => md5($request->pwd)
         ]);
 
