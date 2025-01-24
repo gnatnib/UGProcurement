@@ -16,10 +16,11 @@ return new class extends Migration
         Schema::create('tbl_signatures', function (Blueprint $table) {
             $table->id('signature_id');
             $table->string('request_id');
-            $table->unsignedInteger('user_id'); // Changed to match tbl_user type
-            $table->string('role_id');  // Changed to match tbl_user type
+            $table->unsignedInteger('user_id');
+            $table->string('role_id');
             $table->longText('signature');
             $table->string('action');
+            $table->string('signer_type'); // 'GM' or 'GMHCGA'
             $table->timestamps();
 
             $table->foreign('request_id')->references('request_id')->on('tbl_request_barang');
