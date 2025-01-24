@@ -254,6 +254,7 @@
                 swal("Error!", "Terjadi kesalahan saat menyimpan data", "error");
             }
         });
+        location.reload();
     }
 </script>
 @endsection 
