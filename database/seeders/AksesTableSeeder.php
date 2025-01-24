@@ -118,7 +118,7 @@ class AksesTableSeeder extends Seeder
 
     private function seedMasterBarangPermissions()
     {
-        $roles = [1]; //Superadmin
+        $roles = [1, 3]; //Superadmin and Admin HCGA
         foreach ($roles as $role_id) {
             DB::table('tbl_akses')->insert([
                 [
