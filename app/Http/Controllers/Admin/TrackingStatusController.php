@@ -15,7 +15,8 @@ class TrackingStatusController extends Controller
 {
     public function index()
     {
-        if (Session::get('user')->role_id != 1) {
+        $role_id = Session::get('user')->role_id;
+        if ($role_id != 2 && $role_id != 3) {
             return redirect()->back()->with('error', 'Unauthorized access');
         }
 

@@ -260,8 +260,8 @@
                         let showActions = true; // Changed to default true
 
                         // Only hide actions if the current role has already signed
+                        if (currentUserRole === '2' && hasGMHCGASignature) showActions = false;
                         if (currentUserRole === '4' && hasGMSignature) showActions = false;
-                        if (currentUserRole === '1' && hasGMHCGASignature) showActions = false;
 
                         if (item.approval === 'Approve') {
                             statusBadge = '<span class="badge bg-success">Disetujui</span>';
@@ -282,10 +282,9 @@
 
                         let showSignButton = false;
                         if (index === 0) {
-                            if (currentUserRole === '4' && !hasGMSignature) showSignButton = true;
-                            if (currentUserRole === '1' && !hasGMHCGASignature) showSignButton =
+                            if (currentUserRole === '2' && !hasGMHCGASignature) showSignButton =
                                 true;
-
+                            if (currentUserRole === '4' && !hasGMSignature) showSignButton = true;
                             signatureSection = signatureHtml;
                             if (showSignButton) {
                                 signatureSection += `<button class="btn btn-sm btn-primary" onclick="showSignatureModal('${request_id}')">
@@ -390,6 +389,7 @@
         }
 
         function setItemStatus(bm_id, status) {
+            2
             itemApprovals[bm_id] = status;
             console.log('Updated approvals:', itemApprovals); // Debug log
 

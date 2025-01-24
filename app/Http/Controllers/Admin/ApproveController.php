@@ -17,7 +17,7 @@ class ApproveController extends Controller
     public function index()
     {
         $role_id = Session::get('user')->role_id;
-        if ($role_id != 4 && $role_id != 1) {
+        if ($role_id != 2 && $role_id != 4) {
             return redirect()->back()->with('error', 'Unauthorized access');
         }
 
@@ -45,7 +45,7 @@ class ApproveController extends Controller
                     )
                     ->whereNotNull('r.request_id'); // Ensure we have valid requests
 
-                // If user is GMHCGA (role_id = 1), show all requests
+                // If user is GMHCGA (role_id = 2), show all requests
                 // For GM (role_id = 4), show only their division requests
                 if ($user->role_id == 4) {
                     $query->where([
@@ -307,7 +307,7 @@ class ApproveController extends Controller
             }
 
             // Determine signer type
-            $signerType = $user->role_id == 1 ? 'GMHCGA' : 'GM';
+            $signerType = $user->role_id == 2 ? 'GMHCGA' : 'GM';
 
             // Check if this type of signature already exists for this request
             $existingSignature = SignatureModel::where([
