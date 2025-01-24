@@ -3,11 +3,11 @@
 @section('content')
     <!-- PAGE-HEADER -->
     <div class="page-header">
-        <h1 class="page-title">Barang Masuk</h1>
+        <h1 class="page-title">{{ $title }}</h1>
         <div>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item text-gray">Transaksi</li>
-                <li class="breadcrumb-item active" aria-current="page">Barang Masuk</li>
+                <li class="breadcrumb-item active" aria-current="page">{{ $title }}</li>
             </ol>
         </div>
     </div>
@@ -19,7 +19,13 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header justify-content-between">
-                    <h3 class="card-title">Data</h3>
+                    <h3 class="card-title">
+                        @if (isset($request_data))
+                            Tambah Barang Masuk untuk Request: {{ $request_data->request_kode }}
+                        @else
+                            Data Barang Masuk
+                        @endif
+                    </h3>
                     @if ($hakTambah > 0)
                         <div>
                             <a class="modal-effect btn btn-primary-light" onclick="generateID()"
@@ -147,6 +153,13 @@
         function generateID() {
             id = new Date().getTime();
             $("input[name='bmkode']").val("BM-" + id);
+
+            // If request_id is available in URL, set it in a hidden input
+            const urlParams = new URLSearchParams(window.location.search);
+            const requestId = urlParams.get('request_id');
+            if (requestId) {
+                $("input[name='request_id']").val(requestId);
+            }
         }
 
         function update(data) {
@@ -196,8 +209,14 @@
                 order: [
                     [5, 'desc']
                 ],
-                ajax: "{{ route('barang-masuk.getbarang-masuk') }}",
-                columns: [{
+                ajax: {
+                    url: "{{ route('barang-masuk.getbarang-masuk') }}",
+                    data: function(d) {
+                        d.request_id = new URLSearchParams(window.location.search).get('request_id');
+                    }
+                },
+                columns: [ // Fixed the columns array syntax
+                    {
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
                         searchable: false

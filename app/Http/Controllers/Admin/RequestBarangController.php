@@ -244,101 +244,52 @@ class RequestBarangController extends Controller
                         case 'rejected':
                             $badge = '<span class="badge bg-danger">Rejected</span>';
                             break;
+                        case 'Diproses':
+                            $badge = '<span class="badge bg-primary">Diproses</span>';
+                            break;
+                        case 'Dikirim':
+                            $badge = '<span class="badge bg-info">Dikirim</span>';
+                            break;
+                        case 'Diterima':
+                            $badge = '<span class="badge bg-success">Diterima</span>';
+                            break;
                     }
                     return $badge;
                 })
                 ->addColumn('action', function ($row) use ($user) {
-                    $button = '';
+                    $buttons = '';
+
+                    // Add Tambah Barang Masuk button if status is draft
+                    if ($row->status === 'draft') {
+                        $buttons .= '<button onclick="addBarangMasuk(\'' . $row->request_id . '\')" class="btn btn-sm btn-success me-2">
+                        <i class="fe fe-plus"></i> Tambah Barang Masuk
+                    </button>';
+                    }
 
                     // Only show delete button if:
                     // 1. There are no barang masuk records
-                    // 2. Status is 'draft' for role_id = 5
+                    // 2. For role_id = 5, only show if status is 'draft'
                     if (!$row->has_barang_masuk) {
                         if ($user->role_id == 5) {
                             if ($row->status == 'draft') {
-                                $button = '<button onclick="deleteRequest(\'' . $row->request_id . '\')" class="btn btn-sm btn-danger">Delete</button>';
+                                $buttons .= '<button onclick="deleteRequest(\'' . $row->request_id . '\')" class="btn btn-sm btn-danger">
+                                <i class="fe fe-trash"></i> Delete
+                            </button>';
                             }
                         } else {
-                            $button = '<button onclick="deleteRequest(\'' . $row->request_id . '\')" class="btn btn-sm btn-danger">Delete</button>';
-                            $button .= ' <button onclick="editRequest(\'' . $row->request_id . '\')" class="btn btn-sm btn-primary">Edit</button>';
+                            $buttons .= '<button onclick="deleteRequest(\'' . $row->request_id . '\')" class="btn btn-sm btn-danger">
+                            <i class="fe fe-trash"></i> Delete
+                        </button>';
                         }
                     }
 
-                    return $button;
+                    // If no buttons, return a dash
+                    return $buttons ?: '-';
                 })
                 ->rawColumns(['status', 'action'])
                 ->make(true);
         }
     }
-
-    // public function getdata(Request $request)
-    // {
-    //     if ($request->ajax()) {
-    //         $user = Session::get('user');
-
-    //         // Query dasar
-    //         $query = DB::table('tbl_request_barang as r')
-    //             ->leftJoin('tbl_user as u', 'u.user_id', '=', 'r.user_id')
-    //             ->select(
-    //                 'r.request_id',
-    //                 'r.request_kode',
-    //                 'r.request_tanggal',
-    //                 'r.departemen',
-    //                 'r.status',
-    //                 'r.created_at'
-    //             );
-
-    //         // Jika role_id = 5 (User), hanya tampilkan request miliknya
-    //         if ($user->role_id == 5) {
-    //             $query->where('r.user_id', $user->user_id);
-    //         }
-
-    //         // Eksekusi query
-    //         $data = $query->orderBy('r.created_at', 'DESC')->get();
-
-    //         return DataTables::of($data)
-    //             ->addIndexColumn()
-    //             ->addColumn('tanggal_format', function($row) {
-    //                 return $row->request_tanggal ? date('d F Y', strtotime($row->request_tanggal)) : '-';
-    //             })
-    //             ->addColumn('status', function($row) {
-    //                 $badge = '';
-    //                 switch($row->status) {
-    //                     case 'draft':
-    //                         $badge = '<span class="badge bg-warning">Draft</span>';
-    //                         break;
-    //                     case 'pending':
-    //                         $badge = '<span class="badge bg-info">Pending</span>';
-    //                         break;
-    //                     case 'approved':
-    //                         $badge = '<span class="badge bg-success">Approved</span>';
-    //                         break;
-    //                     case 'rejected':
-    //                         $badge = '<span class="badge bg-danger">Rejected</span>';
-    //                         break;
-    //                 }
-    //                 return $badge;
-    //             })
-    //             ->addColumn('action', function($row) use ($user) {
-    //                 $button = '';
-
-    //                 // Jika role_id = 5, hanya bisa menghapus request miliknya yang masih draft
-    //                 if ($user->role_id == 5) {
-    //                     if ($row->status == 'draft') {
-    //                         $button = '<button onclick="deleteRequest(\''.$row->request_id.'\')" class="btn btn-sm btn-danger">Delete</button>';
-    //                     }
-    //                 } else {
-    //                     // Untuk role selain user, bisa edit dan hapus semua request
-    //                     $button = '<button onclick="deleteRequest(\''.$row->request_id.'\')" class="btn btn-sm btn-danger">Delete</button>';
-    //                     $button .= ' <button onclick="editRequest(\''.$row->request_id.'\')" class="btn btn-sm btn-primary">Edit</button>';
-    //                 }
-
-    //                 return $button;
-    //             })
-    //             ->rawColumns(['status', 'action'])
-    //             ->make(true);
-    //     }
-    // }
 
     public function proses_tambah(Request $request)
     {

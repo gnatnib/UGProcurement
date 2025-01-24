@@ -19,7 +19,21 @@ class UsersTableSeeder extends Seeder
         DB::table('tbl_user')->insert([
             [
                 'user_id' => 1,
-                'role_id' => '1', //Highest role GMHCGA
+                'role_id' => '1', //Highest role Superadmin
+                'user_nmlengkap' => 'Superadmin',
+                'user_nama' => 'superadmin',
+                'user_email' => 'superadmin@gmail.com',
+                'nomor_hp' => '0811111111',
+                'divisi' => 'HCGA',
+                'departemen' => 'HR',
+                'user_foto' => 'undraw_profile.svg',
+                'user_password' => '25d55ad283aa400af464c76d713c07ad', // 12345678
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+            ],
+            [
+                'user_id' => 2,
+                'role_id' => '2', //GMHCGA
                 'user_nmlengkap' => 'GMHCGA',
                 'user_nama' => 'gmhcga',
                 'user_email' => 'gmhcga@gmail.com',
@@ -32,28 +46,14 @@ class UsersTableSeeder extends Seeder
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
             [
-                'user_id' => 2, //Admin HCGA for change tracking status
-                'role_id' => '2',
-                'user_nmlengkap' => 'hcga1',
-                'user_nama' => 'hcga1',
-                'user_email' => 'hcga1@gmail.com',
-                'nomor_hp' => '0812222222',
-                'divisi' => 'HCGA',
-                'departemen' => 'HR',
-                'user_foto' => 'undraw_profile.svg',
-                'user_password' => '25d55ad283aa400af464c76d713c07ad', // 12345678
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
                 'user_id' => 3,
-                'role_id' => '3',
-                'user_nmlengkap' => 'Operator',
-                'user_nama' => 'operator',
-                'user_email' => 'operator@gmail.com',
-                'nomor_hp' => '0813333333',
-                'divisi' => 'Operations',
-                'departemen' => 'Logistics',
+                'role_id' => '2',
+                'user_nmlengkap' => 'Administrator',
+                'user_nama' => 'admin',
+                'user_email' => 'admin@gmail.com',
+                'nomor_hp' => '0812222222',
+                'divisi' => 'Administration',
+                'departemen' => 'HR',
                 'user_foto' => 'undraw_profile.svg',
                 'user_password' => '25d55ad283aa400af464c76d713c07ad', // 12345678
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'),

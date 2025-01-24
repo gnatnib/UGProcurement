@@ -81,7 +81,7 @@ class AksesTableSeeder extends Seeder
 
     private function seedRequestBarangPermissions()
     {
-        $roles = [1, 2, 3, 4, 5]; // Super Admin, Admin, Operator, Manager
+        $roles = [5]; // User
         foreach ($roles as $role_id) {
             DB::table('tbl_akses')->insert([
                 [
@@ -118,7 +118,7 @@ class AksesTableSeeder extends Seeder
 
     private function seedMasterBarangPermissions()
     {
-        $roles = [1, 2, 3, 4, 5];
+        $roles = [1]; //Superadmin
         foreach ($roles as $role_id) {
             DB::table('tbl_akses')->insert([
                 [
@@ -192,7 +192,7 @@ class AksesTableSeeder extends Seeder
 
     private function seedTransaksiPermissions()
     {
-        $roles = [1, 2, 3, 4, 5];
+        $roles = [];
         foreach ($roles as $role_id) {
             DB::table('tbl_akses')->insert([
                 [
@@ -315,7 +315,7 @@ class AksesTableSeeder extends Seeder
     private function seedOtherMenuPermissions()
     {
         $otherMenuIds = range(1, 6); // Settings, Menu, Role, User, Akses, Web
-        $roles = [1, 2]; // Only Super Admin and Admin get these permissions
+        $roles = [1]; // Only Super Admin and Admin get these permissions
 
         foreach ($roles as $role_id) {
             foreach ($otherMenuIds as $othermenu_id) {
@@ -355,7 +355,7 @@ class AksesTableSeeder extends Seeder
 
     private function seedApprovalPermissions()
     {
-        $roles = [1, 4]; // GMHCGA, General Manager
+        $roles = [2, 4]; // GMHCGA, General Manager
         foreach ($roles as $role_id) {
             DB::table('tbl_akses')->insert([
                 [
@@ -392,7 +392,7 @@ class AksesTableSeeder extends Seeder
 
     private function seedTrackingStatusPermissions()
     {
-        $roles = [1]; //Hanya untuk HCGA (Superadmin)
+        $roles = [2, 3]; //Hanya GMHCGA dan Admin HCGA
         foreach ($roles as $role_id) {
             DB::table('tbl_akses')->insert([
                 [
