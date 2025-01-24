@@ -39,7 +39,7 @@
                                 <tr>
                                     <th width="1%">No</th>
                                     <th>Tanggal Request</th>
-                                    <th>Kode Request</th>
+                                    <th>Request ID</th>
                                     <th>Departemen</th>
                                     <th>Status</th>
                                     <th width="1%">Action</th>
@@ -124,15 +124,18 @@
                 // In request.blade.php, update the columns definition in DataTable initialization
                 columns: [{
                         data: 'DT_RowIndex',
-                        name: 'DT_RowIndex'
+                        name: 'DT_RowIndex',
+                        orderable: false,
+                        searchable: false,
+                        width: '5%' // Fixed narrow width
                     },
                     {
                         data: 'tanggal_format',
                         name: 'request_tanggal'
                     },
                     {
-                        data: 'request_kode',
-                        name: 'request_kode'
+                        data: 'request_id',
+                        name: 'request_id'
                     },
                     {
                         data: 'departemen',
