@@ -10,7 +10,6 @@ return new class extends Migration
         Schema::create('tbl_request_barang', function (Blueprint $table) {
             $table->string('request_id')->primary();
             $table->integer('user_id')->unsigned();
-            $table->string('request_kode');
             $table->date('request_tanggal');
             $table->string('departemen');
             $table->enum('status', ['draft', 'pending', 'approved', 'rejected', 'Diproses', 'Dikirim', 'Diterima'])->default('draft');

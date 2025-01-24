@@ -21,7 +21,7 @@
                 <div class="card-header justify-content-between">
                     <h3 class="card-title">
                         @if (isset($request_data))
-                            Tambah Barang Masuk untuk Request: {{ $request_data->request_kode }}
+                            Tambah Barang Masuk untuk Request: {{ $request_data->request_id }}
                         @else
                             Data Barang Masuk
                         @endif
