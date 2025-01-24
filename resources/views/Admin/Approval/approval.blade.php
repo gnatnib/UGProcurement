@@ -192,15 +192,15 @@
                     name: 'request_tanggal'
                 },
                 {
-                    data: 'request_kode',
-                    name: 'request_kode'
+                    data: 'request_id',
+                    name: 'request_id'
                 },
                 {
                     data: 'divisi',
                     name: 'divisi'
                 },
                 {
-                    data: 'departemen',
+                    data: 'departemen', // Add this column
                     name: 'departemen'
                 },
                 {
