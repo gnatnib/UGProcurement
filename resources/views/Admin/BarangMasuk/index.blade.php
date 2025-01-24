@@ -269,7 +269,7 @@
        </div>`;
 
             let trackingStatus = data.tracking_status || 'PENDING';
-            let trackingClass = data.tracking_status ? 'bg-info' : 'bg-warning';
+            let trackingClass = data.tracking_status ? 'bg-success' : 'bg-warning';
             let trackingBadge = `
        <div class="d-inline-block">
            <span class="badge rounded-pill ${trackingClass}-gradient px-3 py-2">

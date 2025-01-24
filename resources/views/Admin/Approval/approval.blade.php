@@ -226,13 +226,19 @@
 
                     if (item.approval === 'Approve') {
                         statusBadge = '<span class="badge bg-success">Disetujui</span>';
-                        signButton = `
-                    <div>
-                        <span class="badge bg-success">Signed</span>
-                        <img src="/admin/approval/view-signature/${request_id}" 
-                             style="max-width: 150px; margin-top: 5px; border: 1px solid #ddd;"
-                             alt="Signature">
-                    </div>`;
+                        // Fetch and display signature
+                        $.get(`/admin/approval/view-signature/${request_id}`, function(signatureData) {
+                            if (signatureData.success) {
+                                signButton = `
+                            <div>
+                                <span class="badge bg-success">Signed</span>
+                                <img src="${signatureData.signature}" 
+                                     style="max-width: 150px; margin-top: 5px; border: 1px solid #ddd;"
+                                     alt="Signature">
+                            </div>`;
+                                $(`#signature-${item.bm_id}`).html(signButton);
+                            }
+                        });
                     } else if (item.approval === 'Reject') {
                         statusBadge = '<span class="badge bg-danger">Ditolak</span>';
                         signButton = '<span class="badge bg-danger">Rejected</span>';
@@ -251,17 +257,17 @@
                     }
 
                     html += `
-                <tr id="row-${item.bm_id}">
-                    <td>${item.barang_kode}</td>
-                    <td>${item.barang_nama}</td>
-                    <td>${item.bm_jumlah}</td>
-                    <td>Rp ${parseFloat(item.harga).toLocaleString('id-ID')}</td>
-                    <td>${item.divisi}</td>
-                    <td>${item.keterangan}</td>
-                    <td id="status-${item.bm_id}">${statusBadge}</td>
-                    <td>${signButton}</td>
-                    <td>${actionButtons}</td>
-                </tr>`;
+            <tr id="row-${item.bm_id}">
+                <td>${item.barang_kode}</td>
+                <td>${item.barang_nama}</td>
+                <td>${item.bm_jumlah}</td>
+                <td>Rp ${parseFloat(item.harga).toLocaleString('id-ID')}</td>
+                <td>${item.divisi}</td>
+                <td>${item.keterangan}</td>
+                <td id="status-${item.bm_id}">${statusBadge}</td>
+                <td id="signature-${item.bm_id}">${signButton}</td>
+                <td>${actionButtons}</td>
+            </tr>`;
                 });
                 $('#detail-content').html(html);
                 $('#modalDetail').modal('show');

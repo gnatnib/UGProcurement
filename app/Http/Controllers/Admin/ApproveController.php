@@ -213,11 +213,17 @@ class ApproveController extends Controller
         try {
             DB::beginTransaction();
 
+            $signatureData = $request->signature;
+            // Remove the data:image/png;base64, prefix if it exists
+            if (strpos($signatureData, 'data:image/png;base64,') === 0) {
+                $signatureData = substr($signatureData, strpos($signatureData, ',') + 1);
+            }
+
             $signature = new SignatureModel();
             $signature->request_id = $request->request_id;
             $signature->user_id = Session::get('user')->user_id;
             $signature->role_id = Session::get('user')->role_id;
-            $signature->signature = $request->signature;
+            $signature->signature = $signatureData;
             $signature->action = 'Approve';
             $signature->save();
 
@@ -239,24 +245,24 @@ class ApproveController extends Controller
             abort(404);
         }
 
-        // Check if it's already a full base64 string
-        if (strpos($signature->signature, 'data:image/png;base64,') === 0) {
-            $imageData = substr($signature->signature, strpos($signature->signature, ',') + 1);
-        } else {
-            $imageData = $signature->signature;
-        }
-
         try {
-            $decodedImage = base64_decode($imageData);
-            if ($decodedImage === false) {
-                abort(400, 'Invalid image data');
+            $imageData = $signature->signature;
+
+            // If the signature doesn't start with data:image, add it
+            if (strpos($imageData, 'data:image/png;base64,') !== 0) {
+                $imageData = 'data:image/png;base64,' . $imageData;
             }
 
-            return response($decodedImage)
-                ->header('Content-Type', 'image/png');
+            return response()->json([
+                'success' => true,
+                'signature' => $imageData
+            ]);
         } catch (\Exception $e) {
             Log::error('Signature decode error: ' . $e->getMessage());
-            abort(500, 'Error processing signature');
+            return response()->json([
+                'success' => false,
+                'message' => 'Error processing signature'
+            ], 500);
         }
     }
 
