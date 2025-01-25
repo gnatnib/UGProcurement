@@ -54,7 +54,7 @@
                             <thead>
                                 <th class="border-bottom-0" width="1%">No</th>
                                 <th class="border-bottom-0">Tanggal Request</th>
-                                <th class="border-bottom-0">Kode Request</th>
+                                <th class="border-bottom-0">Request ID</th>
                                 <th class="border-bottom-0">Departemen</th>
                                 <th class="border-bottom-0">Status</th>
                                 <th class="border-bottom-0">Action</th>
@@ -117,8 +117,8 @@
                     name: 'request_tanggal',
                 },
                 {
-                    data: 'request_kode',
-                    name: 'request_kode',
+                    data: 'request_id',
+                    name: 'request_id',
                 },
                 {
                     data: 'departemen',
