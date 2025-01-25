@@ -229,14 +229,20 @@ class ApproveController extends Controller
             }
 
             // Update barangmasuk records
-            foreach ($request->approvals as $bm_id => $status) {
-                $updated = DB::table('tbl_barangmasuk')
-                    ->where('bm_id', $bm_id)
-                    ->update([
-                        'approval' => $status,
-                        'tracking_status' => $status === 'Approve' ? 'Diproses' : 'Ditolak',
-                        'updated_at' => now()
-                    ]);
+            foreach ($request->approvals as $bm_id => $approval) {
+            $updateData = [
+                'approval' => $approval['status'],
+                'tracking_status' => $approval['status'] === 'Approve' ? 'Diproses' : 'Ditolak',
+                'updated_at' => now()
+            ];
+
+            if ($approval['status'] === 'Reject' && !empty($approval['reason'])) {
+                $updateData['keterangan'] = $approval['reason'];
+            }
+
+            DB::table('tbl_barangmasuk')
+                ->where('bm_id', $bm_id)
+                ->update($updateData);
             }
 
             // Check if both signatures exist for status update
