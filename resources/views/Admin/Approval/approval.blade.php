@@ -41,45 +41,64 @@
         </div>
     </div>
 
+    ```html
     <!-- Modal Detail -->
     <div class="modal fade" id="modalDetail">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header d-flex justify-content-between align-items-center">
                     <h5 class="modal-title">Detail Request Barang</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn btn-primary" onclick="showSignatureModal()">
+                        <i class="fe fe-edit-2"></i> Sign Request
+                    </button>
                 </div>
+    
+                <!-- Signature Area -->
+                <div class="mx-3 mt-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6 class="card-title mb-0">Signatures</h6>
+                            </div>
+                            <div id="signature-display" class="d-flex flex-wrap gap-4">
+                                <!-- Signatures here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
                 <div class="modal-body">
                     <input type="hidden" id="current_request_id">
+                    
                     <div class="table-responsive">
-                        <table class="table table-bordered">
+                        <table class="table table-bordered table-striped mb-0">
                             <thead>
                                 <tr>
-                                    <th>Kode Barang</th>
-                                    <th>Nama Barang</th>
-                                    <th>Jumlah Item</th>
-                                    <th>Harga Satuan</th>
-                                    <th>Divisi</th>
+                                    <th style="width: 10%">Kode</th>
+                                    <th style="width: 20%">Nama Barang</th>
+                                    <th style="width: 8%">Jumlah</th>
+                                    <th style="width: 12%">Harga</th>
+                                    <th style="width: 15%">Divisi</th>
                                     <th>Keterangan</th>
-                                    <th>Status</th>
-                                    <th>Signature</th>
-                                    <th>Action</th>
+                                    <th style="width: 10%">Status</th>
+                                    <th style="width: 100px">Action</th>
                                 </tr>
                             </thead>
                             <tbody id="detail-content"></tbody>
                         </table>
                     </div>
                 </div>
+    
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-red" data-bs-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
                     <button type="button" class="btn btn-primary" onclick="simpanApproval()">Simpan Approval</button>
                 </div>
             </div>
         </div>
     </div>
-
+    
     <!-- Signature Modal -->
-    <div class="modal fade" id="signatureModal" tabindex="-1">
+    <div class="modal fade" id="signatureModal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -87,16 +106,78 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <canvas id="signaturePad" class="border rounded" width="400" height="200"></canvas>
-                    <input type="hidden" id="currentBmId">
+                    <canvas id="signaturePad" class="border rounded w-100" width="400" height="200"></canvas>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="clearSignature()">Clear</button>
-                    <button type="button" class="btn btn-primary" onclick="saveSignature()">Save Signature</button>
+                    <button type="button" class="btn btn-light" onclick="clearSignature()">
+                        <i class="fe fe-refresh-cw"></i> Clear
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="saveSignature()">
+                        <i class="fe fe-check"></i> Save
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+    
+    <style>
+    /* General Table Styles */
+    .table {
+        width: 100%;
+        margin-bottom: 0;
+        font-size: 13px;
+    }
+    
+    .table th {
+        background: #f8f9fa;
+        font-weight: 600;
+        text-transform: uppercase;
+        padding: 12px;
+        text-align: center;
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+    
+    .table td {
+        padding: 12px;
+        vertical-align: middle;
+    }
+    
+    .table td:not(:nth-child(6)) {
+        white-space: nowrap;
+    }
+    
+    /* Signature Styles */
+    #signature-display {
+        min-height: 80px;
+    }
+    
+    .signature-item {
+        background: white;
+        padding: 12px;
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .signature-item img {
+        max-width: 120px;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        padding: 2px;
+    }
+    
+    /* Action Button Styles */
+    .action-btn-group {
+        display: flex;
+        gap: 5px;
+        justify-content: center;
+    }
+    
+    .action-btn-group .btn {
+        padding: 4px 8px;
+    }
+    </style>
+    ```
 @endsection
 
 @section('scripts')
@@ -221,115 +302,98 @@
             ]
         });
 
+function numberFormat(number) {
+    return new Intl.NumberFormat('id-ID').format(number);
+}
+
+
         function showDetail(request_id) {
-            $('#current_request_id').val(request_id);
+    $('#current_request_id').val(request_id);
+    itemApprovals = {};
 
-            $.get("/admin/approval/detail/" + request_id, function(data) {
-                let html = '';
-
-                $.get(`/admin/approval/view-signature/${request_id}`, function(signatureData) {
-                    let signatureSection = '';
-                    let hasGMSignature = false;
-                    let hasGMHCGASignature = false;
-                    let signatureHtml = '<div class="d-flex flex-column">';
-                    const currentUserRole = '{{ Session::get('user')->role_id }}';
-
-                    // Reset itemApprovals object
-                    itemApprovals = {};
-
-                    if (signatureData.success && signatureData.signatures && signatureData.signatures
-                        .length > 0) {
-                        signatureData.signatures.forEach(sig => {
-                            if (sig.signer_type === 'GM') hasGMSignature = true;
-                            if (sig.signer_type === 'GMHCGA') hasGMHCGASignature = true;
-
-                            signatureHtml += `
-                        <div class="mb-2">
-                            <span class="badge bg-success">Signed by ${sig.signer_type}</span>
-                            <img src="${sig.signature}" 
-                                 style="max-width: 150px; margin-top: 5px; border: 1px solid #ddd;"
-                                 alt="Signature ${sig.signer_type}">
-                        </div>`;
-                        });
-                    }
-                    signatureHtml += '</div>';
-
-                    data.forEach((item, index) => {
-                        let statusBadge = '';
-                        let actionButtons = '';
-                        let showActions = true; // Changed to default true
-
-                        // Only hide actions if the current role has already signed
-                        if (currentUserRole === '2' && hasGMHCGASignature) showActions = false;
-                        if (currentUserRole === '4' && hasGMSignature) showActions = false;
-
-                        if (item.approval === 'Approve') {
-                            statusBadge = '<span class="badge bg-success">Disetujui</span>';
-                        } else if (item.approval === 'Reject') {
-                            statusBadge = '<span class="badge bg-danger">Ditolak</span>';
-                        } else {
-                            statusBadge = '<span class="badge bg-warning">Pending</span>';
-                            if (showActions) {
-                                actionButtons = `
-                            <button class="btn btn-sm btn-success" onclick="setItemStatus(${item.bm_id}, 'Approve')">
-                                <i class="fe fe-check"></i>
-                            </button>
-                            <button class="btn btn-sm btn-danger" onclick="setItemStatus(${item.bm_id}, 'Reject')">
-                                <i class="fe fe-x"></i>
-                            </button>`;
-                            }
-                        }
-
-                        let showSignButton = false;
-                        if (index === 0) {
-                            if (currentUserRole === '2' && !hasGMHCGASignature) showSignButton =
-                                true;
-                            if (currentUserRole === '4' && !hasGMSignature) showSignButton = true;
-                            signatureSection = signatureHtml;
-                            if (showSignButton) {
-                                signatureSection += `<button class="btn btn-sm btn-primary" onclick="showSignatureModal('${request_id}')">
-                            <i class="fe fe-edit"></i> Sign Request
-                        </button>`;
-                            }
-                        }
-
-                        html += `
-                <tr id="row-${item.bm_id}">
-                    <td>${item.barang_kode}</td>
-                    <td>${item.barang_nama}</td>
-                    <td>${item.bm_jumlah}</td>
-                    <td>Rp ${parseFloat(item.harga).toLocaleString('id-ID')}</td>
-                    <td>${item.divisi}</td>
-                    <td>${item.keterangan}</td>
-                    <td id="status-${item.bm_id}">${statusBadge}</td>
-                    <td>${index === 0 ? signatureSection : ''}</td>
-                    <td>${actionButtons}</td>
-                </tr>`;
-
-                        // Initialize approval status in itemApprovals if actions are shown
-                        if (showActions) {
-                            itemApprovals[item.bm_id] = item.approval || 'pending';
-                        }
-                    });
-
-                    $('#detail-content').html(html);
-                    $('#modalDetail').modal('show');
-                });
+    Promise.all([
+        $.get("/admin/approval/detail/" + request_id),
+        $.get("/admin/approval/view-signature/" + request_id)
+    ]).then(([data, signatureData]) => {
+        // Render signatures di area atas
+        let signatureDisplay = '';
+        if (signatureData.success && signatureData.signatures?.length > 0) {
+            signatureData.signatures.forEach(sig => {
+                signatureDisplay += `
+                    <div class="text-center me-4">
+                        <span class="badge bg-success mb-2">Signed by ${sig.signer_type}</span>
+                        <img src="${sig.signature}" class="border rounded p-1" style="max-width: 150px;">
+                    </div>`;
             });
         }
+        $('#signature-display').html(signatureDisplay);
+
+        // Cek status tanda tangan
+        const hasGMSignature = signatureData.signatures?.some(s => s.signer_type === 'GM');
+        const hasGMHCGASignature = signatureData.signatures?.some(s => s.signer_type === 'GMHCGA');
+        const currentUserRole = '{{ Session::get('user')->role_id }}';
+
+        // Render table content
+        let html = '';
+        data.forEach(item => {
+            const showActions = !(
+                (currentUserRole === '2' && hasGMHCGASignature) || 
+                (currentUserRole === '4' && hasGMSignature)
+            );
+
+            let actionButtons = '';
+            if (item.approval !== 'Approve' && item.approval !== 'Reject' && showActions) {
+                actionButtons = `
+                    <div class="btn-group">
+                        <button class="btn btn-sm btn-success" onclick="setItemStatus(${item.bm_id}, 'Approve')">
+                            <i class="fe fe-check"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="setItemStatus(${item.bm_id}, 'Reject')">
+                            <i class="fe fe-x"></i>
+                        </button>
+                    </div>`;
+            }
+
+            html += `
+                <tr>
+                    <td>${item.barang_kode}</td>
+                    <td>${item.barang_nama}</td>
+                    <td class="text-center">${item.bm_jumlah}</td>
+                    <td class="text-end">Rp ${numberFormat(item.harga)}</td>
+                    <td>${item.divisi}</td>
+                    <td>${item.keterangan}</td>
+                    <td class="text-center" id="status-${item.bm_id}">${getStatusBadge(item.approval)}</td>
+                    <td class="text-center">${actionButtons}</td>
+                    <td></td>
+                </tr>`;
+
+            if (showActions) {
+                itemApprovals[item.bm_id] = item.approval || 'pending';
+            }
+        });
+
+        $('#detail-content').html(html);
+        $('#modalDetail').modal('show');
+    });
+}
 
         // Object untuk menyimpan status approval per item
         let itemApprovals = {};
 
+
+        function getStatusBadge(status) {
+    const badges = {
+        'Approve': '<span class="badge bg-success">Disetujui</span>',
+        'Reject': '<span class="badge bg-danger">Ditolak</span>',
+        'pending': '<span class="badge bg-warning">Pending</span>'
+    };
+    return badges[status] || badges.pending;
+}
+
         function setItemStatus(bm_id, status) {
-            itemApprovals[bm_id] = status;
-            console.log('Updated approvals:', itemApprovals);
-
-            let badgeClass = status === 'Approve' ? 'success' : 'danger';
-            let statusText = status === 'Approve' ? 'Disetujui' : 'Ditolak';
-
-            $(`#status-${bm_id}`).html(`<span class="badge bg-${badgeClass}">${statusText}</span>`);
-        }
+    itemApprovals[bm_id] = status;
+    $(`#status-${bm_id}`).html(getStatusBadge(status));
+}
 
         function simpanApproval() {
             const request_id = $('#current_request_id').val();
@@ -427,5 +491,17 @@
                     }
                 });
         }
+
+        function showSignatureModal() {
+    $('#signatureModal').modal('show');
+}
+
+// Initialize signature pad when modal shown
+$('#signatureModal').on('shown.bs.modal', function() {
+    const canvas = document.getElementById('signaturePad');
+    signaturePad = new SignaturePad(canvas, {
+        backgroundColor: 'rgb(255, 255, 255)'
+    });
+});
     </script>
 @endsection
