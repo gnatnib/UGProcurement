@@ -105,8 +105,8 @@
                         name: 'request_tanggal'
                     },
                     {
-                        data: 'request_kode',
-                        name: 'request_kode'
+                        data: 'request_id',
+                        name: 'request_id'
                     },
                     {
                         data: 'divisi',
@@ -169,8 +169,8 @@
                         <td>
                             <select class="form-select form-select-sm" onchange="setItemStatus(${item.bm_id}, this.value)">
                                 <option value="">Pilih Status</option>
-                                <option value="Diproses" ${currentStatus === 'Diproses' ? 'selected' : ''}>Sedang Diproses</option>
-                                <option value="Dikirim" ${currentStatus === 'Dikirim' ? 'selected' : ''}>Sedang Dikirim</option>
+                                <option value="Diproses" ${currentStatus === 'Diproses' ? 'selected' : ''}> Diproses</option>
+                                <option value="Dikirim" ${currentStatus === 'Dikirim' ? 'selected' : ''}>Dikirim</option>
                                 <option value="Diterima" ${currentStatus === 'Diterima' ? 'selected' : ''}>Diterima</option>
                             </select>
                         </td>

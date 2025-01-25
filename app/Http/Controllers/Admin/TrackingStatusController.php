@@ -36,13 +36,13 @@ class TrackingStatusController extends Controller
                     ->select(
                         'r.request_id',
                         'r.request_tanggal',
-                        'r.request_kode',
+                        'r.request_id',
                         'creator.divisi',
                         'creator.departemen',
                         'r.status'
                     )
                     ->whereIn('r.status', ['Diproses', 'Dikirim', 'Diterima']) // Ubah ini untuk menampilkan semua status
-                    ->groupBy('r.request_id', 'r.request_tanggal', 'r.request_kode', 'creator.divisi', 'creator.departemen', 'r.status')
+                    ->groupBy('r.request_id', 'r.request_tanggal', 'r.request_id', 'creator.divisi', 'creator.departemen', 'r.status')
                     ->get();
 
                 return DataTables::of($data)
@@ -53,9 +53,9 @@ class TrackingStatusController extends Controller
                     ->addColumn('status_badge', function ($row) {
                         switch ($row->status) {
                             case 'Diproses':
-                                return '<span class="badge bg-warning">Sedang Diproses</span>';
+                                return '<span class="badge bg-warning">Diproses</span>';
                             case 'Dikirim':
-                                return '<span class="badge bg-info">Sedang Dikirim</span>';
+                                return '<span class="badge bg-info">Dikirim</span>';
                             case 'Diterima':
                                 return '<span class="badge bg-success">Selesai</span>';
                             default:
