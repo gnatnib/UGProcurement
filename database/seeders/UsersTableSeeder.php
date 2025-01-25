@@ -47,12 +47,12 @@ class UsersTableSeeder extends Seeder
             ],
             [
                 'user_id' => 3,
-                'role_id' => '2',
-                'user_nmlengkap' => 'Administrator',
-                'user_nama' => 'admin',
-                'user_email' => 'admin@gmail.com',
+                'role_id' => '3',
+                'user_nmlengkap' => 'Adminhcga',
+                'user_nama' => 'adminhcga',
+                'user_email' => 'adminhcga@gmail.com',
                 'nomor_hp' => '0812222222',
-                'divisi' => 'Administration',
+                'divisi' => 'Human Capital and General Affair',
                 'departemen' => 'HR',
                 'user_foto' => 'undraw_profile.svg',
                 'user_password' => '25d55ad283aa400af464c76d713c07ad', // 12345678
@@ -314,8 +314,8 @@ class UsersTableSeeder extends Seeder
             [
                 'user_id' => 22,
                 'role_id' => '5',
-                'user_nmlengkap' => 'hc1',
-                'user_nama' => 'hc1',
+                'user_nmlengkap' => 'hcga1',
+                'user_nama' => 'hcga1',
                 'user_email' => 'hc1@gmail.com',
                 'nomor_hp' => '08123125',
                 'divisi' => 'Human Capital and General Affair',
@@ -328,7 +328,7 @@ class UsersTableSeeder extends Seeder
             [
                 'user_id' => 23,
                 'role_id' => '5',
-                'user_nmlengkap' => 'hc2',
+                'user_nmlengkap' => 'hcga2',
                 'user_nama' => 'hc2',
                 'user_email' => 'hc2@gmail.com',
                 'nomor_hp' => '08123126',
@@ -342,7 +342,7 @@ class UsersTableSeeder extends Seeder
             [
                 'user_id' => 24,
                 'role_id' => '5',
-                'user_nmlengkap' => 'hc3',
+                'user_nmlengkap' => 'hcga3',
                 'user_nama' => 'hc3',
                 'user_email' => 'hc3@gmail.com',
                 'nomor_hp' => '08123127',

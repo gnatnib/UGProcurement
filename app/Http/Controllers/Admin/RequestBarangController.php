@@ -77,6 +77,56 @@ class RequestBarangController extends Controller
                 ->make(true);
         }
     }
+
+    public function getDetails($id)
+    {
+        try {
+            // Get request details
+            $request = DB::table('tbl_request_barang as r')
+                ->leftJoin('tbl_user as u', 'u.user_id', '=', 'r.user_id')
+                ->where('r.request_id', $id)
+                ->select('r.*', 'u.user_nmlengkap', 'u.departemen')
+                ->first();
+
+            if (!$request) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Request tidak ditemukan'
+                ], 404);
+            }
+
+            // Get items from barangmasuk with barang details for this request
+            $items = DB::table('tbl_barangmasuk as bm')
+                ->leftJoin('tbl_barang as b', 'b.barang_kode', '=', 'bm.barang_kode')
+                ->where('bm.request_id', $id)
+                ->select(
+                    'bm.*',
+                    'b.barang_nama',
+                    DB::raw('(bm.bm_jumlah * bm.harga) as total_harga'),
+                    'bm.keterangan' // Make sure keterangan is selected
+                )
+                ->get();
+
+            // Calculate totals
+            $totalItems = $items->count();
+            $totalHarga = $items->sum('total_harga');
+
+            return response()->json([
+                'success' => true,
+                'request' => $request,
+                'items' => $items,
+                'total_items' => $totalItems,
+                'total_harga' => $totalHarga
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error in getDetails: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function hapus(Request $request)
     {
         try {
@@ -102,31 +152,31 @@ class RequestBarangController extends Controller
         // Ambil user dan divisi
         $user = Session::get('user');
         $divisiCode = $this->getDivisionCode($user->divisi);
-        
+
         // Format: nomor-divisi-bulan-tahun
         $year = date('Y');
         $month = date('m');
-        
+
         // Cari nomor terakhir untuk bulan dan tahun ini
         $lastRequest = DB::table('tbl_request_barang')
             ->where('request_id', 'LIKE', "%-$divisiCode-$month-$year")
             ->orderBy('request_id', 'DESC')
             ->first();
-        
+
         $number = '01';
         if ($lastRequest) {
             $lastNumber = explode('-', $lastRequest->request_id)[0];
             $number = str_pad((int)$lastNumber + 1, 2, '0', STR_PAD_LEFT);
         }
-        
+
         return "$number-$divisiCode-$month-$year";
     }
-    
+
     private function getDivisionCode($division)
     {
         return match ($division) {
             'Building Management' => 'BM',
-            'Construction and Property' => 'CP', 
+            'Construction and Property' => 'CP',
             'IT Business and Solution' => 'ITBS',
             'Finance and Accounting' => 'FA',
             'Human Capital and General Affair' => 'HCGA',
@@ -191,7 +241,7 @@ class RequestBarangController extends Controller
             DB::beginTransaction();
             $user = Session::get('user');
             $requestId = $this->generateRequestId();
-    
+
             DB::table('tbl_request_barang')->insert([
                 'request_id' => $requestId,
                 'user_id' => $user->user_id,
@@ -202,7 +252,7 @@ class RequestBarangController extends Controller
                 'created_at' => now(),
                 'updated_at' => now()
             ]);
-    
+
             DB::commit();
             return response()->json(['success' => true, 'message' => 'Request berhasil ditambahkan']);
         } catch (\Exception $e) {
@@ -218,15 +268,15 @@ class RequestBarangController extends Controller
 
             // Query dasar
             $query = DB::table('tbl_request_barang as r')
-            ->leftJoin('tbl_user as u', 'u.user_id', '=', 'r.user_id')
-            ->select([
-                'r.request_id',
-                'r.request_tanggal',
-                'r.departemen', 
-                'r.status',
-                'r.created_at',
-                DB::raw('(SELECT COUNT(1) FROM tbl_barangmasuk WHERE request_id = r.request_id) > 0 as has_barang_masuk')
-            ]);
+                ->leftJoin('tbl_user as u', 'u.user_id', '=', 'r.user_id')
+                ->select([
+                    'r.request_id',
+                    'r.request_tanggal',
+                    'r.departemen',
+                    'r.status',
+                    'r.created_at',
+                    DB::raw('(SELECT COUNT(1) FROM tbl_barangmasuk WHERE request_id = r.request_id) > 0 as has_barang_masuk')
+                ]);
 
             // Jika role_id = 5 (User), hanya tampilkan request miliknya
             if ($user->role_id == 5) {

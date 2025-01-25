@@ -105,64 +105,50 @@ class UserController extends Controller
     }
     public function update(Request $request, UserModel $user)
     {
-
-        //check if image is uploaded
         if ($request->hasFile('photoU')) {
-
-            //upload new image
             $image = $request->file('photoU');
             $image->storeAs('public/users', $image->hashName());
-
-            //delete old image
             Storage::delete('public/users/' . $user->user_foto);
-
-            if ($request->pwd == '') {
-                //update post with new image
-                $user->update([
-                    'user_foto'     => $image->hashName(),
-                    'user_nmlengkap' => $request->nmlengkapU,
-                    'user_nama'   => $request->usernameU,
-                    'user_email' => $request->emailU,
-                    'role_id' => $request->roleU,
-                ]);
-            } else {
-                //update post with new image
-                $user->update([
-                    'user_foto'     => $image->hashName(),
-                    'user_nmlengkap' => $request->nmlengkapU,
-                    'user_nama'   => $request->usernameU,
-                    'user_email' => $request->emailU,
-                    'role_id' => $request->roleU,
-                    'user_password' => md5($request->pwdU)
-                ]);
+    
+            $updateData = [
+                'user_foto' => $image->hashName(),
+                'user_nmlengkap' => $request->nmlengkapU,
+                'user_nama' => $request->usernameU,
+                'user_email' => $request->emailU,
+                'role_id' => $request->roleU,
+                'divisi' => $request->divisiU,
+                'departemen' => $request->departemenU,
+                'nomor_hp' => $request->nomor_hpU ?? '-'
+            ];
+    
+            if ($request->pwdU) {
+                $updateData['user_password'] = md5($request->pwdU);
             }
+    
+            $user->update($updateData);
         } else {
-            if ($request->pwd == '') {
-                //update post without image
-                $user->update([
-                    'user_nmlengkap' => $request->nmlengkapU,
-                    'user_nama'   => $request->usernameU,
-                    'user_email' => $request->emailU,
-                    'role_id' => $request->roleU,
-                ]);
-            } else {
-                //update post with new image
-                $user->update([
-                    'user_nmlengkap' => $request->nmlengkapU,
-                    'user_nama'   => $request->usernameU,
-                    'user_email' => $request->emailU,
-                    'role_id' => $request->roleU,
-                    'user_password' => md5($request->pwdU)
-                ]);
+            $updateData = [
+                'user_nmlengkap' => $request->nmlengkapU,
+                'user_nama' => $request->usernameU,
+                'user_email' => $request->emailU,
+                'role_id' => $request->roleU,
+                'divisi' => $request->divisiU,
+                'departemen' => $request->departemenU,
+                'nomor_hp' => $request->nomor_hpU ?? '-'
+            ];
+    
+            if ($request->pwdU) {
+                $updateData['user_password'] = md5($request->pwdU);
             }
+    
+            $user->update($updateData);
         }
-
-        $data['title'] = "User";
-        Session::flash('status', 'success');
-        Session::flash('msg', 'Berhasil diubah!');
-
-        //redirect to index
-        return redirect()->route('user.index')->with($data);
+    
+        return redirect()->route('user.index')->with([
+            'title' => "User",
+            'status' => 'success',
+            'msg' => 'Berhasil diubah!'
+        ]);
     }
 
     public function updatePassword(Request $request, UserModel $user)

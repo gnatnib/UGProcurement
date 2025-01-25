@@ -52,6 +52,105 @@
             </div>
         </div>
     </div>
+    <!-- Modal Detail -->
+    <div class="modal fade" id="detailModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary-gradient text-white">
+                    <h5 class="modal-title fw-bold">Detail Request Barang</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid p-0">
+                        <div class="row g-4">
+                            <!-- Informasi Request -->
+                            <div class="col-md-6">
+                                <div class="card shadow-sm h-100">
+                                    <div class="card-body">
+                                        <h6 class="fw-bold mb-4 text-primary">Informasi Request</h6>
+                                        <div class="d-flex flex-column gap-3">
+                                            <div>
+                                                <label class="text-muted small mb-1">Request ID</label>
+                                                <div id="detail-requestid" class="fs-6 fw-semibold"></div>
+                                            </div>
+                                            <div>
+                                                <label class="text-muted small mb-1">Tanggal Request</label>
+                                                <div id="detail-tanggal" class="fs-6 fw-semibold"></div>
+                                            </div>
+                                            <div>
+                                                <label class="text-muted small mb-1">Departemen</label>
+                                                <div id="detail-departemen" class="fs-6 fw-semibold"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Status Request -->
+                            <div class="col-md-6">
+                                <div class="card shadow-sm h-100">
+                                    <div class="card-body">
+                                        <h6 class="fw-bold mb-4 text-primary">Status Request</h6>
+                                        <div class="d-flex flex-column gap-3">
+                                            <div>
+                                                <label class="text-muted small mb-1">Status Request</label>
+                                                <div id="detail-status" class="fs-6 mt-1"></div>
+                                            </div>
+                                            <div>
+                                                <label class="text-muted small mb-1">Jumlah Item</label>
+                                                <div id="detail-jumlahitem" class="fs-6 fw-semibold"></div>
+                                            </div>
+                                            <div>
+                                                <label class="text-muted small mb-1">Total Harga</label>
+                                                <div id="detail-totalharga" class="fs-6 fw-semibold text-success"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Daftar Barang -->
+                            <div class="col-12">
+                                <div class="card shadow-sm">
+                                    <div class="card-body">
+                                        <h6 class="fw-bold mb-3 text-primary">Daftar Barang</h6>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <thead class="bg-light">
+                                                    <tr>
+                                                        <th class="text-center" width="5%">No</th>
+                                                        <th>Barang</th>
+                                                        <th class="text-center" width="10%">Jumlah</th>
+                                                        <th class="text-end" width="15%">Harga Satuan</th>
+                                                        <th class="text-end" width="15%">Total</th>
+                                                        <th class="text-center" width="10%">Status</th>
+                                                        <th>Keterangan</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="detail-items">
+                                                    <!-- Items will be inserted here dynamically -->
+                                                </tbody>
+                                                <tfoot class="bg-light">
+                                                    <tr>
+                                                        <td colspan="6" class="text-end fw-bold">Harga Keseluruhan</td>
+                                                        <td colspan="1" class="fw-bold text-success text-end"
+                                                            id="detail-total"></td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('scripts')
@@ -62,6 +161,106 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+
+        function showDetail(data) {
+            // Clear previous modal data
+            $('#detail-requestid').text('-');
+            $('#detail-tanggal').text('-');
+            $('#detail-departemen').text('-');
+            $('#detail-status').html('-');
+            // Update this line to use colspan="7"
+            $('#detail-items').html('<tr><td colspan="7" class="text-center">Memuat data...</td></tr>');
+            $('#detail-jumlahitem').text('-');
+            $('#detail-totalharga').text('-');
+
+            // Set basic details
+            $('#detail-requestid').text(data.request_id);
+            $('#detail-tanggal').text(data.tanggal_format);
+            $('#detail-departemen').text(data.departemen);
+            $('#detail-status').html(getStatusBadge(data.status));
+
+            // Fetch additional details via AJAX
+            $.ajax({
+                url: '/admin/request-barang/get-details/' + data.request_id,
+                method: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        $('#detail-jumlahitem').text(response.total_items + ' Item');
+                        $('#detail-totalharga').text('Rp ' + response.total_harga.toLocaleString('id-ID'));
+
+                        // Populate items table
+                        let itemsHtml = '';
+                        if (response.items && response.items.length > 0) {
+                            response.items.forEach((item, index) => {
+                                let totalHarga = item.bm_jumlah * item.harga;
+                                itemsHtml += `
+                            <tr>
+                                <td class="text-center">${index + 1}</td>
+                                <td>${item.barang_nama || '-'}</td>
+                                <td class="text-center">${item.bm_jumlah}</td>
+                                <td class="text-end">Rp ${parseFloat(item.harga).toLocaleString('id-ID')}</td>
+                                <td class="text-end">Rp ${parseFloat(totalHarga).toLocaleString('id-ID')}</td>
+                                <td class="text-center">${getStatusBadge(item.status || data.status)}</td>
+                                <td>${item.keterangan || '-'}</td>
+                            </tr>
+                        `;
+                            });
+                        } else {
+                            // Update this line for no data state
+                            itemsHtml =
+                                '<tr><td colspan="7" class="text-center">Tidak ada data barang</td></tr>';
+                        }
+                        $('#detail-items').html(itemsHtml);
+                        $('#detail-total').text('Rp ' + response.total_harga.toLocaleString('id-ID'));
+                    } else {
+                        // Update this line for error state
+                        $('#detail-items').html(
+                            '<tr><td colspan="7" class="text-center">Gagal memuat data</td></tr>');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                    // Update this line for error state
+                    $('#detail-items').html(
+                        '<tr><td colspan="7" class="text-center">Gagal memuat data</td></tr>');
+                    $('#detail-jumlahitem').text('-');
+                    $('#detail-totalharga').text('-');
+                }
+            });
+
+            $('#detailModal').modal('show');
+        }
+
+        function getStatusBadge(status) {
+            status = status.toLowerCase();
+            let badgeClass, icon;
+
+            switch (status) {
+                case 'draft':
+                    badgeClass = 'bg-warning';
+                    icon = 'edit';
+                    break;
+                case 'pending':
+                    badgeClass = 'bg-info';
+                    icon = 'clock';
+                    break;
+                case 'approved':
+                    badgeClass = 'bg-success';
+                    icon = 'check-circle';
+                    break;
+                case 'rejected':
+                    badgeClass = 'bg-danger';
+                    icon = 'x-circle';
+                    break;
+                default:
+                    badgeClass = 'bg-secondary';
+                    icon = 'help-circle';
+            }
+
+            return `<span class="badge ${badgeClass}-gradient">
+        <i class="fe fe-${icon} me-1"></i>${status.toUpperCase()}
+    </span>`;
+        }
 
         // Function to add request
         function addRequest() {
@@ -114,20 +313,17 @@
             });
         }
 
-        // Setup DataTable
         $(document).ready(function() {
             var table = $('#table-1').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: "/admin/request-barang/getdata",
-                // Update the columns section in the DataTable initialization
-                // In request.blade.php, update the columns definition in DataTable initialization
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
                         orderable: false,
                         searchable: false,
-                        width: '5%' // Fixed narrow width
+                        width: '5%'
                     },
                     {
                         data: 'tanggal_format',
@@ -150,27 +346,14 @@
                         name: 'action',
                         orderable: false,
                         searchable: false,
-                        render: function(data, type, row) {
-                            let buttons = '';
-
-                            // Add Tambah Barang Masuk button if status is "draft" (make sure to use lowercase)
-                            if (row.status.toLowerCase().includes('draft')) {
-                                buttons += `<button onclick="addBarangMasuk('${row.request_id}')" class="btn btn-sm btn-success me-2">
-                <i class="fe fe-plus"></i> Tambah Barang Masuk
-            </button>`;
-                            }
-
-                            // Add Delete button if no barang masuk exists
-                            if (!row.has_barang_masuk) {
-                                buttons += `<button onclick="deleteRequest('${row.request_id}')" class="btn btn-sm btn-danger">
-                <i class="fe fe-trash"></i> Delete
-            </button>`;
-                            }
-
-                            return buttons || '-';
-                        }
                     }
-                ]
+                ],
+                createdRow: function(row, data) {
+                    $(row).css('cursor', 'pointer');
+                    $(row).find('td:not(:last-child)').on('click', function() {
+                        showDetail(data);
+                    });
+                }
             });
         });
 
