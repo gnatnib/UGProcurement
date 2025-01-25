@@ -48,12 +48,22 @@ class SubMenuTableSeeder extends Seeder
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
             [
+                'submenu_id' => 20,
+                'menu_id' => '2',
+                'submenu_judul' => 'Barang',
+                'submenu_slug' => 'barang',
+                'submenu_redirect' => '/barang',
+                'submenu_sort' => '1',
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+            ],
+            [
                 'submenu_id' => 17,
                 'menu_id' => '2',
                 'submenu_judul' => 'Jenis',
                 'submenu_slug' => 'jenis',
                 'submenu_redirect' => '/jenisbarang',
-                'submenu_sort' => '1',
+                'submenu_sort' => '2',
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
@@ -63,7 +73,7 @@ class SubMenuTableSeeder extends Seeder
                 'submenu_judul' => 'Satuan',
                 'submenu_slug' => 'satuan',
                 'submenu_redirect' => '/satuan',
-                'submenu_sort' => '2',
+                'submenu_sort' => '3',
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
@@ -73,16 +83,6 @@ class SubMenuTableSeeder extends Seeder
                 'submenu_judul' => 'Merk',
                 'submenu_slug' => 'merk',
                 'submenu_redirect' => '/merk',
-                'submenu_sort' => '3',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'submenu_id' => 20,
-                'menu_id' => '2',
-                'submenu_judul' => 'Barang',
-                'submenu_slug' => 'barang',
-                'submenu_redirect' => '/barang',
                 'submenu_sort' => '4',
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')

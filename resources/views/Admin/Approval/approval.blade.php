@@ -57,11 +57,12 @@
                                 <tr>
                                     <th>Kode Barang</th>
                                     <th>Nama Barang</th>
-                                    <th>Jumlah</th>
+                                    <th>Jumlah Item</th>
                                     <th>Harga Satuan</th>
                                     <th>Divisi</th>
                                     <th>Keterangan</th>
                                     <th>Status</th>
+                                    <th>Signature</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -76,15 +77,106 @@
             </div>
         </div>
     </div>
+
+    <!-- Signature Modal -->
+    <div class="modal fade" id="signatureModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Draw Signature</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <canvas id="signaturePad" class="border rounded" width="400" height="200"></canvas>
+                    <input type="hidden" id="currentBmId">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="clearSignature()">Clear</button>
+                    <button type="button" class="btn btn-primary" onclick="saveSignature()">Save Signature</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/4.1.5/signature_pad.umd.min.js"></script>
     <script>
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+
+        // Add signature pad library
+        document.head.appendChild(Object.assign(document.createElement('script'), {
+            src: 'https://cdnjs.cloudflare.com/ajax/libs/signature_pad/4.1.5/signature_pad.umd.min.js'
+        }));
+
+        let signaturePad;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize signature pad when the modal is shown
+            $('#signatureModal').on('shown.bs.modal', function() {
+                const canvas = document.getElementById('signaturePad');
+                signaturePad = new SignaturePad(canvas, {
+                    backgroundColor: 'rgb(255, 255, 255)'
+                });
+            });
+        });
+
+        function initializeSignaturePad() {
+            const canvas = document.getElementById('signaturePad');
+            signaturePad = new SignaturePad(canvas, {
+                backgroundColor: 'rgb(255, 255, 255)'
+            });
+        }
+
+        function clearSignature() {
+            if (signaturePad) {
+                signaturePad.clear();
+            }
+        }
+
+        function showSignatureModal(request_id) {
+            $('#current_request_id').val(request_id);
+            $('#signatureModal').modal('show');
+        }
+
+
+        function saveSignature() {
+            if (!signaturePad || signaturePad.isEmpty()) {
+                swal("Error!", "Please provide signature", "error");
+                return;
+            }
+
+            const request_id = $('#current_request_id').val();
+            const signatureData = signaturePad.toDataURL();
+
+            $.ajax({
+                url: "/admin/approval/store-signature",
+                type: 'POST',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    request_id: request_id,
+                    signature: signatureData
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $('#signatureModal').modal('hide');
+                        swal("Success!", "Signature saved successfully", "success").then(() => {
+                            // Refresh the detail view to show the new signature
+                            showDetail(request_id);
+                        });
+                    } else {
+                        swal("Error!", response.message, "error");
+                    }
+                },
+                error: function(xhr) {
+                    swal("Error!", xhr.responseJSON?.message || "Failed to save signature", "error");
+                }
+            });
+        }
 
         var table = $('#table-1').DataTable({
             processing: true,
@@ -100,15 +192,15 @@
                     name: 'request_tanggal'
                 },
                 {
-                    data: 'request_kode',
-                    name: 'request_kode'
+                    data: 'request_id',
+                    name: 'request_id'
                 },
                 {
                     data: 'divisi',
                     name: 'divisi'
                 },
                 {
-                    data: 'departemen',
+                    data: 'departemen', // Add this column
                     name: 'departemen'
                 },
                 {
@@ -119,7 +211,12 @@
                     data: 'action',
                     name: 'action',
                     orderable: false,
-                    searchable: false
+                    searchable: false,
+                    render: function(data, type, row) {
+                        return `<button type="button" class="btn btn-success btn-sm" onclick="showDetail('${row.request_id}')">
+                    <i class="fe fe-eye"></i> Detail
+                </button>`;
+                    }
                 }
             ]
         });
@@ -127,60 +224,96 @@
         function showDetail(request_id) {
             $('#current_request_id').val(request_id);
 
-            $.get("{{ url('admin/approval/detail') }}/" + request_id, function(data) {
+            $.get("/admin/approval/detail/" + request_id, function(data) {
                 let html = '';
-                data.forEach(item => {
-                    // Tentukan status badge berdasarkan approval dari database
-                    let statusBadge = '';
-                    if (item.approval === 'Approve') {
-                        statusBadge = '<span class="badge bg-success">Disetujui</span>';
-                    } else if (item.approval === 'Reject') {
-                        statusBadge = '<span class="badge bg-danger">Ditolak</span>';
-                    } else {
-                        statusBadge = '<span class="badge bg-warning">Pending</span>';
-                    }
 
-                    // Tentukan apakah tombol action harus ditampilkan
-                    let actionButtons = '';
-                    if (!item.approval || item.approval === 'Pending') {
-                        actionButtons = `
+                $.get(`/admin/approval/view-signature/${request_id}`, function(signatureData) {
+                    let signatureSection = '';
+                    let hasGMSignature = false;
+                    let hasGMHCGASignature = false;
+                    let signatureHtml = '<div class="d-flex flex-column">';
+                    const currentUserRole = '{{ Session::get('user')->role_id }}';
+
+                    // Reset itemApprovals object
+                    itemApprovals = {};
+
+                    if (signatureData.success && signatureData.signatures && signatureData.signatures
+                        .length > 0) {
+                        signatureData.signatures.forEach(sig => {
+                            if (sig.signer_type === 'GM') hasGMSignature = true;
+                            if (sig.signer_type === 'GMHCGA') hasGMHCGASignature = true;
+
+                            signatureHtml += `
+                        <div class="mb-2">
+                            <span class="badge bg-success">Signed by ${sig.signer_type}</span>
+                            <img src="${sig.signature}" 
+                                 style="max-width: 150px; margin-top: 5px; border: 1px solid #ddd;"
+                                 alt="Signature ${sig.signer_type}">
+                        </div>`;
+                        });
+                    }
+                    signatureHtml += '</div>';
+
+                    data.forEach((item, index) => {
+                        let statusBadge = '';
+                        let actionButtons = '';
+                        let showActions = true; // Changed to default true
+
+                        // Only hide actions if the current role has already signed
+                        if (currentUserRole === '2' && hasGMHCGASignature) showActions = false;
+                        if (currentUserRole === '4' && hasGMSignature) showActions = false;
+
+                        if (item.approval === 'Approve') {
+                            statusBadge = '<span class="badge bg-success">Disetujui</span>';
+                        } else if (item.approval === 'Reject') {
+                            statusBadge = '<span class="badge bg-danger">Ditolak</span>';
+                        } else {
+                            statusBadge = '<span class="badge bg-warning">Pending</span>';
+                            if (showActions) {
+                                actionButtons = `
                             <button class="btn btn-sm btn-success" onclick="setItemStatus(${item.bm_id}, 'Approve')">
                                 <i class="fe fe-check"></i>
                             </button>
                             <button class="btn btn-sm btn-danger" onclick="setItemStatus(${item.bm_id}, 'Reject')">
                                 <i class="fe fe-x"></i>
-                            </button>
-                        `;
-                    }
+                            </button>`;
+                            }
+                        }
 
-                    html += `
-                        <tr id="row-${item.bm_id}">
-                            <td>${item.barang_kode}</td>
-                            <td>${item.barang_nama}</td>
-                            <td>${item.bm_jumlah}</td>
-                            <td>Rp ${parseFloat(item.harga).toLocaleString('id-ID')}</td>
-                            <td>${item.divisi}</td>
-                            <td>${item.keterangan}</td>
-                            <td id="status-${item.bm_id}">
-                                ${statusBadge}
-                            </td>
-                            <td>
-                                ${actionButtons}
-                            </td>
-                        </tr>
-                    `;
-                });
-                $('#detail-content').html(html);
-                $('#modalDetail').modal('show');
+                        let showSignButton = false;
+                        if (index === 0) {
+                            if (currentUserRole === '2' && !hasGMHCGASignature) showSignButton =
+                                true;
+                            if (currentUserRole === '4' && !hasGMSignature) showSignButton = true;
+                            signatureSection = signatureHtml;
+                            if (showSignButton) {
+                                signatureSection += `<button class="btn btn-sm btn-primary" onclick="showSignatureModal('${request_id}')">
+                            <i class="fe fe-edit"></i> Sign Request
+                        </button>`;
+                            }
+                        }
 
-                // Reset itemApprovals untuk request baru
-                itemApprovals = {};
+                        html += `
+                <tr id="row-${item.bm_id}">
+                    <td>${item.barang_kode}</td>
+                    <td>${item.barang_nama}</td>
+                    <td>${item.bm_jumlah}</td>
+                    <td>Rp ${parseFloat(item.harga).toLocaleString('id-ID')}</td>
+                    <td>${item.divisi}</td>
+                    <td>${item.keterangan}</td>
+                    <td id="status-${item.bm_id}">${statusBadge}</td>
+                    <td>${index === 0 ? signatureSection : ''}</td>
+                    <td>${actionButtons}</td>
+                </tr>`;
 
-                // Inisialisasi itemApprovals dengan status yang sudah ada
-                data.forEach(item => {
-                    if (item.approval) {
-                        itemApprovals[item.bm_id] = item.approval;
-                    }
+                        // Initialize approval status in itemApprovals if actions are shown
+                        if (showActions) {
+                            itemApprovals[item.bm_id] = item.approval || 'pending';
+                        }
+                    });
+
+                    $('#detail-content').html(html);
+                    $('#modalDetail').modal('show');
                 });
             });
         }
@@ -190,26 +323,27 @@
 
         function setItemStatus(bm_id, status) {
             itemApprovals[bm_id] = status;
+            console.log('Updated approvals:', itemApprovals);
 
-            // Update tampilan status
-            let badge = status === 'Approve' ?
-                '<span class="badge bg-success">Disetujui</span>' :
-                '<span class="badge bg-danger">Ditolak</span>';
+            let badgeClass = status === 'Approve' ? 'success' : 'danger';
+            let statusText = status === 'Approve' ? 'Disetujui' : 'Ditolak';
 
-            $(`#status-${bm_id}`).html(badge);
+            $(`#status-${bm_id}`).html(`<span class="badge bg-${badgeClass}">${statusText}</span>`);
         }
 
         function simpanApproval() {
             const request_id = $('#current_request_id').val();
 
-            // Debug log
-            console.log('Saving approvals:', {
-                request_id: request_id,
-                approvals: itemApprovals
-            });
-
+            // Check if there are any items to approve
             if (Object.keys(itemApprovals).length === 0) {
-                swal("Peringatan!", "Silakan pilih status approval untuk setiap item", "warning");
+                swal("Peringatan!", "Tidak ada item untuk diapprove", "warning");
+                return;
+            }
+
+            // Check if all items have been processed
+            const hasUnprocessedItems = Object.values(itemApprovals).some(status => status === 'pending');
+            if (hasUnprocessedItems) {
+                swal("Peringatan!", "Silakan pilih status Approve/Reject untuk semua item", "warning");
                 return;
             }
 
@@ -222,7 +356,6 @@
                     approvals: itemApprovals
                 },
                 beforeSend: function() {
-                    // Tampilkan loading
                     swal({
                         title: "Loading...",
                         text: "Sedang memproses data",
@@ -232,7 +365,6 @@
                     });
                 },
                 success: function(response) {
-                    console.log('Response:', response);
                     if (response.success) {
                         swal({
                             title: "Berhasil!",
@@ -241,30 +373,26 @@
                             timer: 2000
                         }).then(() => {
                             $('#modalDetail').modal('hide');
-                            itemApprovals = {}; // Reset approvals
+                            itemApprovals = {};
                             table.ajax.reload();
                         });
                     } else {
                         swal("Error!", response.message, "error");
                     }
                 },
-                error: function(xhr, status, error) {
-                    console.error('Error:', {
-                        status: status,
-                        error: error,
-                        response: xhr.responseText
-                    });
-                    swal("Error!", "Terjadi kesalahan saat menyimpan data", "error");
+                error: function(xhr) {
+                    console.error('Error:', xhr);
+                    swal("Error!", xhr.responseJSON?.message || "Terjadi kesalahan saat menyimpan data",
+                        "error");
                 }
             });
-            location.reload();
         }
 
         function setItemStatus(bm_id, status) {
+            2
             itemApprovals[bm_id] = status;
             console.log('Updated approvals:', itemApprovals); // Debug log
 
-            // Update tampilan status
             let badgeClass = status === 'Approve' ? 'success' : 'danger';
             let statusText = status === 'Approve' ? 'Disetujui' : 'Ditolak';
 

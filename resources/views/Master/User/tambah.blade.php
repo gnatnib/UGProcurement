@@ -9,21 +9,22 @@
                 @csrf
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-7">
-                            <div class="form-group">
-                                <label for="nmlengkap" class="form-label">Nama Lengkap</label>
+                        <!-- Kolom Kiri -->
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="form-label">Nama Lengkap</label>
                                 <input type="text" name="nmlengkap" class="form-control" placeholder="Nama Lengkap..">
                             </div>
-                            <div class="form-group">
-                                <label for="username" class="form-label">Username</label>
+                            <div class="form-group mb-3">
+                                <label class="form-label">Username</label>
                                 <input type="text" name="username" class="form-control" placeholder="Username..">
                             </div>
-                            <div class="form-group">
-                                <label for="email" class="form-label">Email</label>
+                            <div class="form-group mb-3">
+                                <label class="form-label">Email</label>
                                 <input type="email" name="email" class="form-control" placeholder="Email@mail.com..">
                             </div>
-                            <div class="form-group">
-                                <label for="role" class="form-label">Role</label>
+                            <div class="form-group mb-3">
+                                <label class="form-label">Role</label>
                                 <select name="role" class="form-control">
                                     <option value="">-- Pilih --</option>
                                     @foreach($role as $r)
@@ -31,22 +32,48 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="form-group">
-                                <label for="pwd" class="form-label">Password</label>
+                            <div class="form-group mb-3">
+                                <label class="form-label">Nomor HP</label>
+                                <input type="text" name="nomor_hp" class="form-control" placeholder="Masukkan Nomor HP..">
+                            </div>
+                        </div>
+
+                
+                        <!-- Kolom Kanan -->
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="form-label">Divisi</label>
+                                <select name="divisi" class="form-control">
+                                    <option value="">-- Pilih Divisi --</option>
+                                    <option value="Building Management">Building Management</option>
+                                    <option value="Construction and Property">Construction and Property</option>
+                                    <option value="IT Business and Solution">IT Business and Solution</option>
+                                    <option value="Finance and Accounting">Finance and Accounting</option>
+                                    <option value="Human Capital and General Affair">Human Capital and General Affair</option>
+                                    <option value="Risk, System, and Compliance">Risk, System, and Compliance</option>
+                                    <option value="Internal Audit">Internal Audit</option>
+                                </select>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="form-label">Departemen</label>
+                                <input type="text" name="departemen" class="form-control" placeholder="Masukkan Departemen..">
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="form-label">Password</label>
                                 <input type="password" name="pwd" class="form-control" placeholder="Password..">
                             </div>
-                            <div class="form-group">
-                                <label for="pwdU" class="form-label">Ulangi Password</label>
+                            <div class="form-group mb-3">
+                                <label class="form-label">Ulangi Password</label>
                                 <input type="password" name="pwdU" class="form-control" placeholder="Password..">
                             </div>
                         </div>
-                        <div class="col-md-5">
-                            <div class="form-group">
-                                <label for="title" class="form-label">Foto</label>
-                                <center>
-                                    <img src="{{url('/assets/default/users/undraw_profile.svg')}}" width="80%" alt="profile-user" id="outputImg" class="brround">
-                                </center>
-                                <input class="form-control mt-5" id="GetFile" name="photo" type="file" onchange="VerifyFileNameAndFileSize()" accept=".png,.jpeg,.jpg,.svg">
+                
+                        <!-- Foto di Bawah -->
+                        <div class="col-md-12 mt-3">
+                            <div class="form-group text-center">
+                                <label class="form-label">Foto</label>
+                                <img src="{{url('/assets/default/users/undraw_profile.svg')}}" width="150px" alt="profile-user" id="outputImg" class="brround">
+                                <input class="form-control mt-3" id="GetFile" name="photo" type="file" onchange="VerifyFileNameAndFileSize()" accept=".png,.jpeg,.jpg,.svg">
                             </div>
                         </div>
                     </div>
@@ -62,52 +89,59 @@
 
 <script>
     function validateForm() {
-        const namaL = document.forms["myForm"]["nmlengkap"].value;
-        const user = document.forms["myForm"]["username"].value;
-        const email = document.forms["myForm"]["email"].value;
-        const role = document.forms["myForm"]["role"].value;
-        const pwd = document.forms["myForm"]["pwd"].value;
-        const kpwd = document.forms["myForm"]["pwdU"].value;
+    const namaL = document.forms["myForm"]["nmlengkap"].value;
+    const user = document.forms["myForm"]["username"].value;
+    const email = document.forms["myForm"]["email"].value;
+    const role = document.forms["myForm"]["role"].value;
+    const pwd = document.forms["myForm"]["pwd"].value;
+    const kpwd = document.forms["myForm"]["pwdU"].value;
+    const divisi = document.forms["myForm"]["divisi"].value;
+    const departemen = document.forms["myForm"]["departemen"].value;
 
-        resetValid();
+    resetValid();
 
-        if (namaL == "") {
-            validasi('Nama Lengkap wajib di isi!', 'warning');
-            $("input[name='nmlengkap']").addClass('is-invalid');
-            return false;
-        } else if (user == '') {
-            validasi('Username wajib di isi!', 'warning');
-            $("input[name='username']").addClass('is-invalid');
-            return false;
-        } else if (email == '') {
-            validasi('Email wajib di isi!', 'warning');
-            $("input[name='email']").addClass('is-invalid');
-            return false;
-        } else if (role == '') {
-            validasi('Role wajib di pilih!', 'warning');
-            $("select[name='role']").addClass('is-invalid');
-            return false;
-        } else if (pwd == '') {
-            validasi('Password wajib di isi!', 'warning');
+    if (namaL == "") {
+        validasi('Nama Lengkap wajib di isi!', 'warning');
+        $("input[name='nmlengkap']").addClass('is-invalid');
+        return false;
+    } else if (user == '') {
+        validasi('Username wajib di isi!', 'warning');
+        $("input[name='username']").addClass('is-invalid');
+        return false;
+    } else if (email == '') {
+        validasi('Email wajib di isi!', 'warning');
+        $("input[name='email']").addClass('is-invalid');
+        return false;
+    } else if (role == '') {
+        validasi('Role wajib di pilih!', 'warning');
+        $("select[name='role']").addClass('is-invalid');
+        return false;
+    } else if (pwd == '') {
+        validasi('Password wajib di isi!', 'warning');
+        $("input[name='pwd']").addClass('is-invalid');
+        $("input[name='pwdU']").addClass('is-invalid');
+        return false;
+    } else if (divisi == '') {
+        validasi('Divisi wajib dipilih!', 'warning');
+        $("select[name='divisi']").addClass('is-invalid');
+        return false;
+    } else if (departemen == '') {
+        validasi('Departemen wajib diisi!', 'warning');
+        $("input[name='departemen']").addClass('is-invalid');
+        return false;
+    } else if (pwd !== '' || kpwd !== '') {
+        if (pwd.length < 6) {
+            validasi('Panjang Password minimal 6 karakter!', 'warning');
             $("input[name='pwd']").addClass('is-invalid');
             $("input[name='pwdU']").addClass('is-invalid');
             return false;
-        } else if (pwd !== '' || kpwd !== '') {
-
-            if (pwd.length < 6) {
-                validasi('Panjang Password minimal 6 karakter!', 'warning');
-                $("input[name='pwd']").addClass('is-invalid');
-                $("input[name='pwdU']").addClass('is-invalid');
-                return false;
-            } else if (pwd !== kpwd) {
-                validasi('Konfirmasi Password tidak sesuai!', 'warning');
-                $("input[name='pwd']").addClass('is-invalid');
-                $("input[name='pwdU']").addClass('is-invalid');
-                return false;
-            }
-
+        } else if (pwd !== kpwd) {
+            validasi('Konfirmasi Password tidak sesuai!', 'warning');
+            $("input[name='pwd']").addClass('is-invalid');
+            $("input[name='pwdU']").addClass('is-invalid');
+            return false;
         }
-
+    }
     }
 
     function resetValid() {

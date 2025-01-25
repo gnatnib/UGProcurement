@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -71,36 +72,37 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $img = "";
-
-        //upload image
-        if ($request->file('photo') == null) {
-            $img = "undraw_profile.svg";
-        } else {
-            $image = $request->file('photo');
-            $image->storeAs('public/users/', $image->hashName());
-            $img = $image->hashName();
+        try {
+            $img = $request->file('photo') ? $request->file('photo')->hashName() : "undraw_profile.svg";
+            
+            if($request->file('photo')) {
+                $request->file('photo')->storeAs('public/users/', $img);
+            }
+    
+            DB::beginTransaction();
+    
+            UserModel::create([
+                'user_foto' => $img,
+                'user_nmlengkap' => $request->nmlengkap,
+                'user_nama' => $request->username,
+                'user_email' => $request->email,
+                'role_id' => $request->role,
+                'divisi' => $request->divisi,      // Pastikan field ini ada
+                'departemen' => $request->departemen, // Pastikan field ini ada
+                'nomor_hp' => $request->nomor_hp ?? '-',
+                'user_password' => md5($request->pwd)
+            ]);
+    
+            DB::commit();
+            
+            return redirect()->route('user.index')
+                ->with(['title' => 'User', 'status' => 'success', 'msg' => 'Berhasil ditambah!']);
+                
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back()->with(['error' => $e->getMessage()]);
         }
-
-
-        //create post
-        UserModel::create([
-            'user_foto' => $img,
-            'user_nmlengkap' => $request->nmlengkap,
-            'user_nama'   => $request->username,
-            'user_email' => $request->email,
-            'role_id' => $request->role,
-            'user_password' => md5($request->pwd)
-        ]);
-
-        $data['title'] = "User";
-        Session::flash('status', 'success');
-        Session::flash('msg', 'Berhasil ditambah!');
-
-        //redirect to index
-        return redirect()->route('user.index')->with($data);
     }
-
     public function update(Request $request, UserModel $user)
     {
 

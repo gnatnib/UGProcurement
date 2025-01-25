@@ -125,14 +125,8 @@
             setLoading(true);
             resetValid();
 
-            const kodeFormat = /^PL-\d{2}$/;
             if (kode == "") {
                 validasi('Kode Barang wajib di isi!', 'warning');
-                $("input[name='kode']").addClass('is-invalid');
-                setLoading(false);
-                return false;
-            } else if (!kodeFormat.test(kode)) {
-                validasi('Format Kode Barang tidak sesuai! Gunakan format PL-XX', 'warning');
                 $("input[name='kode']").addClass('is-invalid');
                 setLoading(false);
                 return false;

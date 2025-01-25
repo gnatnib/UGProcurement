@@ -153,7 +153,7 @@
                 setLoadingU(false);
                 return false;
             } else if (jml == "" || jml == "0") {
-                validasi('Jumlah Unit wajib di isi!', 'warning');
+                validasi('Jumlah Item wajib di isi!', 'warning');
                 $("input[name='jmlU']").addClass('is-invalid');
                 setLoadingU(false);
                 return false;

@@ -68,7 +68,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="jml" class="form-label">Jumlah Unit <span
+                            <label for="jml" class="form-label">Jumlah Item <span
                                     class="text-danger">*</span></label>
                             <input type="text" name="jml" value="0" class="form-control"
                                 oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');"
@@ -121,10 +121,75 @@
             table2.ajax.reload();
         }
 
-        function searchBarang() {
-            getbarangbyid($('input[name="kdbarang"]').val());
-            resetValid();
+        function resetFields() {
+            $("#status").val("false");
+            $("#nmbarang").val('');
+            $("#satuan").val('');
+            $("#jenis").val('');
+            validasi('Barang tidak ditemukan!', 'warning');
         }
+
+        function searchBarang() {
+            const kodeBarang = $('input[name="kdbarang"]').val().trim();
+            if (!kodeBarang) {
+                validasi('Kode barang tidak boleh kosong!', 'warning');
+                return;
+            }
+
+            $("#loaderkd").removeClass('d-none');
+
+            // Add console.log to see what's being sent
+            console.log("Searching for barang code:", kodeBarang);
+
+            $.ajax({
+                type: 'GET',
+                url: "/admin/barang/getbarang/" + kodeBarang,
+                dataType: 'json',
+                success: function(data) {
+                    $("#loaderkd").addClass('d-none');
+                    console.log("Server response:", data);
+
+                    if (data && data.length > 0) {
+                        $("#status").val("true");
+                        $("#nmbarang").val(data[0].barang_nama);
+                        $("#satuan").val(data[0].satuan_nama);
+                        $("#jenis").val(data[0].jenisbarang_nama);
+                    } else {
+                        $("#status").val("false");
+                        $("#nmbarang").val('');
+                        $("#satuan").val('');
+                        $("#jenis").val('');
+                        validasi('Barang tidak ditemukan!', 'warning');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    $("#loaderkd").addClass('d-none');
+                    $("#status").val("false");
+                    console.error("Error details:", {
+                        status: status,
+                        error: error,
+                        response: xhr.responseText
+                    });
+                    validasi('Terjadi kesalahan saat mencari barang: ' + error, 'error');
+                }
+            });
+        }
+
+        function validasi(pesan, type = 'warning') {
+            swal({
+                title: pesan,
+                type: type
+            });
+        }
+
+        $('input[name="kdbarang"]').keypress(function(event) {
+            if (event.keyCode === 13) { // Enter key
+                event.preventDefault();
+                searchBarang();
+            }
+        });
+
+
 
         function getbarangbyid(id) {
             $("#loaderkd").removeClass('d-none');
@@ -178,7 +243,7 @@
                 setLoading(false);
                 return false;
             } else if (jml == "" || jml == "0") {
-                validasi('Jumlah Unit wajib di isi!', 'warning');
+                validasi('Jumlah Item wajib di isi!', 'warning');
                 $("input[name='jml']").addClass('is-invalid');
                 setLoading(false);
                 return false;

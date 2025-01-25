@@ -15,7 +15,8 @@ class TrackingStatusController extends Controller
 {
     public function index()
     {
-        if (Session::get('user')->role_id != 1) {
+        $role_id = Session::get('user')->role_id;
+        if ($role_id != 2 && $role_id != 3) {
             return redirect()->back()->with('error', 'Unauthorized access');
         }
 
@@ -27,7 +28,7 @@ class TrackingStatusController extends Controller
     {
         if ($request->ajax()) {
             $user = Session::get('user');
-            
+
             try {
                 $data = DB::table('tbl_barangmasuk as bm')
                     ->join('tbl_user as creator', 'creator.user_id', '=', 'bm.user_id')
@@ -35,53 +36,52 @@ class TrackingStatusController extends Controller
                     ->select(
                         'r.request_id',
                         'r.request_tanggal',
-                        'r.request_kode',
+                        'r.request_id',
                         'creator.divisi',
                         'creator.departemen',
                         'r.status'
                     )
                     ->whereIn('r.status', ['Diproses', 'Dikirim', 'Diterima']) // Ubah ini untuk menampilkan semua status
-                    ->groupBy('r.request_id', 'r.request_tanggal', 'r.request_kode', 'creator.divisi', 'creator.departemen', 'r.status')
+                    ->groupBy('r.request_id', 'r.request_tanggal', 'r.request_id', 'creator.divisi', 'creator.departemen', 'r.status')
                     ->get();
-    
+
                 return DataTables::of($data)
                     ->addIndexColumn()
-                    ->addColumn('tanggal_format', function($row) {
+                    ->addColumn('tanggal_format', function ($row) {
                         return date('d/m/Y', strtotime($row->request_tanggal));
                     })
-                    ->addColumn('status_badge', function($row) {
+                    ->addColumn('status_badge', function ($row) {
                         switch ($row->status) {
                             case 'Diproses':
-                                return '<span class="badge bg-warning">Sedang Diproses</span>';
+                                return '<span class="badge bg-warning">Diproses</span>';
                             case 'Dikirim':
-                                return '<span class="badge bg-info">Sedang Dikirim</span>';
+                                return '<span class="badge bg-info">Dikirim</span>';
                             case 'Diterima':
                                 return '<span class="badge bg-success">Selesai</span>';
                             default:
                                 return '<span class="badge bg-secondary">Menunggu Proses</span>';
                         }
                     })
-                    ->addColumn('action', function($row) {
-                        return '<button class="btn btn-primary btn-sm" onclick="showDetail(\''.$row->request_id.'\')">
+                    ->addColumn('action', function ($row) {
+                        return '<button class="btn btn-primary btn-sm" onclick="showDetail(\'' . $row->request_id . '\')">
                                 <i class="fe fe-eye"></i> Detail
                                </button>';
                     })
                     ->rawColumns(['status_badge', 'action'])
                     ->make(true);
-                    
             } catch (\Exception $e) {
                 Log::error('Error in tracking show:', [
                     'message' => $e->getMessage(),
                     'trace' => $e->getTraceAsString()
                 ]);
-                
+
                 return response()->json([
                     'error' => true,
                     'message' => $e->getMessage()
                 ], 500);
             }
         }
-        
+
         return abort(404);
     }
 
@@ -106,7 +106,7 @@ class TrackingStatusController extends Controller
                 ['bm.approval', '=', 'Approve'] // Tambahkan filter ini
             ])
             ->get();
-    
+
         return response()->json($detail);
     }
 
@@ -178,11 +178,11 @@ class TrackingStatusController extends Controller
     {
         try {
             DB::beginTransaction();
-    
+
             if (empty($request->request_id) || empty($request->approvals)) {
                 throw new \Exception('Data tidak lengkap');
             }
-    
+
             // Update individual items
             foreach ($request->approvals as $bm_id => $status) {
                 DB::table('tbl_barangmasuk')
@@ -192,27 +192,28 @@ class TrackingStatusController extends Controller
                         'updated_at' => now()
                     ]);
             }
-    
+
             // Cek status semua item dalam request
             $allItems = DB::table('tbl_barangmasuk')
                 ->where('request_id', $request->request_id)
                 ->where('approval', 'Approve')
                 ->pluck('tracking_status');
-    
+
             // Tentukan status request berdasarkan status item
-            if ($allItems->every(function($status) { return $status === 'Diterima'; })) {
+            if ($allItems->every(function ($status) {
+                return $status === 'Diterima';
+            })) {
                 $newStatus = 'Diterima';
             } elseif ($allItems->contains('Dikirim')) {
                 $newStatus = 'Dikirim';
             } elseif ($allItems->contains('Diproses')) {
                 $newStatus = 'Diproses';
             } else {
-                // Biarkan status request tetap sama
                 $newStatus = DB::table('tbl_request_barang')
                     ->where('request_id', $request->request_id)
                     ->value('status');
             }
-    
+
             // Update request status
             DB::table('tbl_request_barang')
                 ->where('request_id', $request->request_id)
@@ -220,7 +221,7 @@ class TrackingStatusController extends Controller
                     'status' => $newStatus,
                     'updated_at' => now()
                 ]);
-    
+
             DB::commit();
             return response()->json([
                 'success' => true,
@@ -239,63 +240,64 @@ class TrackingStatusController extends Controller
         }
     }
     public function updateStatus(Request $request)
-{
-    try {
-        DB::beginTransaction();
+    {
+        try {
+            DB::beginTransaction();
 
-        // Update status barang
-        DB::table('tbl_barangmasuk')
-            ->where('bm_id', $request->bm_id)
-            ->update([
-                'tracking_status' => $request->status,
-                'updated_at' => now()
+            // Update status barang
+            DB::table('tbl_barangmasuk')
+                ->where('bm_id', $request->bm_id)
+                ->update([
+                    'tracking_status' => $request->status,
+                    'updated_at' => now()
+                ]);
+
+            // Get request_id
+            $barangMasuk = DB::table('tbl_barangmasuk')
+                ->where('bm_id', $request->bm_id)
+                ->first();
+
+            // Update status request berdasarkan status semua item
+            $allItems = DB::table('tbl_barangmasuk')
+                ->where('request_id', $barangMasuk->request_id)
+                ->pluck('tracking_status');
+
+            // Tentukan status request
+            if ($allItems->every(function ($status) {
+                return $status === 'Diterima';
+            })) {
+                $newStatus = 'Diterima';
+            } elseif ($allItems->contains('Dikirim')) {
+                $newStatus = 'Dikirim';
+            } elseif ($allItems->contains('Diproses')) {
+                $newStatus = 'Diproses';
+            } else {
+                $newStatus = 'approved';
+            }
+
+            // Update request
+            DB::table('tbl_request_barang')
+                ->where('request_id', $barangMasuk->request_id)
+                ->update([
+                    'status' => $newStatus,
+                    'updated_at' => now()
+                ]);
+
+            DB::commit();
+            return response()->json([
+                'success' => true,
+                'message' => 'Status berhasil diupdate'
             ]);
-
-        // Get request_id
-        $barangMasuk = DB::table('tbl_barangmasuk')
-            ->where('bm_id', $request->bm_id)
-            ->first();
-
-        // Update status request berdasarkan status semua item
-        $allItems = DB::table('tbl_barangmasuk')
-            ->where('request_id', $barangMasuk->request_id)
-            ->pluck('tracking_status');
-
-        // Tentukan status request
-        if ($allItems->every(function($status) { return $status === 'Diterima'; })) {
-            $newStatus = 'Diterima';
-        } elseif ($allItems->contains('Dikirim')) {
-            $newStatus = 'Dikirim';
-        } elseif ($allItems->contains('Diproses')) {
-            $newStatus = 'Diproses';
-        } else {
-            $newStatus = 'approved';
+        } catch (\Exception $e) {
+            DB::rollback();
+            Log::error('Error in updateStatus:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
         }
-
-        // Update request
-        DB::table('tbl_request_barang')
-            ->where('request_id', $barangMasuk->request_id)
-            ->update([
-                'status' => $newStatus,
-                'updated_at' => now()
-            ]);
-
-        DB::commit();
-        return response()->json([
-            'success' => true,
-            'message' => 'Status berhasil diupdate'
-        ]);
-    } catch (\Exception $e) {
-        DB::rollback();
-        Log::error('Error in updateStatus:', [
-            'message' => $e->getMessage(),
-            'trace' => $e->getTraceAsString()
-        ]);
-        return response()->json([
-            'success' => false,
-            'message' => 'Terjadi kesalahan: ' . $e->getMessage()
-        ], 500);
     }
-}
-
 }
