@@ -64,9 +64,6 @@
 </head>
 
 <body>
-    <div style="position: absolute; top: 10px; right: 20px; font-weight: bold;">
-        Request ID: {{ $request->request_id }}
-    </div>
     <div class="header">
         <h2>PT. USAHA GEDUNG MANDIRI</h2>
         <p>WISMA MANDIRI Lantai XII</p>
@@ -77,6 +74,9 @@
     </div>
 
     <h1 style="text-align: center;">PERMINTAAN BARANG (PB)</h1>
+    <div style="right: 20px; font-weight: bold;">
+        Request ID: {{ $request->request_id }}
+    </div>
     <p>Tanggal: {{ Carbon\Carbon::parse($request->request_tanggal)->translatedFormat('d F Y') }}</p>
     <p>Divisi: {{ $request->departemen }}</p>
 
@@ -113,23 +113,32 @@
         </tbody>
     </table>
 
-    <div class="signatures">
-        <div class="signature-cell">
-            <p>Disetujui oleh,</p>
-            <div class="signature-line"></div>
-            <p><i>nama jelas & tanggal</i></p>
-        </div>
-        <div class="signature-cell">
-            <p>Penerima Barang,</p>
-            <div class="signature-line"></div>
-            <p><i>nama jelas & tanggal</i></p>
-        </div>
-        <div class="signature-cell">
-            <p>Permohonan Barang,</p>
-            <div class="signature-line"></div>
-            <p><i>nama jelas</i></p>
-        </div>
+<div class="signatures">
+    <div class="signature-cell">
+        <p>Disetujui oleh,</p>
+        @if(isset($signatures['GM']) && $signatures['GM']->signature)
+            <img src="{{ asset('storage/signatures/' . $signatures['GM']->signature) }}" alt="Signature GM"
+                style="width: 150px; height: auto;">
+        @endif
+        <div class="signature-line"></div>
+        <p><i>nama jelas & tanggal</i></p>
     </div>
+    <div class="signature-cell">
+        <p>Penerima Barang,</p>
+        <div class="signature-line"></div>
+        <p><i>nama jelas & tanggal</i></p>
+    </div>
+    <div class="signature-cell">
+        <p>Permohonan Barang,</p>
+        @if(isset($signatures['GMHCGA']) && $signatures['GMHCGA']->signature)
+            <img src="{{ asset('storage/signatures/' . $signatures['GMHCGA']->signature) }}" alt="Signature GMHCGA"
+                style="width: 150px; height: auto;">
+        @endif
+        <div class="signature-line"></div>
+        <p><i>nama jelas</i></p>
+    </div>
+</div>
+
 </body>
 
 </html>
