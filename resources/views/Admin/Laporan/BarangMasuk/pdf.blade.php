@@ -64,13 +64,16 @@
 </head>
 
 <body>
+    <div style="position: absolute; top: 10px; right: 20px; font-weight: bold;">
+        Request ID: {{ $request->request_id }}
+    </div>
     <div class="header">
         <h2>PT. USAHA GEDUNG MANDIRI</h2>
         <p>WISMA MANDIRI Lantai XII</p>
         <p>Jl. M.H Tamrin no. 5</p>
         <p>Jakarta 10340</p>
         <p>Phone: (021) 2300 8000, 390 2020</p>
-        <p>Fax: (0210 230 2752</p>
+        <p>Fax: (0210 230 2752)</p>
     </div>
 
     <h1 style="text-align: center;">PERMINTAAN BARANG (PB)</h1>

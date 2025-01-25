@@ -44,8 +44,7 @@
                                 Reset</button>
                             <button class="btn btn-primary-light" onclick="print()"><i class="fe fe-printer"></i>
                                 Print</button>
-                            <button class="btn btn-danger-light" onclick="pdf()"><i class="fa fa-file-pdf-o"></i>
-                                PDF</button>
+                            <button class="btn btn-info-light" onclick="csv()"><i class="fa fa-file-excel-o"></i> CSV</button>
                         </div>
                     </div>
                     <div class="table-responsive">
@@ -201,5 +200,8 @@
                 confirmButtonText: "Iya."
             });
         }
+        function csv() {
+                window.location.href = "{{ route('lap-bm.csv') }}";
+            }
     </script>
 @endsection

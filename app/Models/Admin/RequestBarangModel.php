@@ -17,7 +17,6 @@ class RequestBarangModel extends Model
     protected $fillable = [
         'request_id',
         'user_id',
-        'request_kode',
         'request_tanggal',
         'departemen',
         'status',
