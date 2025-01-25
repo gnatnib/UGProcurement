@@ -119,7 +119,27 @@
             </div>
         </div>
     </div>
-    
+    <div class="modal fade" id="rejectModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Alasan Penolakan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="reject_bm_id">
+                    <div class="form-group">
+                        <label>Keterangan Penolakan</label>
+                        <textarea id="reject_reason" class="form-control" rows="3" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-danger" onclick="submitReject()">Simpan</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <style>
     /* General Table Styles */
     .table {
@@ -308,73 +328,73 @@ function numberFormat(number) {
 
 
         function showDetail(request_id) {
-    $('#current_request_id').val(request_id);
-    itemApprovals = {};
+            $('#current_request_id').val(request_id);
+            itemApprovals = {};
 
-    Promise.all([
-        $.get("/admin/approval/detail/" + request_id),
-        $.get("/admin/approval/view-signature/" + request_id)
-    ]).then(([data, signatureData]) => {
-        // Render signatures di area atas
-        let signatureDisplay = '';
-        if (signatureData.success && signatureData.signatures?.length > 0) {
-            signatureData.signatures.forEach(sig => {
-                signatureDisplay += `
-                    <div class="text-center me-4">
-                        <span class="badge bg-success mb-2">Signed by ${sig.signer_type}</span>
-                        <img src="${sig.signature}" class="border rounded p-1" style="max-width: 150px;">
-                    </div>`;
+            Promise.all([
+                $.get("/admin/approval/detail/" + request_id),
+                $.get("/admin/approval/view-signature/" + request_id)
+            ]).then(([data, signatureData]) => {
+                // Render signatures di area atas
+                let signatureDisplay = '';
+                if (signatureData.success && signatureData.signatures?.length > 0) {
+                    signatureData.signatures.forEach(sig => {
+                        signatureDisplay += `
+                            <div class="text-center me-4">
+                                <span class="badge bg-success mb-2">Signed by ${sig.signer_type}</span>
+                                <img src="${sig.signature}" class="border rounded p-1" style="max-width: 150px;">
+                            </div>`;
+                    });
+                }
+                $('#signature-display').html(signatureDisplay);
+
+                // Cek status tanda tangan
+                const hasGMSignature = signatureData.signatures?.some(s => s.signer_type === 'GM');
+                const hasGMHCGASignature = signatureData.signatures?.some(s => s.signer_type === 'GMHCGA');
+                const currentUserRole = '{{ Session::get('user')->role_id }}';
+
+                // Render table content
+                let html = '';
+                data.forEach(item => {
+                    const showActions = !(
+                        (currentUserRole === '2' && hasGMHCGASignature) || 
+                        (currentUserRole === '4' && hasGMSignature)
+                    );
+
+                    let actionButtons = '';
+                    if (item.approval !== 'Approve' && item.approval !== 'Reject' && showActions) {
+                        actionButtons = `
+                            <div class="btn-group">
+                                <button class="btn btn-sm btn-success" onclick="setItemStatus(${item.bm_id}, 'Approve')">
+                                    <i class="fe fe-check"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="showRejectModal(${item.bm_id})">
+                                    <i class="fe fe-x"></i>
+                                </button>
+                            </div>`;
+                    }
+
+                    html += `
+                        <tr>
+                            <td>${item.barang_kode}</td>
+                            <td>${item.barang_nama}</td>
+                            <td class="text-center">${item.bm_jumlah}</td>
+                            <td class="text-end">Rp ${numberFormat(item.harga)}</td>
+                            <td>${item.divisi}</td>
+                            <td>${item.keterangan}</td>
+                            <td class="text-center" id="status-${item.bm_id}">${getStatusBadge(item.approval)}</td>
+                            <td class="text-center">${actionButtons}</td>
+                            <td></td>
+                        </tr>`;
+
+                    if (showActions) {
+                        itemApprovals[item.bm_id] = item.approval || 'pending';
+                    }
+                });
+
+                $('#detail-content').html(html);
+                $('#modalDetail').modal('show');
             });
-        }
-        $('#signature-display').html(signatureDisplay);
-
-        // Cek status tanda tangan
-        const hasGMSignature = signatureData.signatures?.some(s => s.signer_type === 'GM');
-        const hasGMHCGASignature = signatureData.signatures?.some(s => s.signer_type === 'GMHCGA');
-        const currentUserRole = '{{ Session::get('user')->role_id }}';
-
-        // Render table content
-        let html = '';
-        data.forEach(item => {
-            const showActions = !(
-                (currentUserRole === '2' && hasGMHCGASignature) || 
-                (currentUserRole === '4' && hasGMSignature)
-            );
-
-            let actionButtons = '';
-            if (item.approval !== 'Approve' && item.approval !== 'Reject' && showActions) {
-                actionButtons = `
-                    <div class="btn-group">
-                        <button class="btn btn-sm btn-success" onclick="setItemStatus(${item.bm_id}, 'Approve')">
-                            <i class="fe fe-check"></i>
-                        </button>
-                        <button class="btn btn-sm btn-danger" onclick="setItemStatus(${item.bm_id}, 'Reject')">
-                            <i class="fe fe-x"></i>
-                        </button>
-                    </div>`;
-            }
-
-            html += `
-                <tr>
-                    <td>${item.barang_kode}</td>
-                    <td>${item.barang_nama}</td>
-                    <td class="text-center">${item.bm_jumlah}</td>
-                    <td class="text-end">Rp ${numberFormat(item.harga)}</td>
-                    <td>${item.divisi}</td>
-                    <td>${item.keterangan}</td>
-                    <td class="text-center" id="status-${item.bm_id}">${getStatusBadge(item.approval)}</td>
-                    <td class="text-center">${actionButtons}</td>
-                    <td></td>
-                </tr>`;
-
-            if (showActions) {
-                itemApprovals[item.bm_id] = item.approval || 'pending';
-            }
-        });
-
-        $('#detail-content').html(html);
-        $('#modalDetail').modal('show');
-    });
 }
 
         // Object untuk menyimpan status approval per item
@@ -503,5 +523,37 @@ $('#signatureModal').on('shown.bs.modal', function() {
         backgroundColor: 'rgb(255, 255, 255)'
     });
 });
+
+    function showRejectModal(bm_id) {
+            $('#reject_bm_id').val(bm_id);
+            $('#reject_reason').val('');
+            $('#rejectModal').modal('show');
+        }
+
+        function submitReject() {
+            const bm_id = $('#reject_bm_id').val();
+            const reason = $('#reject_reason').val();
+
+            if (!reason) {
+                swal("Error!", "Keterangan penolakan harus diisi", "error");
+                return;
+            }
+
+            setItemStatus(bm_id, 'Reject', reason);
+            $('#rejectModal').modal('hide');
+        }
+
+        // Modify setItemStatus to handle rejection reason
+        function setItemStatus(bm_id, status, reason = '') {
+            itemApprovals[bm_id] = {
+                status: status,
+                reason: reason
+            };
+
+            let badgeClass = status === 'Approve' ? 'success' : 'danger';
+            let statusText = status === 'Approve' ? 'Disetujui' : 'Ditolak';
+
+            $(`#status-${bm_id}`).html(`<span class="badge bg-${badgeClass}">${statusText}</span>`);
+        }
     </script>
 @endsection

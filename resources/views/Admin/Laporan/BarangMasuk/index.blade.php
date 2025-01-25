@@ -44,8 +44,7 @@
                                 Reset</button>
                             <button class="btn btn-primary-light" onclick="print()"><i class="fe fe-printer"></i>
                                 Print</button>
-                            <button class="btn btn-danger-light" onclick="pdf()"><i class="fa fa-file-pdf-o"></i>
-                                PDF</button>
+                            <button class="btn btn-info-light" onclick="csv()"><i class="fa fa-file-excel-o"></i> CSV</button>
                         </div>
                     </div>
                     <div class="table-responsive">
@@ -54,7 +53,7 @@
                             <thead>
                                 <th class="border-bottom-0" width="1%">No</th>
                                 <th class="border-bottom-0">Tanggal Request</th>
-                                <th class="border-bottom-0">Kode Request</th>
+                                <th class="border-bottom-0">Request ID</th>
                                 <th class="border-bottom-0">Departemen</th>
                                 <th class="border-bottom-0">Status</th>
                                 <th class="border-bottom-0">Action</th>
@@ -117,8 +116,8 @@
                     name: 'request_tanggal',
                 },
                 {
-                    data: 'request_kode',
-                    name: 'request_kode',
+                    data: 'request_id',
+                    name: 'request_id',
                 },
                 {
                     data: 'departemen',
@@ -201,5 +200,8 @@
                 confirmButtonText: "Iya."
             });
         }
+        function csv() {
+                window.location.href = "{{ route('lap-bm.csv') }}";
+            }
     </script>
 @endsection
