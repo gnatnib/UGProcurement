@@ -29,30 +29,27 @@ class ApproveController extends Controller
     {
         if ($request->ajax()) {
             $user = Session::get('user');
-
-            // Base query with proper error handling
+    
             try {
                 $query = DB::table('tbl_request_barang as r')
                     ->leftJoin('tbl_user as creator', 'creator.user_id', '=', 'r.user_id')
                     ->leftJoin('tbl_barangmasuk as bm', 'bm.request_id', '=', 'r.request_id')
                     ->select(
                         'r.request_id',
-                        'r.request_tanggal',
+                        'r.request_tanggal', 
                         'creator.divisi',
                         'creator.departemen',
                         'r.status'
                     )
-                    ->whereNotNull('r.request_id'); // Ensure we have valid requests
-
-                // If user is GMHCGA (role_id = 2), show all requests
-                // For GM (role_id = 4), show only their division requests
+                    ->whereNotNull('r.request_id');
+    
                 if ($user->role_id == 4) {
                     $query->where([
                         ['creator.divisi', 'LIKE', trim($user->divisi)],
                         ['creator.departemen', '=', $user->departemen]
                     ]);
                 }
-
+    
                 $data = $query->groupBy(
                     'r.request_id',
                     'r.request_tanggal',
@@ -60,9 +57,9 @@ class ApproveController extends Controller
                     'creator.departemen',
                     'r.status'
                 )
-                    ->orderBy('r.request_tanggal', 'DESC')
-                    ->get();
-
+                ->orderBy('r.request_tanggal', 'DESC')
+                ->get();
+    
                 return DataTables::of($data)
                     ->addIndexColumn()
                     ->addColumn('tanggal_format', function ($row) {
@@ -70,11 +67,12 @@ class ApproveController extends Controller
                     })
                     ->addColumn('status_badge', function ($row) {
                         switch ($row->status) {
+                            case 'draft':
+                                return '<span class="badge bg-secondary">Draft</span>';
+                            case 'pending':
+                                return '<span class="badge bg-warning">Pending</span>';
                             case 'approved':
                                 return '<span class="badge bg-success">Disetujui</span>';
-                            case 'pending':
-                            case null:
-                                return '<span class="badge bg-warning">Pending</span>';
                             case 'rejected':
                                 return '<span class="badge bg-danger">Ditolak</span>';
                             case 'Diproses':
@@ -84,13 +82,13 @@ class ApproveController extends Controller
                             case 'Diterima':
                                 return '<span class="badge bg-success">Diterima</span>';
                             default:
-                                return '<span class="badge bg-secondary">-</span>';
+                                return '<span class="badge bg-warning">Pending</span>';
                         }
                     })
                     ->addColumn('action', function ($row) {
                         return '<button class="btn btn-success btn-sm" onclick="showDetail(\'' . $row->request_id . '\')">
                             <i class="fe fe-eye"></i> Detail
-                           </button>';
+                        </button>';
                     })
                     ->rawColumns(['action', 'status_badge'])
                     ->make(true);
@@ -105,7 +103,6 @@ class ApproveController extends Controller
                 ], 500);
             }
         }
-
         return abort(404);
     }
 
