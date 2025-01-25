@@ -392,7 +392,7 @@ class AksesTableSeeder extends Seeder
 
     private function seedTrackingStatusPermissions()
     {
-        $roles = [2, 3]; //Hanya GMHCGA dan Admin HCGA
+        $roles = [3]; //Hanya GMHCGA dan Admin HCGA
         foreach ($roles as $role_id) {
             DB::table('tbl_akses')->insert([
                 [
