@@ -159,6 +159,8 @@
                 Route::delete('/delete', [RequestBarangController::class, 'delete'])->name('request-barang.delete');
                 Route::get('/getbarang', [RequestBarangController::class, 'getBarang'])->name('request-barang.getbarang');
                 Route::get('/check-status', [RequestBarangController::class, 'checkRequestStatus'])->name('request-barang.check-status');
+                Route::get('/get-details/{id}', [RequestBarangController::class, 'getDetails'])
+                    ->name('request-barang.get-details');
             });
         });
 
