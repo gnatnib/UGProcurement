@@ -29,17 +29,23 @@ class BarangController extends Controller
 
     public function getbarang($id)
     {
-        if ($id) {
-            // Check if code exists
-            $data = BarangModel::where('barang_kode', $id)->get();
-            return response()->json([
-                'exists' => $data->count() > 0,
-                'data' => $data
-            ]);
-        }
+        try {
+            $data = BarangModel::leftJoin('tbl_jenisbarang', 'tbl_jenisbarang.jenisbarang_id', '=', 'tbl_barang.jenisbarang_id')
+                ->leftJoin('tbl_satuan', 'tbl_satuan.satuan_id', '=', 'tbl_barang.satuan_id')
+                ->leftJoin('tbl_merk', 'tbl_merk.merk_id', '=', 'tbl_barang.merk_id')
+                ->select(
+                    'tbl_barang.*',
+                    'tbl_satuan.satuan_nama',
+                    'tbl_jenisbarang.jenisbarang_nama',
+                    'tbl_merk.merk_nama'
+                )
+                ->where('tbl_barang.barang_kode', $id)
+                ->get();
 
-        $data = BarangModel::leftJoin('tbl_jenisbarang', 'tbl_jenisbarang.jenisbarang_id', '=', 'tbl_barang.jenisbarang_id')->leftJoin('tbl_satuan', 'tbl_satuan.satuan_id', '=', 'tbl_barang.satuan_id')->leftJoin('tbl_merk', 'tbl_merk.merk_id', '=', 'tbl_barang.merk_id')->where('tbl_barang.barang_kode', '=', $id)->get();
-        return json_encode($data);
+            return response()->json($data);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     public function show(Request $request)
