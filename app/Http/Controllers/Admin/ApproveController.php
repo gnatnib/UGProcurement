@@ -20,91 +20,110 @@ class ApproveController extends Controller
         if ($role_id != 2 && $role_id != 4) {
             return redirect()->back()->with('error', 'Unauthorized access');
         }
+        $data["departemen"] = DB::table('tbl_user')
+            ->select('departemen')
+            ->distinct()
+            ->whereNotNull('departemen')
+            ->pluck('departemen');
 
         $data["title"] = "Approval";
         return view('Admin.Approval.approval', $data);
     }
 
     public function show(Request $request)
-    {
-        if ($request->ajax()) {
-            $user = Session::get('user');
-    
-            try {
-                $query = DB::table('tbl_request_barang as r')
-                    ->leftJoin('tbl_user as creator', 'creator.user_id', '=', 'r.user_id')
-                    ->leftJoin('tbl_barangmasuk as bm', 'bm.request_id', '=', 'r.request_id')
-                    ->select(
-                        'r.request_id',
-                        'r.request_tanggal', 
-                        'creator.divisi',
-                        'creator.departemen',
-                        'r.status'
-                    )
-                    ->whereNotNull('r.request_id');
-    
-                if ($user->role_id == 4) {
-                    $query->where([
-                        ['creator.divisi', 'LIKE', trim($user->divisi)],
-                        ['creator.departemen', '=', $user->departemen]
-                    ]);
-                }
-    
-                $data = $query->groupBy(
+{
+    if ($request->ajax()) {
+        $user = Session::get('user');
+
+        try {
+            $query = DB::table('tbl_request_barang as r')
+                ->leftJoin('tbl_user as creator', 'creator.user_id', '=', 'r.user_id')
+                ->leftJoin('tbl_barangmasuk as bm', 'bm.request_id', '=', 'r.request_id')
+                ->select(
                     'r.request_id',
-                    'r.request_tanggal',
+                    'r.request_tanggal', 
                     'creator.divisi',
                     'creator.departemen',
                     'r.status'
                 )
-                ->orderBy('r.request_tanggal', 'DESC')
-                ->get();
-    
-                return DataTables::of($data)
-                    ->addIndexColumn()
-                    ->addColumn('tanggal_format', function ($row) {
-                        return Carbon::parse($row->request_tanggal)->format('d/m/Y');
-                    })
-                    ->addColumn('status_badge', function ($row) {
-                        switch ($row->status) {
-                            case 'draft':
-                                return '<span class="badge bg-secondary">Draft</span>';
-                            case 'pending':
-                                return '<span class="badge bg-warning">Pending</span>';
-                            case 'approved':
-                                return '<span class="badge bg-success">Disetujui</span>';
-                            case 'rejected':
-                                return '<span class="badge bg-danger">Ditolak</span>';
-                            case 'Diproses':
-                                return '<span class="badge bg-info">Diproses</span>';
-                            case 'Dikirim':
-                                return '<span class="badge bg-primary">Dikirim</span>';
-                            case 'Diterima':
-                                return '<span class="badge bg-success">Diterima</span>';
-                            default:
-                                return '<span class="badge bg-warning">Pending</span>';
-                        }
-                    })
-                    ->addColumn('action', function ($row) {
-                        return '<button class="btn btn-success btn-sm" onclick="showDetail(\'' . $row->request_id . '\')">
-                            <i class="fe fe-eye"></i> Detail
-                        </button>';
-                    })
-                    ->rawColumns(['action', 'status_badge'])
-                    ->make(true);
-            } catch (\Exception $e) {
-                Log::error('Error in approval show:', [
-                    'message' => $e->getMessage(),
-                    'trace' => $e->getTraceAsString()
-                ]);
-                return response()->json([
-                    'error' => true,
-                    'message' => $e->getMessage()
-                ], 500);
+                ->whereNotNull('r.request_id');
+
+            // Apply filters
+            if ($request->filled('departemen')) {
+                $query->where('creator.departemen', $request->departemen);
             }
+
+            if ($request->filled('bulan')) {
+                $query->whereMonth('r.request_tanggal', $request->bulan);
+            }
+
+            if ($request->filled('tahun')) {
+                $query->whereYear('r.request_tanggal', $request->tahun);
+            }
+
+            // Role-based filtering
+            if ($user->role_id == 4) {
+                $query->where([
+                    ['creator.divisi', 'LIKE', trim($user->divisi)],
+                    ['creator.departemen', '=', $user->departemen]
+                ]);
+            }
+
+            $data = $query->groupBy(
+                'r.request_id',
+                'r.request_tanggal',
+                'creator.divisi',
+                'creator.departemen',
+                'r.status'
+            )
+            ->orderBy('r.request_tanggal', 'DESC')
+            ->get();
+
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->addColumn('tanggal_format', function ($row) {
+                    return Carbon::parse($row->request_tanggal)->format('d/m/Y');
+                })
+                ->addColumn('status_badge', function ($row) {
+                    switch ($row->status) {
+                        case 'draft':
+                            return '<span class="badge bg-secondary">Draft</span>';
+                        case 'pending':
+                            return '<span class="badge bg-warning">Pending</span>';
+                        case 'approved':
+                            return '<span class="badge bg-success">Disetujui</span>';
+                        case 'rejected':
+                            return '<span class="badge bg-danger">Ditolak</span>';
+                        case 'Diproses':
+                            return '<span class="badge bg-info">Diproses</span>';
+                        case 'Dikirim':
+                            return '<span class="badge bg-primary">Dikirim</span>';
+                        case 'Diterima':
+                            return '<span class="badge bg-success">Diterima</span>';
+                        default:
+                            return '<span class="badge bg-warning">Pending</span>';
+                    }
+                })
+                ->addColumn('action', function ($row) {
+                    return '<button class="btn btn-success btn-sm" onclick="showDetail(\'' . $row->request_id . '\')">
+                        <i class="fe fe-eye"></i> Detail
+                    </button>';
+                })
+                ->rawColumns(['action', 'status_badge'])
+                ->make(true);
+        } catch (\Exception $e) {
+            Log::error('Error in approval show:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage()
+            ], 500);
         }
-        return abort(404);
     }
+    return abort(404);
+}
 
     public function getDetail($request_id)
     {
