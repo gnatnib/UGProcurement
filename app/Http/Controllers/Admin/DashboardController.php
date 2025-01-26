@@ -64,4 +64,23 @@ class DashboardController extends Controller
             'data' => $bookings
         ]);
     }
+    public function getTopFiveBarang()
+{
+    $topBarang = DB::table('tbl_barangmasuk')
+        ->select('tbl_barang.barang_nama', DB::raw('COUNT(tbl_barangmasuk.barang_kode) as total_jumlah'), DB::raw('SUM(tbl_barangmasuk.harga * tbl_barangmasuk.bm_jumlah) as total_harga'))
+        ->join('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')
+        ->where('tbl_barangmasuk.tracking_status', '=', 'diterima')
+        ->whereMonth('tbl_barangmasuk.created_at', date('m'))
+        ->whereYear('tbl_barangmasuk.created_at', date('Y'))
+        ->groupBy('tbl_barangmasuk.barang_kode', 'tbl_barang.barang_nama')
+        ->orderBy('total_jumlah', 'DESC')
+        ->limit(5)
+        ->get();
+
+    return response()->json([
+        'success' => true,
+        'data' => $topBarang
+    ]);
+}
+
 }

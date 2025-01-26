@@ -130,66 +130,101 @@
     </div>
     <!-- ROW 1 CLOSED -->
     @if(Session::get('user')->role_id == 2 || Session::get('user')->role_id == 3)
-    <div class="row mt-4">
-        <div class="col-lg-4">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Division Bookings</h3>
+        <div class="row mt-4">
+            <!-- Donut Chart -->
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Division Bookings</h3>
+                    </div>
+                    <div class="card-body">
+                        <div id="donutChart"></div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <div id="donutChart"></div>
+            </div>
+            <!-- Top 5 Barang -->
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Top 5 Barang yang Sering Dibeli Bulan Ini</h3>
+                    </div>
+                    <div class="card-body">
+                        <ul id="topBarangList" class="list-group">
+                            <!-- Data akan dimuat melalui JavaScript -->
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    
-    @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        fetch('/admin/division-bookings')
-            .then(response => response.json())
-            .then(result => {
-                if (result.success && result.data.length > 0) {
-                    const options = {
-                        series: result.data.map(item => item.total),
-                        chart: {
-                            type: 'donut',
-                            height: 350,
-                            animations: {
-                                enabled: true
-                            }
-                        },
-                        labels: result.data.map(item => item.divisi),
-                        colors: ['#008FFB', '#00E396', '#FEB019', '#FF4560', '#775DD0', '#546E7A', '#26a69a'],
-                        plotOptions: {
-                            pie: {
-                                donut: {
-                                    size: '70%'
-                                }
-                            }
-                        },
-                        responsive: [{
-                            breakpoint: 480,
-                            options: {
+
+
+        @push('scripts')
+            <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+            <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                fetch('/admin/division-bookings')
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.success && result.data.length > 0) {
+                            const options = {
+                                series: result.data.map(item => item.total),
                                 chart: {
-                                    width: 200
+                                    type: 'donut',
+                                    height: 350,
+                                    animations: {
+                                        enabled: true
+                                    }
                                 },
-                                legend: {
-                                    position: 'bottom'
-                                }
+                                labels: result.data.map(item => item.divisi),
+                                colors: ['#008FFB', '#00E396', '#FEB019', '#FF4560', '#775DD0', '#546E7A', '#26a69a'],
+                                plotOptions: {
+                                    pie: {
+                                        donut: {
+                                            size: '70%'
+                                        }
+                                    }
+                                },
+                                responsive: [{
+                                    breakpoint: 480,
+                                    options: {
+                                        chart: {
+                                            width: 200
+                                        },
+                                        legend: {
+                                            position: 'bottom'
+                                        }
+                                    }
+                                }]
+                            };
+
+                            const chart = new ApexCharts(document.querySelector("#donutChart"), options);
+                            chart.render();
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+            document.addEventListener('DOMContentLoaded', function () {
+                    fetch('/admin/top-five-barang')
+                        .then(response => response.json())
+                        .then(result => {
+                            if (result.success && result.data.length > 0) {
+                                const list = document.getElementById('topBarangList');
+                                result.data.forEach(item => {
+                                    const listItem = document.createElement('li');
+                                    listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+                                    listItem.innerHTML = `
+                            <span>${item.barang_nama} (${item.total_jumlah} pcs)</span>
+                            <span>Rp ${parseFloat(item.total_harga).toLocaleString()}</span>
+                        `;
+                                    list.appendChild(listItem);
+                                });
                             }
-                        }]
-                    };
-    
-                    const chart = new ApexCharts(document.querySelector("#donutChart"), options);
-                    chart.render();
-                }
-            })
-            .catch(error => console.error('Error:', error));
-    });
-    </script>
-    @endpush
+                        })
+                        .catch(error => console.error('Error fetching top barang:', error));
+                });
+
+            </script>
+        @endpush
     @endif
 
     <style>

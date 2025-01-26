@@ -55,6 +55,8 @@
             Route::get('/admin', [DashboardController::class, 'index']);
             Route::get('/admin/dashboard', [DashboardController::class, 'index']);
             Route::get('/admin/division-bookings', [DashboardController::class, 'getDivisionBookings']);
+            Route::get('/admin/top-five-barang', [DashboardController::class, 'getTopFiveBarang']);
+
         });
 
         Route::middleware(['checkRoleUser:/jenisbarang,submenu'])->group(function () {
