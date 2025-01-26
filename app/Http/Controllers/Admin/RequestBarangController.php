@@ -248,6 +248,7 @@ class RequestBarangController extends Controller
                 'user_id' => $user->user_id,
                 'request_tanggal' => date('Y-m-d'),
                 'departemen' => $user->departemen,
+                'divisi' => $user->divisi, 
                 'status' => 'draft',
                 'keterangan' => 'Request Barang Baru',
                 'created_at' => now(),

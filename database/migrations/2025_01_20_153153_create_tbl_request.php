@@ -12,6 +12,7 @@ return new class extends Migration
             $table->integer('user_id')->unsigned();
             $table->date('request_tanggal');
             $table->string('departemen');
+            $table->string('divisi');
             $table->enum('status', ['draft', 'pending', 'approved', 'rejected', 'Diproses', 'Dikirim', 'Diterima'])->default('draft');
             $table->string('keterangan')->nullable();
             $table->timestamps();
