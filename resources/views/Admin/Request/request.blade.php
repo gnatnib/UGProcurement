@@ -184,21 +184,26 @@
                             $('#detail-jumlahitem').text(response.total_items + ' Item');
                             $('#detail-totalharga').text('Rp ' + response.total_harga.toLocaleString('id-ID'));
 
-                            let itemsHtml = '';
+                             let itemsHtml = '';
                             if (response.items && response.items.length > 0) {
                                 response.items.forEach((item, index) => {
                                     let totalHarga = item.bm_jumlah * item.harga;
+                                    let keterangan = item.keterangan || '-';
+                            if (keterangan.includes('Rejected by')) {
+                                        let parts = keterangan.split(/(Rejected by.*)/);
+                                        keterangan = parts[0] + '<span class="text-danger">' + parts[1] + '</span>';
+                                    }
                                     itemsHtml += `
-                            <tr>
-                                <td class="text-center">${index + 1}</td>
-                                <td>${item.barang_nama || '-'}</td>
-                                <td class="text-center">${item.bm_jumlah}</td>
-                                <td class="text-end">Rp ${parseFloat(item.harga).toLocaleString('id-ID')}</td>
-                                <td class="text-end">Rp ${parseFloat(totalHarga).toLocaleString('id-ID')}</td>
-                                <td class="text-center">${getStatusBadge(item.tracking_status)}</td>
-                                <td>${item.keterangan || '-'}</td>
-                            </tr>
-                        `;
+                                    <tr>
+                                        <td class="text-center">${index + 1}</td>
+                                        <td>${item.barang_nama || '-'}</td>
+                                        <td class="text-center">${item.bm_jumlah}</td>
+                                        <td class="text-end">Rp ${parseFloat(item.harga).toLocaleString('id-ID')}</td>
+                                        <td class="text-end">Rp ${parseFloat(totalHarga).toLocaleString('id-ID')}</td>
+                                        <td class="text-center">${getStatusBadge(item.tracking_status)}</td>
+                                        <td>${keterangan}</td>
+                                    </tr>
+                                `;
                                 });
                             } else {
                                 itemsHtml = '<tr><td colspan="7" class="text-center">Tidak ada data barang</td></tr>';

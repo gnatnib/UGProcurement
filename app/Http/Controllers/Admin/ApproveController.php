@@ -255,8 +255,15 @@ class ApproveController extends Controller
                 'updated_at' => now()
             ];
 
-            if ($approval['status'] === 'Reject' && !empty($approval['reason'])) {
-                $updateData['keterangan'] = $approval['reason'];
+            if ($approval['status'] === 'Reject') {
+                $rejectReason = !empty($approval['reason']) ? $approval['reason'] : 'No reason provided';
+                $currKeterangan = DB::table('tbl_barangmasuk')->where('bm_id', $bm_id)->value('keterangan');
+                $newReject = sprintf('Rejected by %s (%s): %s', 
+                    $user->name,
+                    $user->role_id == 2 ? 'GMHCGA' : 'GM',
+                    $rejectReason
+                );
+                $updateData['keterangan'] = $currKeterangan ? $currKeterangan . "\n" . $newReject : $newReject;
             }
 
             DB::table('tbl_barangmasuk')
