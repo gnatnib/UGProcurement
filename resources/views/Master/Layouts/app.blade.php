@@ -335,6 +335,8 @@ $appreance = AppreanceModel::where('user_id', '=', Session::get('user')->user_id
 @yield('formHapusJS')
 @yield('formOtherJS')
 
+@stack('scripts')
+
 </body>
 
 </html>
