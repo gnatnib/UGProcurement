@@ -55,7 +55,7 @@ class DashboardController extends Controller
     {
         $bookings = DB::table('tbl_request_barang')
             ->select('divisi', DB::raw('COUNT(*) as total'))
-            ->whereNotIn('status', ['rejected'])
+            ->whereNotIn('status', ['reject', 'draft', 'pending', 'approved', 'diproses','dikirim',])
             ->groupBy('divisi')
             ->get();
             
