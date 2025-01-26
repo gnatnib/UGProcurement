@@ -218,6 +218,8 @@
                 $('#detailModal').modal('show');
             }
 
+
+        
         function getStatusBadge(status) {
             status = status.toLowerCase();
             let statusClass, icon;
