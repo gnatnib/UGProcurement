@@ -103,7 +103,8 @@ class RequestBarangController extends Controller
                     'bm.*',
                     'b.barang_nama',
                     DB::raw('(bm.bm_jumlah * bm.harga) as total_harga'),
-                    'bm.keterangan' // Make sure keterangan is selected
+                    'bm.keterangan', // Make sure keterangan is selected
+                    'bm.tracking_status as item_status'
                 )
                 ->get();
 
