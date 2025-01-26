@@ -1,4 +1,3 @@
-```php
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -103,12 +102,6 @@
             <div class="signature-line"></div>
             <p><i>nama jelas & tanggal</i></p>
         </div>
-        <div class="signature-cell">
-            <p>Pemohon,</p>
-            <div class="signature-line"></div>
-            <p><i>nama jelas & tanggal</i></p>
-        </div>
     </div>
 </body>
 </html>
-```

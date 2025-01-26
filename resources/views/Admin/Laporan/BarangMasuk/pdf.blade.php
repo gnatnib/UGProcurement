@@ -73,7 +73,7 @@
         <p>Fax: (0210 230 2752)</p>
     </div>
 
-    <h1 style="text-align: center;">PERMINTAAN BARANG (PB)</h1>
+    <h1 style="text-align: center;">Tanda Terima</h1>
     <div style="right: 20px; font-weight: bold;">
         Request ID: {{ $request->request_id }}
     </div>
