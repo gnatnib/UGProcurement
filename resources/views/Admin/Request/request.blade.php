@@ -189,7 +189,7 @@
                                 response.items.forEach((item, index) => {
                                     let totalHarga = item.bm_jumlah * item.harga;
                                     let keterangan = item.keterangan || '-';
-                            if (keterangan.includes('Rejected by')) {
+                                    if (keterangan.includes('Rejected by')) {
                                         let parts = keterangan.split(/(Rejected by.*)/);
                                         keterangan = parts[0] + '<span class="text-danger">' + parts[1] + '</span>';
                                     }
