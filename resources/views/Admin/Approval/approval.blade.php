@@ -337,7 +337,7 @@
                     searchable: false
                 },
                 {
-                    data: 'tanggal_format',
+                    data: 'tanggal_format', 
                     name: 'request_tanggal'
                 },
                 {
@@ -349,12 +349,47 @@
                     name: 'divisi'
                 },
                 {
-                    data: 'departemen', // Add this column
+                    data: 'departemen',
                     name: 'departemen'
                 },
                 {
-                    data: 'status_badge',
-                    name: 'status'
+                    data: 'status',
+                    name: 'status',
+                    render: function(data) {
+                        let status = data.toLowerCase();
+                        let statusClass, icon, text;
+                        
+                        switch (status) {
+                            case 'draft':
+                                statusClass = 'status-draft';
+                                icon = 'edit';
+                                text = 'DRAFT';
+                                break;
+                            case 'pending':
+                                statusClass = 'status-pending';
+                                icon = 'clock';
+                                text = 'PENDING';
+                                break;
+                            case 'approved':
+                                statusClass = 'status-approved';
+                                icon = 'check-circle';
+                                text = 'APPROVED';
+                                break;
+                            case 'rejected':
+                                statusClass = 'status-rejected';
+                                icon = 'x-circle';
+                                text = 'REJECTED';
+                                break;
+                            default:
+                                statusClass = 'status-pending';
+                                icon = 'clock';
+                                text = 'PENDING';
+                        }
+
+                        return `<span class="badge rounded-pill ${statusClass} px-3 py-2">
+                                    <i class="fe fe-${icon} me-1"></i>${text}
+                                </span>`;
+                    }
                 },
                 {
                     data: 'action',
@@ -363,12 +398,12 @@
                     searchable: false,
                     render: function(data, type, row) {
                         return `<button type="button" class="btn btn-success btn-sm" onclick="showDetail('${row.request_id}')">
-                    <i class="fe fe-eye"></i> Detail
-                </button>`;
+                            <i class="fe fe-eye"></i> Detail
+                        </button>`;
                     }
                 }
             ]
-        });
+            });
 
         function numberFormat(number) {
             return new Intl.NumberFormat('id-ID').format(number);
@@ -450,12 +485,39 @@
 
 
         function getStatusBadge(status) {
-            const badges = {
-                'Approve': '<span class="badge bg-success">Disetujui</span>',
-                'Reject': '<span class="badge bg-danger">Ditolak</span>',
-                'pending': '<span class="badge bg-warning">Pending</span>'
-            };
-            return badges[status] || badges.pending;
+            let statusClass, icon, text;
+            
+            switch(status) {
+                case 'Approve':
+                case 'Approved':
+                case 'Disetujui':
+                    statusClass = 'status-approved';
+                    icon = 'check-circle';
+                    text = 'APPROVED';
+                    break;
+                case 'Reject':
+                case 'Rejected':
+                case 'Ditolak':
+                    statusClass = 'status-rejected';
+                    icon = 'x-circle';
+                    text = 'REJECTED';
+                    break;
+                case 'pending':
+                case 'Pending':
+                case 'PENDING':
+                    statusClass = 'status-pending';
+                    icon = 'clock';
+                    text = 'PENDING';
+                    break;
+                default:
+                    statusClass = 'status-pending';
+                    icon = 'clock';
+                    text = 'PENDING';
+            }
+
+            return `<span class="badge rounded-pill ${statusClass} px-3 py-2">
+                        <i class="fe fe-${icon} me-1"></i>${text}
+                    </span>`;
         }
 
         function setItemStatus(bm_id, status) {
@@ -521,15 +583,34 @@
         }
 
         function setItemStatus(bm_id, status) {
-            2
             itemApprovals[bm_id] = status;
-            console.log('Updated approvals:', itemApprovals); // Debug log
+            console.log('Updated approvals:', itemApprovals);
 
-            let badgeClass = status === 'Approve' ? 'success' : 'danger';
-            let statusText = status === 'Approve' ? 'Disetujui' : 'Ditolak';
+            let statusClass, icon, text;
+            
+            switch(status) {
+                case 'Approve':
+                    statusClass = 'status-approved';
+                    icon = 'check-circle';
+                    text = 'APPROVED';
+                    break;
+                case 'Reject':
+                    statusClass = 'status-rejected'; 
+                    icon = 'x-circle';
+                    text = 'REJECTED';
+                    break;
+                default:
+                    statusClass = 'status-pending';
+                    icon = 'clock';
+                    text = 'PENDING';
+            }
 
-            $(`#status-${bm_id}`).html(`<span class="badge bg-${badgeClass}">${statusText}</span>`);
-        }
+            $(`#status-${bm_id}`).html(`
+                <span class="badge rounded-pill ${statusClass} px-3 py-2">
+                    <i class="fe fe-${icon} me-1"></i>${text}
+                </span>
+            `);
+            }
 
         function reject(id) {
             swal({

@@ -65563,6 +65563,75 @@ button.bg-secondary:focus {
     background: #09ad95 !important;
 }
 
+/* Status Colors with Glass Effect */
+/* .status-draft {
+    background: rgba(179, 229, 252, 0.8) !important;
+    backdrop-filter: blur(8px) !important;
+    border: 1px solid rgba(179, 229, 252, 0.3) !important;
+    box-shadow: 0 4px 6px rgba(179, 229, 252, 0.1) !important;
+} */
+.status-draft {
+    background: rgba(100, 181, 246, 0.8) !important; /* Deeper and richer blue */
+    backdrop-filter: blur(8px) !important;
+    border: 1px solid rgba(100, 181, 246, 0.3) !important; /* Subtle blue border */
+    box-shadow: 0 4px 6px rgba(100, 181, 246, 0.1) !important; /* Softer shadow */
+}
+
+   
+.status-pending {
+    background: rgba(255, 193, 7, 0.8) !important;
+    backdrop-filter: blur(8px) !important;
+    border: 1px solid rgba(255, 193, 7, 0.3) !important;
+    box-shadow: 0 4px 6px rgba(255, 193, 7, 0.1) !important;
+}
+   
+.status-sent {
+    background: rgba(0, 123, 255, 0.8) !important;
+    backdrop-filter: blur(8px) !important;
+    border: 1px solid rgba(0, 123, 255, 0.3) !important;
+    box-shadow: 0 4px 6px rgba(0, 123, 255, 0.1) !important;
+}
+   
+.status-processed {
+    background: rgba(255, 152, 0, 0.8) !important;
+    backdrop-filter: blur(8px) !important;
+    border: 1px solid rgba(255, 152, 0, 0.3) !important;
+    box-shadow: 0 4px 6px rgba(255, 152, 0, 0.1) !important;
+}
+   
+.status-approved {
+    background: rgba(76, 175, 80, 0.8) !important;
+    backdrop-filter: blur(8px) !important;
+    border: 1px solid rgba(76, 175, 80, 0.3) !important;
+    box-shadow: 0 4px 6px rgba(76, 175, 80, 0.1) !important;
+}
+   
+.status-rejected {
+    background: rgba(244, 67, 54, 0.8) !important;
+    backdrop-filter: blur(8px) !important;
+    border: 1px solid rgba(244, 67, 54, 0.3) !important;
+    box-shadow: 0 4px 6px rgba(244, 67, 54, 0.1) !important;
+}
+   
+.status-received {
+    background: rgba(168, 230, 207, 0.8) !important;
+    backdrop-filter: blur(8px) !important;
+    border: 1px solid rgba(168, 230, 207, 0.3) !important;
+    box-shadow: 0 4px 6px rgba(168, 230, 207, 0.1) !important;
+}
+   
+   /* Additional styles for better readability */
+.badge {
+    font-weight: 500 !important;
+    letter-spacing: 0.3px !important;
+    transition: all 0.3s ease !important;
+}
+   
+.badge:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 6px 8px rgba(0,0,0,0.1) !important;
+}
+
 a.bg-success:hover,
 a.bg-success:focus {
     background-color: #15bf42 !important;

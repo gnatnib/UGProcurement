@@ -202,63 +202,119 @@
 
         var table;
         $(document).ready(function() {
-            table = $('#table-1').DataTable({
-                processing: true,
-                serverSide: true,
-                info: true,
-                order: [
-                    [5, 'desc']
-                ],
-                ajax: {
-                    url: "{{ route('barang-masuk.getbarang-masuk') }}",
-                    data: function(d) {
-                        d.request_id = new URLSearchParams(window.location.search).get('request_id');
+        table = $('#table-1').DataTable({
+            processing: true,
+            serverSide: true,
+            info: true,
+            order: [
+                [5, 'desc']
+            ],
+            ajax: {
+                url: "{{ route('barang-masuk.getbarang-masuk') }}",
+                data: function(d) {
+                    d.request_id = new URLSearchParams(window.location.search).get('request_id');
+                }
+            },
+            columns: [
+                {
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex',
+                    searchable: false
+                },
+                {
+                    data: 'tgl',
+                    name: 'bm_tanggal'
+                },
+                {
+                    data: 'barang',
+                    name: 'barang_nama'
+                },
+                {
+                    data: 'bm_jumlah',
+                    name: 'bm_jumlah'
+                },
+                {
+                    data: 'harga',
+                    name: 'harga',
+                    render: function(data) {
+                        return 'Rp ' + parseFloat(data).toLocaleString('id-ID');
                     }
                 },
-                columns: [ // Fixed the columns array syntax
-                    {
-                        data: 'DT_RowIndex',
-                        name: 'DT_RowIndex',
-                        searchable: false
-                    },
-                    {
-                        data: 'tgl',
-                        name: 'bm_tanggal'
-                    },
-                    {
-                        data: 'barang',
-                        name: 'barang_nama'
-                    },
-                    {
-                        data: 'bm_jumlah',
-                        name: 'bm_jumlah'
-                    },
-                    {
-                        data: 'harga',
-                        name: 'harga',
-                        render: function(data) {
-                            return 'Rp ' + parseFloat(data).toLocaleString('id-ID');
+                {
+                    data: 'approval',
+                    name: 'approval',
+                    render: function(data) {
+                        let statusClass = 'status-pending';
+                        let icon = 'fe-clock';
+                        
+                        switch(data) {
+                            case 'APPROVED':
+                                statusClass = 'status-approved';
+                                icon = 'fe-check-circle';
+                                break;
+                            case 'REJECTED':
+                                statusClass = 'status-rejected';
+                                icon = 'fe-x-circle';
+                                break;
+                            case 'DRAFT':
+                                statusClass = 'status-draft';
+                                icon = 'fe-edit';
+                                break;
+                            case 'PROCESSED':
+                                statusClass = 'status-processed';
+                                icon = 'fe-refresh-cw';
+                                break;
+                            case 'SENT':
+                                statusClass = 'status-sent';
+                                icon = 'fe-send';
+                                break;
                         }
-                    },
-                    {
-                        data: 'approval',
-                        name: 'approval'
-                    },
-                    {
-                        data: 'request_id',
-                        name: 'request_id'
-                    },
-                    {
-                        data: 'tracking_status',
-                        name: 'tracking_status'
-                    },
-                    {
-                        data: 'action',
-                        name: 'action',
-                        orderable: false,
-                        searchable: false
+
+                        return `<span class="badge rounded-pill ${statusClass} px-3 py-2">
+                                    <i class="fe ${icon} me-1"></i>
+                                    ${data || 'PENDING'}
+                                </span>`;
                     }
-                ],
+                },
+                {
+                    data: 'request_id',
+                    name: 'request_id'
+                },
+                {
+                    data: 'tracking_status',
+                    name: 'tracking_status',
+                    render: function(data) {
+                        let statusClass = 'status-pending';
+                        let icon = 'fe-clock';
+                        
+                        switch(data) {
+                            case 'DELIVERED':
+                                statusClass = 'status-received';
+                                icon = 'fe-check-circle';
+                                break;
+                            case 'SENT':
+                                statusClass = 'status-sent';
+                                icon = 'fe-send';
+                                break;
+                            case 'PROCESSED':
+                                statusClass = 'status-processed';
+                                icon = 'fe-refresh-cw';
+                                break;
+                        }
+
+                        return `<span class="badge rounded-pill ${statusClass} px-3 py-2">
+                                    <i class="fe ${icon} me-1"></i>
+                                    ${data || 'PENDING'}
+                                </span>`;
+                    }
+                },
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false
+                }
+            ],
                 createdRow: function(row, data) {
                     $(row).css('cursor', 'pointer');
                     $(row).find('td:not(:last-child)').on('click', function() {
@@ -278,24 +334,66 @@
             $('#detail-harga').text('Rp ' + parseInt(data.harga).toLocaleString('id-ID'));
 
             let approvalStatus = data.approval || 'PENDING';
-            let approvalClass = data.approval ? 'bg-success' : 'bg-warning';
+            let approvalClass = 'status-pending';
+            let approvalIcon = 'fe-clock';
+            
+            switch(approvalStatus) {
+                case 'APPROVED':
+                    approvalClass = 'status-approved';
+                    approvalIcon = 'fe-check-circle';
+                    break;
+                case 'REJECTED':
+                    approvalClass = 'status-rejected';
+                    approvalIcon = 'fe-x-circle';
+                    break;
+                case 'DRAFT':
+                    approvalClass = 'status-draft';
+                    approvalIcon = 'fe-edit';
+                    break;
+                case 'PROCESSED':
+                    approvalClass = 'status-processed';
+                    approvalIcon = 'fe-refresh-cw';
+                    break;
+                case 'SENT':
+                    approvalClass = 'status-sent';
+                    approvalIcon = 'fe-send';
+                    break;
+            }
+
             let approvalBadge = `
-       <div class="d-inline-block">
-           <span class="badge rounded-pill ${approvalClass}-gradient px-3 py-2">
-               <i class="fe fe-check-circle me-1"></i>
-               ${approvalStatus}
-           </span>
-       </div>`;
+                <div class="d-inline-block">
+                    <span class="badge rounded-pill ${approvalClass} px-3 py-2">
+                        <i class="fe ${approvalIcon} me-1"></i>
+                        ${approvalStatus}
+                    </span>
+                </div>`;
 
             let trackingStatus = data.tracking_status || 'PENDING';
-            let trackingClass = data.tracking_status ? 'bg-success' : 'bg-warning';
+            let trackingClass = 'status-pending';
+            let trackingIcon = 'fe-clock';
+            
+            switch(trackingStatus) {
+                case 'DELIVERED':
+                    trackingClass = 'status-received';
+                    trackingIcon = 'fe-check-circle';
+                    break;
+                case 'SENT':
+                    trackingClass = 'status-sent';
+                    trackingIcon = 'fe-send';
+                    break;
+                case 'PROCESSED':
+                    trackingClass = 'status-processed';
+                    trackingIcon = 'fe-refresh-cw';
+                    break;
+            }
+
             let trackingBadge = `
-       <div class="d-inline-block">
-           <span class="badge rounded-pill ${trackingClass}-gradient px-3 py-2">
-               <i class="fe fe-truck me-1"></i>
-               ${trackingStatus}
-           </span>
-       </div>`;
+                <div class="d-inline-block">
+                    <span class="badge rounded-pill ${trackingClass} px-3 py-2">
+                        <i class="fe ${trackingIcon} me-1"></i>
+                        ${trackingStatus}
+                    </span>
+                </div>`;
 
             $('#detail-approval').html(approvalBadge);
             $('#detail-tracking').html(trackingBadge);

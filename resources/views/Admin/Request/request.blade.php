@@ -219,32 +219,47 @@
             }
 
         function getStatusBadge(status) {
-                status = (status || '').toLowerCase();
-                let badgeClass, icon;
+            status = status.toLowerCase();
+            let statusClass, icon;
 
-                switch (status) {
-                    case 'diterima':
-                        badgeClass = 'bg-success';
-                        icon = 'check-circle';
-                        break;
-                    case 'diproses':
-                        badgeClass = 'bg-primary';
-                        icon = 'loader';
-                        break;
-                    case 'ditolak':
-                        badgeClass = 'bg-danger';
-                        icon = 'x-circle';
-                        break;
-                    default:
-                        badgeClass = 'bg-info';
-                        icon = 'clock';
-                        status = 'PENDING';
-                }
-
-                return `<span class="badge ${badgeClass}-gradient">
-        <i class="fe fe-${icon} me-1"></i>${status.toUpperCase()}
-    </span>`;
+            switch (status) {
+                case 'draft':
+                    statusClass = 'status-draft';
+                    icon = 'edit';
+                    break;
+                case 'pending':
+                    statusClass = 'status-pending';
+                    icon = 'clock';
+                    break;
+                case 'sent':
+                    statusClass = 'status-sent';
+                    icon = 'send';
+                    break;
+                case 'processed':
+                    statusClass = 'status-processed';
+                    icon = 'refresh-cw';
+                    break;
+                case 'approved':
+                    statusClass = 'status-approved';
+                    icon = 'check-circle';
+                    break;
+                case 'rejected':
+                    statusClass = 'status-rejected';
+                    icon = 'x-circle';
+                    break;
+                case 'received':
+                    statusClass = 'status-received';
+                    icon = 'package';
+                    break;
+                default:
+                    statusClass = 'status-draft';
+                    icon = 'help-circle';
             }
+
+            return `<span class="badge rounded-pill ${statusClass} px-3 py-2">
+                        <i class="fe fe-${icon} me-1"></i>${status.toUpperCase()}
+                    </span>`;
+        }
 
         // Function to add request
         function addRequest() {
@@ -298,11 +313,54 @@
         }
 
         $(document).ready(function() {
+            // var table = $('#table-1').DataTable({
+            //     processing: true,
+            //     serverSide: true,
+            //     ajax: "/admin/request-barang/getdata",
+            //     columns: [{
+            //             data: 'DT_RowIndex',
+            //             name: 'DT_RowIndex',
+            //             orderable: false,
+            //             searchable: false,
+            //             width: '5%'
+            //         },
+            //         {
+            //             data: 'tanggal_format',
+            //             name: 'request_tanggal'
+            //         },
+            //         {
+            //             data: 'request_id',
+            //             name: 'request_id'
+            //         },
+            //         {
+            //             data: 'departemen',
+            //             name: 'departemen'
+            //         },
+            //         {
+            //             data: 'status',
+            //             name: 'status'
+            //         },
+            //         {
+            //             data: 'action',
+            //             name: 'action',
+            //             orderable: false,
+            //             searchable: false,
+            //         }
+            //     ],
+            //     createdRow: function(row, data) {
+            //         $(row).css('cursor', 'pointer');
+            //         $(row).find('td:not(:last-child)').on('click', function() {
+            //             showDetail(data);
+            //         });
+            //     }
+            // });
+
             var table = $('#table-1').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "/admin/request-barang/getdata",
-                columns: [{
+                ajax: "/admin/request-barang/getdata", 
+                columns: [
+                    {
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
                         orderable: false,
@@ -323,7 +381,45 @@
                     },
                     {
                         data: 'status',
-                        name: 'status'
+                        name: 'status',
+                        render: function(data) {
+                            let status = data.toLowerCase();
+                            let statusClass, icon;
+                            
+                            switch (status) {
+                                case 'draft':
+                                    statusClass = 'status-draft';
+                                    icon = 'edit';
+                                    break;
+                                case 'pending':
+                                    statusClass = 'status-pending';
+                                    icon = 'clock';
+                                    break;
+                                case 'sent':
+                                    statusClass = 'status-sent';
+                                    icon = 'send';
+                                    break;
+                                case 'processed':
+                                    statusClass = 'status-processed';
+                                    icon = 'refresh-cw';
+                                    break;
+                                case 'approved':
+                                    statusClass = 'status-approved';
+                                    icon = 'check-circle';
+                                    break;
+                                case 'rejected':
+                                    statusClass = 'status-rejected';
+                                    icon = 'x-circle';
+                                    break;
+                                default:
+                                    statusClass = 'status-draft';
+                                    icon = 'help-circle';
+                            }
+
+                            return `<span class="badge rounded-pill ${statusClass} px-3 py-2">
+                                        <i class="fe fe-${icon} me-1"></i>${status.toUpperCase()}
+                                    </span>`;
+                        }
                     },
                     {
                         data: 'action',
@@ -338,7 +434,7 @@
                         showDetail(data);
                     });
                 }
-            });
+                });
         });
 
         // Function to handle request deletion
