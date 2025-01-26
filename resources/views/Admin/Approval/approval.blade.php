@@ -41,7 +41,6 @@
         </div>
     </div>
 
-    ```html
     <!-- Modal Detail -->
     <div class="modal fade" id="modalDetail">
         <div class="modal-dialog modal-xl">
@@ -52,7 +51,7 @@
                         <i class="fe fe-edit-2"></i> Sign Request
                     </button>
                 </div>
-    
+
                 <!-- Signature Area -->
                 <div class="mx-3 mt-3">
                     <div class="card">
@@ -66,10 +65,10 @@
                         </div>
                     </div>
                 </div>
-    
+
                 <div class="modal-body">
                     <input type="hidden" id="current_request_id">
-                    
+
                     <div class="table-responsive">
                         <table class="table table-bordered table-striped mb-0">
                             <thead>
@@ -88,7 +87,7 @@
                         </table>
                     </div>
                 </div>
-    
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
                     <button type="button" class="btn btn-primary" onclick="simpanApproval()">Simpan Approval</button>
@@ -96,7 +95,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Signature Modal -->
     <div class="modal fade" id="signatureModal">
         <div class="modal-dialog">
@@ -141,63 +140,62 @@
         </div>
     </div>
     <style>
-    /* General Table Styles */
-    .table {
-        width: 100%;
-        margin-bottom: 0;
-        font-size: 13px;
-    }
-    
-    .table th {
-        background: #f8f9fa;
-        font-weight: 600;
-        text-transform: uppercase;
-        padding: 12px;
-        text-align: center;
-        vertical-align: middle;
-        white-space: nowrap;
-    }
-    
-    .table td {
-        padding: 12px;
-        vertical-align: middle;
-    }
-    
-    .table td:not(:nth-child(6)) {
-        white-space: nowrap;
-    }
-    
-    /* Signature Styles */
-    #signature-display {
-        min-height: 80px;
-    }
-    
-    .signature-item {
-        background: white;
-        padding: 12px;
-        border-radius: 6px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-    
-    .signature-item img {
-        max-width: 120px;
-        border: 1px solid #dee2e6;
-        border-radius: 4px;
-        padding: 2px;
-    }
-    
-    /* Action Button Styles */
-    .action-btn-group {
-        display: flex;
-        gap: 5px;
-        justify-content: center;
-    }
-    
-    .action-btn-group .btn {
-        padding: 4px 8px;
-    }
+        /* General Table Styles */
+        .table {
+            width: 100%;
+            margin-bottom: 0;
+            font-size: 13px;
+        }
+
+        .table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 12px;
+            text-align: center;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        .table td {
+            padding: 12px;
+            vertical-align: middle;
+        }
+
+        .table td:not(:nth-child(6)) {
+            white-space: nowrap;
+        }
+
+        /* Signature Styles */
+        #signature-display {
+            min-height: 80px;
+        }
+
+        .signature-item {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .signature-item img {
+            max-width: 120px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 2px;
+        }
+
+        /* Action Button Styles */
+        .action-btn-group {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+        }
+
+        .action-btn-group .btn {
+            padding: 4px 8px;
+        }
     </style>
-    ```
 @endsection
 
 @section('scripts')
@@ -322,9 +320,9 @@
             ]
         });
 
-function numberFormat(number) {
-    return new Intl.NumberFormat('id-ID').format(number);
-}
+        function numberFormat(number) {
+            return new Intl.NumberFormat('id-ID').format(number);
+        }
 
 
         function showDetail(request_id) {
@@ -357,7 +355,7 @@ function numberFormat(number) {
                 let html = '';
                 data.forEach(item => {
                     const showActions = !(
-                        (currentUserRole === '2' && hasGMHCGASignature) || 
+                        (currentUserRole === '2' && hasGMHCGASignature) ||
                         (currentUserRole === '4' && hasGMSignature)
                     );
 
@@ -395,25 +393,25 @@ function numberFormat(number) {
                 $('#detail-content').html(html);
                 $('#modalDetail').modal('show');
             });
-}
+        }
 
         // Object untuk menyimpan status approval per item
         let itemApprovals = {};
 
 
         function getStatusBadge(status) {
-    const badges = {
-        'Approve': '<span class="badge bg-success">Disetujui</span>',
-        'Reject': '<span class="badge bg-danger">Ditolak</span>',
-        'pending': '<span class="badge bg-warning">Pending</span>'
-    };
-    return badges[status] || badges.pending;
-}
+            const badges = {
+                'Approve': '<span class="badge bg-success">Disetujui</span>',
+                'Reject': '<span class="badge bg-danger">Ditolak</span>',
+                'pending': '<span class="badge bg-warning">Pending</span>'
+            };
+            return badges[status] || badges.pending;
+        }
 
         function setItemStatus(bm_id, status) {
-    itemApprovals[bm_id] = status;
-    $(`#status-${bm_id}`).html(getStatusBadge(status));
-}
+            itemApprovals[bm_id] = status;
+            $(`#status-${bm_id}`).html(getStatusBadge(status));
+        }
 
         function simpanApproval() {
             const request_id = $('#current_request_id').val();
@@ -513,18 +511,18 @@ function numberFormat(number) {
         }
 
         function showSignatureModal() {
-    $('#signatureModal').modal('show');
-}
+            $('#signatureModal').modal('show');
+        }
 
-// Initialize signature pad when modal shown
-$('#signatureModal').on('shown.bs.modal', function() {
-    const canvas = document.getElementById('signaturePad');
-    signaturePad = new SignaturePad(canvas, {
-        backgroundColor: 'rgb(255, 255, 255)'
-    });
-});
+        // Initialize signature pad when modal shown
+        $('#signatureModal').on('shown.bs.modal', function() {
+            const canvas = document.getElementById('signaturePad');
+            signaturePad = new SignaturePad(canvas, {
+                backgroundColor: 'rgb(255, 255, 255)'
+            });
+        });
 
-    function showRejectModal(bm_id) {
+        function showRejectModal(bm_id) {
             $('#reject_bm_id').val(bm_id);
             $('#reject_reason').val('');
             $('#rejectModal').modal('show');
