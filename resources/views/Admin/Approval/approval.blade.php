@@ -11,7 +11,56 @@
             </ol>
         </div>
     </div>
-
+    <div class="card-body border-bottom">
+        <form id="filterForm">
+            <div class="row align-items-end mb-3">
+                <div class="col-md-3">
+                    <label class="form-label">Departemen</label>
+                    <select class="form-control" name="departemen" id="filterDepartemen">
+                        <option value="">Semua Departemen</option>
+                        @foreach($departemen as $d)
+                            <option value="{{ $d }}">{{ $d }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Bulan</label>
+                    <select class="form-control" name="bulan" id="filterBulan">
+                        <option value="">Semua Bulan</option>
+                        @foreach(range(1, 12) as $month)
+                            <option value="{{ $month }}" {{ date('n') == $month ? 'selected' : '' }}>
+                                {{ date('F', mktime(0, 0, 0, $month, 1)) }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Tahun</label>
+                    <select class="form-control" name="tahun" id="filterTahun">
+                        <option value="">Semua Tahun</option>
+                        @php
+                            $currentYear = date('Y');
+                            $startYear = $currentYear - 3;
+                            $endYear = $currentYear + 1;
+                        @endphp
+                        @foreach(range($startYear, $endYear) as $year)
+                            <option value="{{ $year }}" {{ $currentYear == $year ? 'selected' : '' }}>
+                                {{ $year }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-primary" onclick="applyFilter()">
+                        <i class="fe fe-filter"></i> Filter
+                    </button>
+                    <button type="button" class="btn btn-light" onclick="resetFilter()">
+                        <i class="fe fe-refresh-cw"></i> Reset
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
     <!-- ROW -->
     <div class="row row-sm">
         <div class="col-lg-12">
@@ -22,6 +71,7 @@
                 <div class="card-body">
                     <div class="table-responsive">
                         <table id="table-1" class="table table-bordered text-nowrap border-bottom">
+                            
                             <thead>
                                 <tr>
                                     <th width="1%">No</th>
@@ -41,7 +91,6 @@
         </div>
     </div>
 
-    ```html
     <!-- Modal Detail -->
     <div class="modal fade" id="modalDetail">
         <div class="modal-dialog modal-xl">
@@ -52,7 +101,7 @@
                         <i class="fe fe-edit-2"></i> Sign Request
                     </button>
                 </div>
-    
+
                 <!-- Signature Area -->
                 <div class="mx-3 mt-3">
                     <div class="card">
@@ -66,10 +115,10 @@
                         </div>
                     </div>
                 </div>
-    
+
                 <div class="modal-body">
                     <input type="hidden" id="current_request_id">
-                    
+
                     <div class="table-responsive">
                         <table class="table table-bordered table-striped mb-0">
                             <thead>
@@ -88,7 +137,7 @@
                         </table>
                     </div>
                 </div>
-    
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
                     <button type="button" class="btn btn-primary" onclick="simpanApproval()">Simpan Approval</button>
@@ -96,7 +145,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Signature Modal -->
     <div class="modal fade" id="signatureModal">
         <div class="modal-dialog">
@@ -119,65 +168,84 @@
             </div>
         </div>
     </div>
-    
+    <div class="modal fade" id="rejectModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Alasan Penolakan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="reject_bm_id">
+                    <div class="form-group">
+                        <label>Keterangan Penolakan</label>
+                        <textarea id="reject_reason" class="form-control" rows="3" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-danger" onclick="submitReject()">Simpan</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <style>
-    /* General Table Styles */
-    .table {
-        width: 100%;
-        margin-bottom: 0;
-        font-size: 13px;
-    }
-    
-    .table th {
-        background: #f8f9fa;
-        font-weight: 600;
-        text-transform: uppercase;
-        padding: 12px;
-        text-align: center;
-        vertical-align: middle;
-        white-space: nowrap;
-    }
-    
-    .table td {
-        padding: 12px;
-        vertical-align: middle;
-    }
-    
-    .table td:not(:nth-child(6)) {
-        white-space: nowrap;
-    }
-    
-    /* Signature Styles */
-    #signature-display {
-        min-height: 80px;
-    }
-    
-    .signature-item {
-        background: white;
-        padding: 12px;
-        border-radius: 6px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-    
-    .signature-item img {
-        max-width: 120px;
-        border: 1px solid #dee2e6;
-        border-radius: 4px;
-        padding: 2px;
-    }
-    
-    /* Action Button Styles */
-    .action-btn-group {
-        display: flex;
-        gap: 5px;
-        justify-content: center;
-    }
-    
-    .action-btn-group .btn {
-        padding: 4px 8px;
-    }
+        /* General Table Styles */
+        .table {
+            width: 100%;
+            margin-bottom: 0;
+            font-size: 13px;
+        }
+
+        .table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 12px;
+            text-align: center;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        .table td {
+            padding: 12px;
+            vertical-align: middle;
+        }
+
+        .table td:not(:nth-child(6)) {
+            white-space: nowrap;
+        }
+
+        /* Signature Styles */
+        #signature-display {
+            min-height: 80px;
+        }
+
+        .signature-item {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .signature-item img {
+            max-width: 120px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 2px;
+        }
+
+        /* Action Button Styles */
+        .action-btn-group {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+        }
+
+        .action-btn-group .btn {
+            padding: 4px 8px;
+        }
     </style>
-    ```
 @endsection
 
 @section('scripts')
@@ -302,98 +370,98 @@
             ]
         });
 
-function numberFormat(number) {
-    return new Intl.NumberFormat('id-ID').format(number);
-}
+        function numberFormat(number) {
+            return new Intl.NumberFormat('id-ID').format(number);
+        }
 
 
         function showDetail(request_id) {
-    $('#current_request_id').val(request_id);
-    itemApprovals = {};
+            $('#current_request_id').val(request_id);
+            itemApprovals = {};
 
-    Promise.all([
-        $.get("/admin/approval/detail/" + request_id),
-        $.get("/admin/approval/view-signature/" + request_id)
-    ]).then(([data, signatureData]) => {
-        // Render signatures di area atas
-        let signatureDisplay = '';
-        if (signatureData.success && signatureData.signatures?.length > 0) {
-            signatureData.signatures.forEach(sig => {
-                signatureDisplay += `
-                    <div class="text-center me-4">
-                        <span class="badge bg-success mb-2">Signed by ${sig.signer_type}</span>
-                        <img src="${sig.signature}" class="border rounded p-1" style="max-width: 150px;">
-                    </div>`;
+            Promise.all([
+                $.get("/admin/approval/detail/" + request_id),
+                $.get("/admin/approval/view-signature/" + request_id)
+            ]).then(([data, signatureData]) => {
+                // Render signatures di area atas
+                let signatureDisplay = '';
+                if (signatureData.success && signatureData.signatures?.length > 0) {
+                    signatureData.signatures.forEach(sig => {
+                        signatureDisplay += `
+                            <div class="text-center me-4">
+                                <span class="badge bg-success mb-2">Signed by ${sig.signer_type}</span>
+                                <img src="${sig.signature}" class="border rounded p-1" style="max-width: 150px;">
+                            </div>`;
+                    });
+                }
+                $('#signature-display').html(signatureDisplay);
+
+                // Cek status tanda tangan
+                const hasGMSignature = signatureData.signatures?.some(s => s.signer_type === 'GM');
+                const hasGMHCGASignature = signatureData.signatures?.some(s => s.signer_type === 'GMHCGA');
+                const currentUserRole = '{{ Session::get('user')->role_id }}';
+
+                // Render table content
+                let html = '';
+                data.forEach(item => {
+                    const showActions = !(
+                        (currentUserRole === '2' && hasGMHCGASignature) ||
+                        (currentUserRole === '4' && hasGMSignature)
+                    );
+
+                    let actionButtons = '';
+                    if (item.approval !== 'Approve' && item.approval !== 'Reject' && showActions) {
+                        actionButtons = `
+                            <div class="btn-group">
+                                <button class="btn btn-sm btn-success" onclick="setItemStatus(${item.bm_id}, 'Approve')">
+                                    <i class="fe fe-check"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="showRejectModal(${item.bm_id})">
+                                    <i class="fe fe-x"></i>
+                                </button>
+                            </div>`;
+                    }
+
+                    html += `
+                        <tr>
+                            <td>${item.barang_kode}</td>
+                            <td>${item.barang_nama}</td>
+                            <td class="text-center">${item.bm_jumlah}</td>
+                            <td class="text-end">Rp ${numberFormat(item.harga)}</td>
+                            <td>${item.divisi}</td>
+                            <td>${item.keterangan}</td>
+                            <td class="text-center" id="status-${item.bm_id}">${getStatusBadge(item.approval)}</td>
+                            <td class="text-center">${actionButtons}</td>
+                            <td></td>
+                        </tr>`;
+
+                    if (showActions) {
+                        itemApprovals[item.bm_id] = item.approval || 'pending';
+                    }
+                });
+
+                $('#detail-content').html(html);
+                $('#modalDetail').modal('show');
             });
         }
-        $('#signature-display').html(signatureDisplay);
-
-        // Cek status tanda tangan
-        const hasGMSignature = signatureData.signatures?.some(s => s.signer_type === 'GM');
-        const hasGMHCGASignature = signatureData.signatures?.some(s => s.signer_type === 'GMHCGA');
-        const currentUserRole = '{{ Session::get('user')->role_id }}';
-
-        // Render table content
-        let html = '';
-        data.forEach(item => {
-            const showActions = !(
-                (currentUserRole === '2' && hasGMHCGASignature) || 
-                (currentUserRole === '4' && hasGMSignature)
-            );
-
-            let actionButtons = '';
-            if (item.approval !== 'Approve' && item.approval !== 'Reject' && showActions) {
-                actionButtons = `
-                    <div class="btn-group">
-                        <button class="btn btn-sm btn-success" onclick="setItemStatus(${item.bm_id}, 'Approve')">
-                            <i class="fe fe-check"></i>
-                        </button>
-                        <button class="btn btn-sm btn-danger" onclick="setItemStatus(${item.bm_id}, 'Reject')">
-                            <i class="fe fe-x"></i>
-                        </button>
-                    </div>`;
-            }
-
-            html += `
-                <tr>
-                    <td>${item.barang_kode}</td>
-                    <td>${item.barang_nama}</td>
-                    <td class="text-center">${item.bm_jumlah}</td>
-                    <td class="text-end">Rp ${numberFormat(item.harga)}</td>
-                    <td>${item.divisi}</td>
-                    <td>${item.keterangan}</td>
-                    <td class="text-center" id="status-${item.bm_id}">${getStatusBadge(item.approval)}</td>
-                    <td class="text-center">${actionButtons}</td>
-                    <td></td>
-                </tr>`;
-
-            if (showActions) {
-                itemApprovals[item.bm_id] = item.approval || 'pending';
-            }
-        });
-
-        $('#detail-content').html(html);
-        $('#modalDetail').modal('show');
-    });
-}
 
         // Object untuk menyimpan status approval per item
         let itemApprovals = {};
 
 
         function getStatusBadge(status) {
-    const badges = {
-        'Approve': '<span class="badge bg-success">Disetujui</span>',
-        'Reject': '<span class="badge bg-danger">Ditolak</span>',
-        'pending': '<span class="badge bg-warning">Pending</span>'
-    };
-    return badges[status] || badges.pending;
-}
+            const badges = {
+                'Approve': '<span class="badge bg-success">Disetujui</span>',
+                'Reject': '<span class="badge bg-danger">Ditolak</span>',
+                'pending': '<span class="badge bg-warning">Pending</span>'
+            };
+            return badges[status] || badges.pending;
+        }
 
         function setItemStatus(bm_id, status) {
-    itemApprovals[bm_id] = status;
-    $(`#status-${bm_id}`).html(getStatusBadge(status));
-}
+            itemApprovals[bm_id] = status;
+            $(`#status-${bm_id}`).html(getStatusBadge(status));
+        }
 
         function simpanApproval() {
             const request_id = $('#current_request_id').val();
@@ -493,15 +561,67 @@ function numberFormat(number) {
         }
 
         function showSignatureModal() {
-    $('#signatureModal').modal('show');
-}
+            $('#signatureModal').modal('show');
+        }
 
-// Initialize signature pad when modal shown
-$('#signatureModal').on('shown.bs.modal', function() {
-    const canvas = document.getElementById('signaturePad');
-    signaturePad = new SignaturePad(canvas, {
-        backgroundColor: 'rgb(255, 255, 255)'
-    });
-});
+        // Initialize signature pad when modal shown
+        $('#signatureModal').on('shown.bs.modal', function() {
+            const canvas = document.getElementById('signaturePad');
+            signaturePad = new SignaturePad(canvas, {
+                backgroundColor: 'rgb(255, 255, 255)'
+            });
+        });
+
+        function showRejectModal(bm_id) {
+            $('#reject_bm_id').val(bm_id);
+            $('#reject_reason').val('');
+            $('#rejectModal').modal('show');
+        }
+
+        function submitReject() {
+            const bm_id = $('#reject_bm_id').val();
+            const reason = $('#reject_reason').val();
+
+            if (!reason) {
+                swal("Error!", "Keterangan penolakan harus diisi", "error");
+                return;
+            }
+
+            setItemStatus(bm_id, 'Reject', reason);
+            $('#rejectModal').modal('hide');
+        }
+
+        // Modify setItemStatus to handle rejection reason
+        function setItemStatus(bm_id, status, reason = '') {
+            itemApprovals[bm_id] = {
+                status: status,
+                reason: reason
+            };
+
+            let badgeClass = status === 'Approve' ? 'success' : 'danger';
+            let statusText = status === 'Approve' ? 'Disetujui' : 'Ditolak';
+
+            $(`#status-${bm_id}`).html(`<span class="badge bg-${badgeClass}">${statusText}</span>`);
+        }
+
+        function applyFilter() {
+                const departemen = $('#filterDepartemen').val();
+                const bulan = $('#filterBulan').val();
+                const tahun = $('#filterTahun').val();
+
+                table.ajax.url("{{ route('approve.show') }}?" + $.param({
+                    departemen: departemen,
+                    bulan: bulan,
+                    tahun: tahun
+                })).load();
+            }
+
+            function resetFilter() {
+                $('#filterDepartemen').val('');
+                $('#filterBulan').val('');
+                $('#filterTahun').val('');
+                applyFilter();
+            }
+
     </script>
 @endsection

@@ -163,104 +163,88 @@
         });
 
         function showDetail(data) {
-            // Clear previous modal data
-            $('#detail-requestid').text('-');
-            $('#detail-tanggal').text('-');
-            $('#detail-departemen').text('-');
-            $('#detail-status').html('-');
-            // Update this line to use colspan="7"
-            $('#detail-items').html('<tr><td colspan="7" class="text-center">Memuat data...</td></tr>');
-            $('#detail-jumlahitem').text('-');
-            $('#detail-totalharga').text('-');
+                $('#detail-requestid').text('-');
+                $('#detail-tanggal').text('-');
+                $('#detail-departemen').text('-');
+                $('#detail-status').html('-');
+                $('#detail-items').html('<tr><td colspan="7" class="text-center">Memuat data...</td></tr>');
+                $('#detail-jumlahitem').text('-');
+                $('#detail-totalharga').text('-');
 
-            // Set basic details
-            $('#detail-requestid').text(data.request_id);
-            $('#detail-tanggal').text(data.tanggal_format);
-            $('#detail-departemen').text(data.departemen);
-            $('#detail-status').html(getStatusBadge(data.status));
+                $('#detail-requestid').text(data.request_id);
+                $('#detail-tanggal').text(data.tanggal_format);
+                $('#detail-departemen').text(data.departemen);
+                $('#detail-status').html(getStatusBadge(data.status));
 
-            // Fetch additional details via AJAX
-            $.ajax({
-                url: '/admin/request-barang/get-details/' + data.request_id,
-                method: 'GET',
-                success: function(response) {
-                    if (response.success) {
-                        $('#detail-jumlahitem').text(response.total_items + ' Item');
-                        $('#detail-totalharga').text('Rp ' + response.total_harga.toLocaleString('id-ID'));
+                $.ajax({
+                    url: '/admin/request-barang/get-details/' + data.request_id,
+                    method: 'GET',
+                    success: function (response) {
+                        if (response.success) {
+                            $('#detail-jumlahitem').text(response.total_items + ' Item');
+                            $('#detail-totalharga').text('Rp ' + response.total_harga.toLocaleString('id-ID'));
 
-                        // Populate items table
-                        let itemsHtml = '';
-                        if (response.items && response.items.length > 0) {
-                            response.items.forEach((item, index) => {
-                                let totalHarga = item.bm_jumlah * item.harga;
-                                itemsHtml += `
+                            let itemsHtml = '';
+                            if (response.items && response.items.length > 0) {
+                                response.items.forEach((item, index) => {
+                                    let totalHarga = item.bm_jumlah * item.harga;
+                                    itemsHtml += `
                             <tr>
                                 <td class="text-center">${index + 1}</td>
                                 <td>${item.barang_nama || '-'}</td>
                                 <td class="text-center">${item.bm_jumlah}</td>
                                 <td class="text-end">Rp ${parseFloat(item.harga).toLocaleString('id-ID')}</td>
                                 <td class="text-end">Rp ${parseFloat(totalHarga).toLocaleString('id-ID')}</td>
-                                <td class="text-center">${getStatusBadge(item.status || data.status)}</td>
+                                <td class="text-center">${getStatusBadge(item.tracking_status)}</td>
                                 <td>${item.keterangan || '-'}</td>
                             </tr>
                         `;
-                            });
-                        } else {
-                            // Update this line for no data state
-                            itemsHtml =
-                                '<tr><td colspan="7" class="text-center">Tidak ada data barang</td></tr>';
+                                });
+                            } else {
+                                itemsHtml = '<tr><td colspan="7" class="text-center">Tidak ada data barang</td></tr>';
+                            }
+                            $('#detail-items').html(itemsHtml);
+                            $('#detail-total').text('Rp ' + response.total_harga.toLocaleString('id-ID'));
                         }
-                        $('#detail-items').html(itemsHtml);
-                        $('#detail-total').text('Rp ' + response.total_harga.toLocaleString('id-ID'));
-                    } else {
-                        // Update this line for error state
-                        $('#detail-items').html(
-                            '<tr><td colspan="7" class="text-center">Gagal memuat data</td></tr>');
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                        $('#detail-items').html('<tr><td colspan="7" class="text-center">Gagal memuat data</td></tr>');
+                        $('#detail-jumlahitem').text('-');
+                        $('#detail-totalharga').text('-');
                     }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error:', error);
-                    // Update this line for error state
-                    $('#detail-items').html(
-                        '<tr><td colspan="7" class="text-center">Gagal memuat data</td></tr>');
-                    $('#detail-jumlahitem').text('-');
-                    $('#detail-totalharga').text('-');
-                }
-            });
+                });
 
-            $('#detailModal').modal('show');
-        }
-
-        function getStatusBadge(status) {
-            status = status.toLowerCase();
-            let badgeClass, icon;
-
-            switch (status) {
-                case 'draft':
-                    badgeClass = 'bg-warning';
-                    icon = 'edit';
-                    break;
-                case 'pending':
-                    badgeClass = 'bg-info';
-                    icon = 'clock';
-                    break;
-                case 'approved':
-                    badgeClass = 'bg-success';
-                    icon = 'check-circle';
-                    break;
-                case 'rejected':
-                    badgeClass = 'bg-danger';
-                    icon = 'x-circle';
-                    break;
-                default:
-                    badgeClass = 'bg-secondary';
-                    icon = 'help-circle';
+                $('#detailModal').modal('show');
             }
 
-            return `<span class="badge ${badgeClass}-gradient">
+        function getStatusBadge(status) {
+                status = (status || '').toLowerCase();
+                let badgeClass, icon;
+
+                switch (status) {
+                    case 'diterima':
+                        badgeClass = 'bg-success';
+                        icon = 'check-circle';
+                        break;
+                    case 'diproses':
+                        badgeClass = 'bg-primary';
+                        icon = 'loader';
+                        break;
+                    case 'ditolak':
+                        badgeClass = 'bg-danger';
+                        icon = 'x-circle';
+                        break;
+                    default:
+                        badgeClass = 'bg-info';
+                        icon = 'clock';
+                        status = 'PENDING';
+                }
+
+                return `<span class="badge ${badgeClass}-gradient">
         <i class="fe fe-${icon} me-1"></i>${status.toUpperCase()}
     </span>`;
-        }
+            }
 
         // Function to add request
         function addRequest() {

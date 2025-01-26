@@ -7,6 +7,7 @@ use App\Models\Admin\BarangmasukModel;
 use App\Models\Admin\RequestBarangModel;
 use App\Models\Admin\WebModel;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use PDF;
@@ -44,9 +45,36 @@ class LapBarangMasukController extends Controller
     $data["title"] = "PDF Permintaan Barang";
     $data['web'] = WebModel::first();
     $data['request'] = RequestBarangModel::find($request->id);
+    $data['signatures'] = DB::table('tbl_signatures')
+        ->where('request_id', $request->id)
+        ->get()
+        ->keyBy('signer_type'); // Index by 'signer_type' for easy access.
     $pdf = PDF::loadView('Admin.Laporan.BarangMasuk.pdf', $data);
     return $pdf->download('permintaan-barang-'.$request->id.'.pdf');
 }
+public function storeSignature(Request $request)
+{
+    $imageData = $request->input('signature'); // Assume base64 input
+    $imageName = uniqid() . '.png'; // Generate unique file name
+    $imagePath = storage_path('app/public/signatures/' . $imageName);
+
+    // Convert base64 to image and save
+    $image = base64_decode($imageData);
+    file_put_contents($imagePath, $image);
+
+    // Save file path to database
+    DB::table('tbl_signatures')->insert([
+        'request_id' => $request->request_id,
+        'user_id' => auth()->user()->user_id,
+        'role_id' => auth()->user()->role_id,
+        'signature' => $imageName, // Save image name
+        'action' => 'Signed',
+        'signer_type' => $request->signer_type,
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+}
+
 
     public function show(Request $request)
 {
@@ -83,5 +111,47 @@ class LapBarangMasukController extends Controller
             ->rawColumns(['tgl', 'status', 'action'])
             ->make(true);
     }
+}
+
+public function csv(Request $request)
+{
+    $month = Carbon::now()->format('m');
+    $year = Carbon::now()->format('Y');
+    
+    $data = RequestBarangModel::join('tbl_barangmasuk', 'tbl_barangmasuk.request_id', '=', 'tbl_request_barang.request_id')
+        ->join('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')
+        ->whereMonth('request_tanggal', $month)
+        ->whereYear('request_tanggal', $year)
+        ->select('departemen', 'barang_nama', 'bm_jumlah as jumlah', 'barang_harga')
+        ->get()
+        ->groupBy('departemen');
+
+    $filename = 'laporan-barang-' . $month . '-' . $year . '.csv';
+    $handle = fopen($filename, 'w+');
+    
+    fputcsv($handle, ['Departemen', 'Barang', 'Jumlah', 'Harga Satuan', 'Total']);
+
+    foreach($data as $dept => $items) {
+        $deptTotal = 0;
+        
+        foreach($items as $item) {
+            $total = $item->jumlah * $item->barang_harga;
+            fputcsv($handle, [
+                $dept,
+                $item->barang_nama,
+                $item->jumlah,
+                $item->barang_harga,
+                $total
+            ]);
+            $deptTotal += $total;
+        }
+        
+        fputcsv($handle, ['Total ' . $dept, '', '', '', $deptTotal]);
+        fputcsv($handle, []); // Empty line between departments
+    }
+
+    fclose($handle);
+
+    return response()->download($filename)->deleteFileAfterSend(true);
 }
 }
