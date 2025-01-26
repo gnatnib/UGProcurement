@@ -8,7 +8,7 @@
     use App\Http\Controllers\Admin\JenisBarangController;
     use App\Http\Controllers\Admin\LapBarangKeluarController;
     use App\Http\Controllers\Admin\LapBarangMasukController;
-    use App\Http\Controllers\Admin\LapStokBarangController;
+    use App\Http\Controllers\Admin\LapPermintaanController;
     use App\Http\Controllers\Admin\LoginController;
     use App\Http\Controllers\Admin\MerkController;
     use App\Http\Controllers\Admin\SatuanController;
@@ -144,12 +144,12 @@
             Route::get('/admin/lap-barang-keluar/show/', [LapBarangKeluarController::class, 'show'])->name('lap-bk.getlap-bk');
         });
 
-        Route::middleware(['checkRoleUser:/lap-stok-barang,submenu'])->group(function () {
-            // Laporan Stok Barang
-            Route::resource('/admin/lap-stok-barang', \App\Http\Controllers\Admin\LapStokBarangController::class);
-            Route::get('/admin/lapstokbarang/print/', [LapStokBarangController::class, 'print'])->name('lap-sb.print');
-            Route::get('/admin/lapstokbarang/pdf/', [LapStokBarangController::class, 'pdf'])->name('lap-sb.pdf');
-            Route::get('/admin/lap-stok-barang/show/', [LapStokBarangController::class, 'show'])->name('lap-sb.getlap-sb');
+        Route::middleware(['checkRoleUser:/lap-permintaan,submenu'])->group(function () {
+            Route::resource('/admin/lap-permintaan', \App\Http\Controllers\Admin\LapPermintaanController::class);
+            Route::get('/admin/lappermintaan/print/', [LapPermintaanController::class, 'print'])->name('lap-permintaan.print');
+            Route::get('/admin/lappermintaan/pdf/', [LapPermintaanController::class, 'pdf'])->name('lap-permintaan.pdf');
+            Route::get('/admin/lap-permintaan/show/', [LapPermintaanController::class, 'show'])->name('lap-permintaan.getlap-permintaan');
+            Route::get('/admin/lappermintaan/csv/', [LapPermintaanController::class, 'csv'])->name('lap-permintaan.csv');
         });
 
         Route::middleware(['checkRoleUser:/request-barang,menu'])->group(function () {
