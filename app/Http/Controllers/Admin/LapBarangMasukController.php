@@ -12,6 +12,9 @@ use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use PDF;
 
+use Illuminate\Support\Facades\Log;
+
+
 class LapBarangMasukController extends Controller
 {
     public function index(Request $request)
@@ -38,20 +41,59 @@ class LapBarangMasukController extends Controller
     public function pdf(Request $request)
 {
     $data['data'] = BarangmasukModel::join('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')
-    ->select('tbl_barangmasuk.*', 'tbl_barang.barang_nama', 'tbl_barang.barang_harga')
-    ->where('request_id', $request->id)
-    ->get();
+        ->select('tbl_barangmasuk.*', 'tbl_barang.barang_nama', 'tbl_barang.barang_harga')
+        ->where('request_id', $request->id)
+        ->get();
 
     $data["title"] = "PDF Permintaan Barang";
     $data['web'] = WebModel::first();
     $data['request'] = RequestBarangModel::find($request->id);
-    $data['signatures'] = DB::table('tbl_signatures')
+    
+    // Ambil data tanda tangan
+    $signatures = DB::table('tbl_signatures')
         ->where('request_id', $request->id)
-        ->get()
-        ->keyBy('signer_type'); // Index by 'signer_type' for easy access.
-    $pdf = PDF::loadView('Admin.Laporan.BarangMasuk.pdf', $data);
+        ->get();
+
+    // Proses setiap tanda tangan
+    $processedSignatures = $signatures->map(function($sig) {
+        try {
+            // Cast $sig ke object jika belum berbentuk object
+            $signature = (object) $sig;
+            
+            // Hilangkan prefix data:image/png;base64, jika ada
+            $signatureData = $signature->signature;
+            if (strpos($signatureData, 'data:image/png;base64,') !== false) {
+                $signatureData = str_replace('data:image/png;base64,', '', $signatureData);
+            }
+            
+            // Decode base64 ke image
+            $imageData = base64_decode($signatureData);
+            
+            if ($imageData) {
+                // Convert kembali ke base64 untuk PDF
+                $signature->signature_base64 = 'data:image/png;base64,' . base64_encode($imageData);
+            }
+            
+            return $signature;
+            
+        } catch (\Exception $e) {
+            Log::error('Error processing signature: ' . $e->getMessage());
+            return (object) [
+                'signature_base64' => null,
+                'signer_type' => $sig->signer_type ?? null
+            ];
+        }
+    })->keyBy('signer_type');
+
+    $data['signatures'] = $processedSignatures;
+    
+    $pdf = app('dompdf.wrapper');
+    $pdf->loadView('Admin.Laporan.BarangMasuk.pdf', $data);
+    
     return $pdf->download('permintaan-barang-'.$request->id.'.pdf');
 }
+
+
 public function storeSignature(Request $request)
 {
     $imageData = $request->input('signature'); // Assume base64 input
