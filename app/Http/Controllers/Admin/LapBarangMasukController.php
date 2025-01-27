@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin\BarangmasukModel;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Admin\RequestBarangModel;
 use App\Models\Admin\WebModel;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
@@ -23,20 +25,7 @@ class LapBarangMasukController extends Controller
         return view('Admin.Laporan.BarangMasuk.index', $data);
     }
 
-    public function print(Request $request)
-    {
-        if ($request->tglawal) {
-            $data['data'] = BarangmasukModel::leftJoin('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')->leftJoin('tbl_customer', 'tbl_customer.customer_id', '=', 'tbl_barangmasuk.customer_id')->whereBetween('bm_tanggal', [$request->tglawal, $request->tglakhir])->orderBy('bm_id', 'DESC')->get();
-        } else {
-            $data['data'] = BarangmasukModel::leftJoin('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')->leftJoin('tbl_customer', 'tbl_customer.customer_id', '=', 'tbl_barangmasuk.customer_id')->orderBy('bm_id', 'DESC')->get();
-        }
-
-        $data["title"] = "Print Barang Masuk";
-        $data['web'] = WebModel::first();
-        $data['tglawal'] = $request->tglawal;
-        $data['tglakhir'] = $request->tglakhir;
-        return view('Admin.Laporan.BarangMasuk.print', $data);
-    }
+   
 
     public function pdf(Request $request)
 {
@@ -118,35 +107,41 @@ public function storeSignature(Request $request)
 }
 
 
-    public function show(Request $request)
+   public function show(Request $request)
 {
     if ($request->ajax()) {
+        $user = Session::get('user');  // Ambil user dari session
+        
         if ($request->tglawal == '') {
-            $data = RequestBarangModel::orderBy('request_id', 'DESC')->get();
+            $data = RequestBarangModel::where('status', 'Diterima')
+                ->where('departemen', $user->departemen)  // Gunakan departemen dari session
+                ->orderBy('request_id', 'DESC')
+                ->get();
         } else {
-            $data = RequestBarangModel::whereBetween('request_tanggal', [$request->tglawal, $request->tglakhir])
-                    ->orderBy('request_id', 'DESC')
-                    ->get();
+            $data = RequestBarangModel::where('status', 'Diterima')
+                ->where('departemen', $user->departemen)  // Gunakan departemen dari session
+                ->whereBetween('request_tanggal', [$request->tglawal, $request->tglakhir])
+                ->orderBy('request_id', 'DESC')
+                ->get();
         }
+
         return DataTables::of($data)
             ->addIndexColumn()
             ->addColumn('tgl', function ($row) {
                 return Carbon::parse($row->request_tanggal)->translatedFormat('d F Y');
             })
             ->addColumn('status', function ($row) {
-                if($row->status == 'Pending') {
+                if ($row->status == 'Pending') {
                     return '<span class="badge bg-warning">Pending</span>';
-                } else if($row->status == 'Diterima') {
+                } else if ($row->status == 'Diterima') {
                     return '<span class="badge bg-success">Diterima</span>';
                 } else {
                     return '<span class="badge bg-danger">Ditolak</span>';
                 }
             })
             ->addColumn('action', function ($row) {
-                return '<button class="btn btn-primary-light btn-sm" onclick="print(\''.$row->request_id.'\')">
-                            <i class="fe fe-printer"></i> Print
-                        </button>
-                        <button class="btn btn-danger-light btn-sm" onclick="pdf(\''.$row->request_id.'\')">
+                return '
+                        <button class="btn btn-danger-light btn-sm" onclick="pdf(\'' . $row->request_id . '\')">
                             <i class="fa fa-file-pdf-o"></i> PDF
                         </button>';
             })
@@ -154,6 +149,7 @@ public function storeSignature(Request $request)
             ->make(true);
     }
 }
+
 
 public function csv(Request $request)
 {
