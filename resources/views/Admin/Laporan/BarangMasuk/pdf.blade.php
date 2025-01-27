@@ -60,6 +60,50 @@
             margin-left: auto;
             margin-right: auto;
         }
+        .signature-cell img {
+        max-width: 150px;
+        margin: 10px auto;
+        display: block;
+    }
+    
+    .signature-cell {
+        vertical-align: top;
+        padding: 15px;
+        border: none;
+    }
+    
+    .signatures {
+        page-break-inside: avoid;
+        margin-top: 30px;
+    }
+    <style>
+    .signature-cell img {
+        max-width: 150px;
+        max-height: 100px;
+        object-fit: contain;
+        margin: 10px auto;
+        display: block;
+    }
+    
+    .signature-cell {
+        vertical-align: top;
+        padding: 15px;
+        border: none;
+    }
+    
+    .signatures {
+        page-break-inside: avoid;
+        margin-top: 30px;
+    }
+    
+    .signature-line {
+        margin-top: 10px;
+        border-bottom: 1px solid black;
+        width: 80%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
     </style>
 </head>
 
@@ -116,29 +160,34 @@
 <div class="signatures">
     <div class="signature-cell">
         <p>Disetujui oleh,</p>
-        @if(isset($signatures['GM']) && $signatures['GM']->signature)
-            <img src="{{ asset('storage/signatures/' . $signatures['GM']->signature) }}" alt="Signature GM"
-                style="width: 150px; height: auto;">
+        @if(isset($signatures['GM']) && !empty($signatures['GM']->signature_base64))
+            <img src="{{ $signatures['GM']->signature_base64 }}" alt="Tanda Tangan GM"
+                style="max-width: 150px; max-height: 100px; object-fit: contain;">
         @endif
         <div class="signature-line"></div>
         <p><i>nama jelas & tanggal</i></p>
     </div>
+
     <div class="signature-cell">
         <p>Penerima Barang,</p>
+        @if(isset($signatures['RECEIVER']) && !empty($signatures['RECEIVER']->signature_base64))
+            <img src="{{ $signatures['RECEIVER']->signature_base64 }}" alt="Tanda Tangan Penerima"
+                style="max-width: 150px; max-height: 100px; object-fit: contain;">
+        @endif
         <div class="signature-line"></div>
         <p><i>nama jelas & tanggal</i></p>
     </div>
+
     <div class="signature-cell">
         <p>Permohonan Barang,</p>
-        @if(isset($signatures['GMHCGA']) && $signatures['GMHCGA']->signature)
-            <img src="{{ asset('storage/signatures/' . $signatures['GMHCGA']->signature) }}" alt="Signature GMHCGA"
-                style="width: 150px; height: auto;">
+        @if(isset($signatures['GMHCGA']) && !empty($signatures['GMHCGA']->signature_base64))
+            <img src="{{ $signatures['GMHCGA']->signature_base64 }}" alt="Tanda Tangan GMHCGA"
+                style="max-width: 150px; max-height: 100px; object-fit: contain;">
         @endif
         <div class="signature-line"></div>
         <p><i>nama jelas</i></p>
     </div>
 </div>
-
 </body>
 
 </html>
