@@ -15,7 +15,7 @@
                             <input type="text" name="bmkode" readonly class="form-control" placeholder="">
                         </div>
                         <div class="form-group">
-                            <label for="tglmasuk" class="form-label">Tanggal Masuk <span
+                            <label for="tglmasuk" class="form-label">Tanggal Permintaan <span
                                     class="text-danger">*</span></label>
                             <input type="text" name="tglmasuk" class="form-control datepicker-date" placeholder="">
                         </div>
@@ -228,7 +228,7 @@
             resetValid();
 
             if (tglmasuk == "") {
-                validasi('Tanggal Masuk wajib di isi!', 'warning');
+                validasi('Tanggal Permintaan wajib di isi!', 'warning');
                 $("input[name='tglmasuk']").addClass('is-invalid');
                 setLoading(false);
                 return false;
@@ -256,6 +256,26 @@
                 submitForm();
             }
         }
+
+        function setTodayDate() {
+            const today = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+            $("input[name='tglmasuk']").val(today);
+            $('.datepicker-date').datepicker({
+                autoclose: true,
+                todayHighlight: true,
+                format: 'yyyy-mm-dd'
+            }).datepicker('update', today);
+        }
+
+        $('document').ready(function() {
+            // Set date on initial page load
+            setTodayDate();
+
+            // Reset form when modal is hidden
+            $('#modaldemo8').on('hidden.bs.modal', function() {
+                reset();
+            });
+        });
 
         function submitForm() {
             const bmkode = $("input[name='bmkode']").val();
@@ -286,7 +306,7 @@
                             type: "success"
                         });
                         table.ajax.reload(null, false);
-                        reset();
+                        reset(); // This will now properly set the date
                     }
                 },
                 error: function(xhr) {
@@ -309,21 +329,30 @@
         }
 
         function reset() {
+            // Clear form validation states
             resetValid();
+
+            // Clear all input fields
             $("input[name='bmkode']").val('');
-            $("input[name='tglmasuk']").val('');
             $("input[name='kdbarang']").val('');
             $("textarea[name='keterangan']").val('');
             $("input[name='jml']").val('0');
             $("input[name='harga']").val('0');
+
+            // Clear the read-only fields
             $("#nmbarang").val('');
             $("#satuan").val('');
             $("#jenis").val('');
+
+            // Reset status
             $("#status").val('false');
+
+            // Set loading state to false
             setLoading(false);
+
+            // Set today's date last to ensure it's always set
+            setTodayDate();
         }
-
-
 
         function setLoading(bool) {
             if (bool == true) {

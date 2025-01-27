@@ -117,5 +117,4 @@ class BarangkeluarController extends Controller
 
         return response()->json(['success' => 'Berhasil']);
     }
-
 }
