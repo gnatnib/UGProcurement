@@ -31,99 +31,108 @@ class ApproveController extends Controller
     }
 
     public function show(Request $request)
-{
-    if ($request->ajax()) {
-        $user = Session::get('user');
+    {
+        if ($request->ajax()) {
+            $user = Session::get('user');
 
-        try {
-            $query = DB::table('tbl_request_barang as r')
-                ->leftJoin('tbl_user as creator', 'creator.user_id', '=', 'r.user_id')
-                ->leftJoin('tbl_barangmasuk as bm', 'bm.request_id', '=', 'r.request_id')
-                ->select(
+            try {
+                $query = DB::table('tbl_request_barang as r')
+                    ->leftJoin('tbl_user as creator', 'creator.user_id', '=', 'r.user_id')
+                    ->leftJoin('tbl_barangmasuk as bm', 'bm.request_id', '=', 'r.request_id')
+                    ->leftJoin('tbl_signatures as s', 's.request_id', '=', 'r.request_id')
+                    ->select(
+                        'r.request_id',
+                        'r.request_tanggal',
+                        'creator.divisi',
+                        'creator.departemen',
+                        'r.status'
+                    )
+                    ->whereNotNull('r.request_id');
+
+                // Apply filters
+                if ($request->filled('departemen')) {
+                    $query->where('creator.departemen', $request->departemen);
+                }
+
+                if ($request->filled('bulan')) {
+                    $query->whereMonth('r.request_tanggal', $request->bulan);
+                }
+
+                if ($request->filled('tahun')) {
+                    $query->whereYear('r.request_tanggal', $request->tahun);
+                }
+
+                // Role-based filtering
+                if ($user->role_id == 4) { // GM per divisi
+                    $query->where([
+                        ['creator.divisi', 'LIKE', trim($user->divisi)],
+                        ['creator.departemen', '=', $user->departemen]
+                    ]);
+                } else if ($user->role_id == 2) { // GMHCGA
+                    // Only show requests that have been signed by GM per divisi
+                    $query->whereExists(function ($query) {
+                        $query->select(DB::raw(1))
+                            ->from('tbl_signatures')
+                            ->whereRaw('tbl_signatures.request_id = r.request_id')
+                            ->where('tbl_signatures.role_id', 4); // GM per divisi role_id
+                    });
+                }
+
+                $data = $query->groupBy(
                     'r.request_id',
-                    'r.request_tanggal', 
+                    'r.request_tanggal',
                     'creator.divisi',
                     'creator.departemen',
                     'r.status'
                 )
-                ->whereNotNull('r.request_id');
+                    ->orderBy('r.request_tanggal', 'DESC')
+                    ->get();
 
-            // Apply filters
-            if ($request->filled('departemen')) {
-                $query->where('creator.departemen', $request->departemen);
-            }
-
-            if ($request->filled('bulan')) {
-                $query->whereMonth('r.request_tanggal', $request->bulan);
-            }
-
-            if ($request->filled('tahun')) {
-                $query->whereYear('r.request_tanggal', $request->tahun);
-            }
-
-            // Role-based filtering
-            if ($user->role_id == 4) {
-                $query->where([
-                    ['creator.divisi', 'LIKE', trim($user->divisi)],
-                    ['creator.departemen', '=', $user->departemen]
-                ]);
-            }
-
-            $data = $query->groupBy(
-                'r.request_id',
-                'r.request_tanggal',
-                'creator.divisi',
-                'creator.departemen',
-                'r.status'
-            )
-            ->orderBy('r.request_tanggal', 'DESC')
-            ->get();
-
-            return DataTables::of($data)
-                ->addIndexColumn()
-                ->addColumn('tanggal_format', function ($row) {
-                    return Carbon::parse($row->request_tanggal)->format('d/m/Y');
-                })
-                ->addColumn('status_badge', function ($row) {
-                    switch ($row->status) {
-                        case 'draft':
-                            return '<span class="badge bg-secondary">Draft</span>';
-                        case 'pending':
-                            return '<span class="badge bg-warning">Pending</span>';
-                        case 'approved':
-                            return '<span class="badge bg-success">Disetujui</span>';
-                        case 'rejected':
-                            return '<span class="badge bg-danger">Ditolak</span>';
-                        case 'Diproses':
-                            return '<span class="badge bg-info">Diproses</span>';
-                        case 'Dikirim':
-                            return '<span class="badge bg-primary">Dikirim</span>';
-                        case 'Diterima':
-                            return '<span class="badge bg-success">Diterima</span>';
-                        default:
-                            return '<span class="badge bg-warning">Pending</span>';
-                    }
-                })
-                ->addColumn('action', function ($row) {
-                    return '<button class="btn btn-success btn-sm" onclick="showDetail(\'' . $row->request_id . '\')">
+                return DataTables::of($data)
+                    ->addIndexColumn()
+                    ->addColumn('tanggal_format', function ($row) {
+                        return Carbon::parse($row->request_tanggal)->format('d/m/Y');
+                    })
+                    ->addColumn('status_badge', function ($row) {
+                        switch ($row->status) {
+                            case 'draft':
+                                return '<span class="badge bg-secondary">Draft</span>';
+                            case 'pending':
+                                return '<span class="badge bg-warning">Pending</span>';
+                            case 'approved':
+                                return '<span class="badge bg-success">Disetujui</span>';
+                            case 'rejected':
+                                return '<span class="badge bg-danger">Ditolak</span>';
+                            case 'Diproses':
+                                return '<span class="badge bg-info">Diproses</span>';
+                            case 'Dikirim':
+                                return '<span class="badge bg-primary">Dikirim</span>';
+                            case 'Diterima':
+                                return '<span class="badge bg-success">Diterima</span>';
+                            default:
+                                return '<span class="badge bg-warning">Pending</span>';
+                        }
+                    })
+                    ->addColumn('action', function ($row) {
+                        return '<button class="btn btn-success btn-sm" onclick="showDetail(\'' . $row->request_id . '\')">
                         <i class="fe fe-eye"></i> Detail
                     </button>';
-                })
-                ->rawColumns(['action', 'status_badge'])
-                ->make(true);
-        } catch (\Exception $e) {
-            Log::error('Error in approval show:', [
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-            return response()->json([
-                'error' => true,
-                'message' => $e->getMessage()
-            ], 500);
+                    })
+                    ->rawColumns(['action', 'status_badge'])
+                    ->make(true);
+            } catch (\Exception $e) {
+                Log::error('Error in approval show:', [
+                    'message' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+                return response()->json([
+                    'error' => true,
+                    'message' => $e->getMessage()
+                ], 500);
+            }
         }
+        return abort(404);
     }
-    return abort(404);
-}
 
     public function getDetail($request_id)
     {
@@ -249,26 +258,27 @@ class ApproveController extends Controller
 
             // Update barangmasuk records
             foreach ($request->approvals as $bm_id => $approval) {
-            $updateData = [
-                'approval' => $approval['status'],
-                'tracking_status' => $approval['status'] === 'Approve' ? 'Diproses' : 'Ditolak',
-                'updated_at' => now()
-            ];
+                $updateData = [
+                    'approval' => $approval['status'],
+                    'tracking_status' => $approval['status'] === 'Approve' ? 'Diproses' : 'Ditolak',
+                    'updated_at' => now()
+                ];
 
-            if ($approval['status'] === 'Reject') {
-                $rejectReason = !empty($approval['reason']) ? $approval['reason'] : 'No reason provided';
-                $currKeterangan = DB::table('tbl_barangmasuk')->where('bm_id', $bm_id)->value('keterangan');
-                $newReject = sprintf('Rejected by %s (%s): %s', 
-                    $user->name,
-                    $user->role_id == 2 ? 'GMHCGA' : 'GM',
-                    $rejectReason
-                );
-                $updateData['keterangan'] = $currKeterangan ? $currKeterangan . "\n" . $newReject : $newReject;
-            }
+                if ($approval['status'] === 'Reject') {
+                    $rejectReason = !empty($approval['reason']) ? $approval['reason'] : 'No reason provided';
+                    $currKeterangan = DB::table('tbl_barangmasuk')->where('bm_id', $bm_id)->value('keterangan');
+                    $newReject = sprintf(
+                        'Rejected by %s (%s): %s',
+                        $user->name,
+                        $user->role_id == 2 ? 'GMHCGA' : 'GM',
+                        $rejectReason
+                    );
+                    $updateData['keterangan'] = $currKeterangan ? $currKeterangan . "\n" . $newReject : $newReject;
+                }
 
-            DB::table('tbl_barangmasuk')
-                ->where('bm_id', $bm_id)
-                ->update($updateData);
+                DB::table('tbl_barangmasuk')
+                    ->where('bm_id', $bm_id)
+                    ->update($updateData);
             }
 
             // Check if both signatures exist for status update
