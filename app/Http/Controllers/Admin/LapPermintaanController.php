@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use PDF;
+use Illuminate\Support\Facades\Session;
 
 class LapPermintaanController extends Controller
 {
@@ -85,17 +86,60 @@ class LapPermintaanController extends Controller
         ]);
     }
 
-
     public function show(Request $request)
     {
         if ($request->ajax()) {
+            // Mengambil data user dari session
+            $user = Session::get('user');
+    
             if ($request->tglawal == '') {
-                $data = RequestBarangModel::orderBy('request_id', 'DESC')->get();
-            } else {
-                $data = RequestBarangModel::whereBetween('request_tanggal', [$request->tglawal, $request->tglakhir])
+                // Query tanpa filter tanggal
+                if ($user->role_id == '5') {
+                    // User biasa - hanya lihat data sendiri
+                    $data = RequestBarangModel::where('user_id', $user->user_id)
+                        ->orderBy('request_id', 'DESC')
+                        ->get();
+                } 
+                elseif ($user->role_id == '4') {
+                    // General Manager - lihat data departemen yang sama
+                    $data = RequestBarangModel::where(function($query) use ($user) {
+                        $query->where('departemen', $user->departemen)
+                              ->orWhere('user_id', $user->user_id);
+                    })
                     ->orderBy('request_id', 'DESC')
                     ->get();
+                }
+                else {
+                    // Role 2 dan 3 - lihat semua data
+                    $data = RequestBarangModel::orderBy('request_id', 'DESC')->get();
+                }
+            } else {
+                // Query dengan filter tanggal
+                if ($user->role_id == '5') {
+                    // User biasa dengan filter tanggal
+                    $data = RequestBarangModel::where('user_id', $user->user_id)
+                        ->whereBetween('request_tanggal', [$request->tglawal, $request->tglakhir])
+                        ->orderBy('request_id', 'DESC')
+                        ->get();
+                }
+                elseif ($user->role_id == '4') {
+                    // General Manager dengan filter tanggal
+                    $data = RequestBarangModel::where(function($query) use ($user) {
+                        $query->where('departemen', $user->departemen)
+                              ->orWhere('user_id', $user->user_id);
+                    })
+                    ->whereBetween('request_tanggal', [$request->tglawal, $request->tglakhir])
+                    ->orderBy('request_id', 'DESC')
+                    ->get();
+                }
+                else {
+                    // Role 2 dan 3 dengan filter tanggal
+                    $data = RequestBarangModel::whereBetween('request_tanggal', [$request->tglawal, $request->tglakhir])
+                        ->orderBy('request_id', 'DESC')
+                        ->get();
+                }
             }
+    
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('tgl', function ($row) {
