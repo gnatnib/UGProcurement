@@ -16,7 +16,7 @@
                             <input type="text" name="bmkodeU" readonly class="form-control" placeholder="">
                         </div>
                         <div class="form-group">
-                            <label for="tglmasukU" class="form-label">Tanggal Masuk <span
+                            <label for="tglmasukU" class="form-label">Tanggal Permintaan <span
                                     class="text-danger">*</span></label>
                             <input type="text" name="tglmasukU" class="form-control datepicker-date" placeholder="">
                         </div>
@@ -160,7 +160,7 @@
             resetValidU();
 
             if (tglmasuk == "") {
-                validasi('Tanggal Masuk wajib di isi!', 'warning');
+                validasi('Tanggal Permintaan wajib di isi!', 'warning');
                 $("input[name='tglmasukU']").addClass('is-invalid');
                 setLoadingU(false);
                 return false;

@@ -41,7 +41,7 @@
                             <thead>
                                 <tr>
                                     <th width="1%">No</th>
-                                    <th>Tanggal Masuk</th>
+                                    <th>Tanggal Permintaan</th>
                                     <th>Barang</th>
                                     <th>Jumlah Item</th>
                                     <th>Harga Satuan</th>
@@ -103,7 +103,7 @@
                                     <h6 class="fw-bold mb-4 text-primary">Detail Transaksi</h6>
                                     <div class="d-flex flex-column gap-3">
                                         <div>
-                                            <label class="text-muted small mb-1">Tanggal Masuk</label>
+                                            <label class="text-muted small mb-1">Tanggal Permintaan</label>
                                             <div id="detail-tanggal" class="fs-6 fw-semibold"></div>
                                         </div>
                                         <div>
