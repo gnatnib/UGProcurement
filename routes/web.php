@@ -167,6 +167,7 @@
                 Route::get('/check-status', [RequestBarangController::class, 'checkRequestStatus'])->name('request-barang.check-status');
                 Route::get('/get-details/{id}', [RequestBarangController::class, 'getDetails'])
                     ->name('request-barang.get-details');
+                
             });
         });
 

@@ -228,23 +228,43 @@
                 let badgeClass, icon;
 
                 switch (status) {
-                    case 'diterima':
-                        badgeClass = 'bg-success';
-                        icon = 'check-circle';
-                        break;
-                    case 'diproses':
-                        badgeClass = 'bg-primary';
-                        icon = 'loader';
-                        break;
-                    case 'ditolak':
-                        badgeClass = 'bg-danger';
-                        icon = 'x-circle';
-                        break;
-                    default:
-                        badgeClass = 'bg-info';
-                        icon = 'clock';
-                        status = 'PENDING';
-                }
+                case 'diterima':
+                    badgeClass = 'bg-success';
+                    icon = 'check-circle';
+                    break;
+                case 'diproses':
+                    badgeClass = 'bg-primary';
+                    icon = 'loader';
+                    break;
+                case 'rejected':
+                    badgeClass = 'bg-danger';
+                    icon = 'x-circle';
+                    status = 'DITOLAK';
+                    break;
+                case 'dikirim':
+                    badgeClass = 'bg-info';
+                    icon = 'send';
+                    break;
+                case 'draft':
+                    badgeClass = 'bg-warning';
+                    icon = 'edit-3';
+                    status = 'DRAFT';
+                    break;
+                case 'approved':
+                    badgeClass = 'bg-success';
+                    icon = 'check';
+                    status = 'DISETUJUI';
+                    break;
+                case 'pending':
+                    badgeClass = 'bg-info';
+                    icon = 'clock';
+                    status = 'PENDING';
+                    break;
+                default:
+                    badgeClass = 'bg-secondary';
+                    icon = 'help-circle';
+                    status = 'UNKNOWN';
+            }
 
                 return `<span class="badge ${badgeClass}-gradient">
         <i class="fe fe-${icon} me-1"></i>${status.toUpperCase()}
