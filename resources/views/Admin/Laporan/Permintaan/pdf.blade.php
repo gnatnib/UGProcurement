@@ -27,24 +27,34 @@
         .signatures {
             width: 100%;
             display: table;
-            margin-top: 50px;
+            margin-top: 70px; /* Increased top margin */
+            margin-bottom: 30px; /* Added bottom margin */
         }
         .signature-cell {
             display: table-cell;
             width: 50%;
             text-align: center;
-            padding: 10px;
+            padding: 20px; /* Increased padding */
         }
         .signature-line {
-            margin-top: 50px;
+            margin-top: 70px; /* Increased space above signature line */
             border-bottom: 1px solid black;
-            width: 80%;
+            width: 200px; /* Increased width of signature line */
             margin-left: auto;
             margin-right: auto;
+            margin-bottom: 10px; /* Added space below signature line */
+        }
+        /* Added styles for signature image */
+        .signature-image {
+            max-width: 200px; /* Match signature line width */
+            height: auto;
+            margin: 10px auto;
+            display: block;
         }
     </style>
 </head>
 <body>
+    <!-- Header section remains the same -->
     <div class="header">
         <h2>PT. USAHA GEDUNG MANDIRI</h2>
         <p>WISMA MANDIRI Lantai XII</p>
@@ -59,8 +69,10 @@
         Request ID: {{ $request->request_id }}
     </div>
     <p>Tanggal: {{ Carbon\Carbon::parse($request->request_tanggal)->translatedFormat('d F Y') }}</p>
-    <p>Divisi: {{ $request->departemen }}</p>
+    <p>Divisi: {{ $request->divisi }}</p>
+    <p>Departemen: {{ $request->departemen }}</p>
 
+    <!-- Table section remains the same -->
     <table>
         <thead>
             <tr>
@@ -92,12 +104,13 @@
         </tbody>
     </table>
 
+    <!-- Updated signature section -->
     <div class="signatures">
         <div class="signature-cell">
             <p>Disetujui oleh,</p>
             @if(isset($signatures['USER']) && $signatures['USER']->signature)
                 <img src="{{ asset('storage/signatures/' . $signatures['USER']->signature) }}" 
-                     alt="User Signature" style="width: 150px; height: auto;">
+                     alt="User Signature" class="signature-image">
             @endif
             <div class="signature-line"></div>
             <p><i>nama jelas & tanggal</i></p>
