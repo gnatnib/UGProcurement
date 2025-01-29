@@ -86,14 +86,14 @@
         </div>
         <!-- COL END -->
         <div class="col-sm-6 col-md-6 col-lg-6 col-xl-3">
-            <div class="card bg-danger-gradient img-card box-danger-shadow">
+            <div class="card bg-sapphire img-card box-sapphire-shadow">
                 <div class="card-body">
                     <div class="d-flex">
                         <div class="text-white">
-                            <h2 class="mb-0 number-font">{{ $bk }}</h2>
-                            <p class="text-white mb-0">Barang Keluar</p>
+                            <h2 class="mb-0 number-font">{{ $completed_requests }}</h2>
+                            <p class="text-white mb-0">Request Selesai</p>
                         </div>
-                        <div class="ms-auto"> <i class="fe fe-repeat text-white fs-40 me-2 mt-2"></i> </div>
+                        <div class="ms-auto"> <i class="fe fe-check-circle text-white fs-40 me-2 mt-2"></i> </div>
                     </div>
                 </div>
             </div>
@@ -146,7 +146,7 @@
             <div class="col-lg-6">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Top 5 Barang yang Sering Dibeli Bulan Ini</h3>
+                        <h3 class="card-title">Top 5 Barang yang Sering Direquest Bulan Ini</h3>
                     </div>
                     <div class="card-body">
                         <ul id="topBarangList" class="list-group">
@@ -313,7 +313,7 @@
                         header.className = 'top-barang-header';
                         header.innerHTML = `
                             <h3>Top 5 Barang - ${new Date().toLocaleString('id-ID', { month: 'long', year: 'numeric' })}</h3>
-                            <p>Barang yang paling sering dibeli</p>
+                            <p>Barang yang paling sering direquest</p>
                         `;
                         list.appendChild(header);
 
@@ -416,6 +416,12 @@
 
         .bg-warning.img-card:hover {
             box-shadow: 0 4px 25px 0 rgba(255, 193, 7, 0.25);
+        }
+        .bg-sapphire {
+            background: linear-gradient(45deg, #1A237E, #3949AB);
+        }
+        .box-sapphire-shadow:hover {
+            box-shadow: 0 4px 25px 0 rgba(26, 35, 126, 0.25);
         }
 
         #topBarangList {

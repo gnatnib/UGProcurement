@@ -21,34 +21,55 @@ class DashboardController extends Controller
 {
     public function index()
     {
-       $user = Session::get('user');
-       $data = [
-           "title" => "Dashboard",
-           "jenis" => JenisBarangModel::orderBy('jenisbarang_id', 'DESC')->count(),
-           "satuan" => SatuanModel::orderBy('satuan_id', 'DESC')->count(),
-           "merk" => MerkModel::orderBy('merk_id', 'DESC')->count(),
-           "barang" => BarangModel::leftJoin('tbl_jenisbarang', 'tbl_jenisbarang.jenisbarang_id', '=', 'tbl_barang.jenisbarang_id')
-               ->leftJoin('tbl_satuan', 'tbl_satuan.satuan_id', '=', 'tbl_barang.satuan_id')
-               ->leftJoin('tbl_merk', 'tbl_merk.merk_id', '=', 'tbl_barang.merk_id')
-               ->orderBy('barang_id', 'DESC')
-               ->count(),
-           "bm" => BarangmasukModel::leftJoin('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')
-               ->leftJoin('tbl_user', 'tbl_user.user_id', '=', 'tbl_barangmasuk.user_id')
-               ->orderBy('bm_id', 'DESC')
-               ->count(),
-           "bk" => BarangkeluarModel::leftJoin('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangkeluar.barang_kode')
-               ->orderBy('bk_id', 'DESC')
-               ->count(),
-           "user" => UserModel::leftJoin('tbl_role', 'tbl_role.role_id', '=', 'tbl_user.role_id')
-               ->orderBy('user_id', 'DESC')
-               ->count(),
-           "active_requests" => DB::table('tbl_request_barang')
-               ->whereIn('status', ['draft', 'pending'])
-               ->count(),
-           "user_role" => $user->role_id
-       ];
+        $user = Session::get('user');
+        
+        // Query dasar untuk barang masuk
+        $barangMasukQuery = BarangmasukModel::leftJoin('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')
+            ->leftJoin('tbl_user', 'tbl_user.user_id', '=', 'tbl_barangmasuk.user_id');
+        
+        // Query dasar untuk request selesai
+        $completedRequestQuery = DB::table('tbl_request_barang')
+            ->where('status', 'Diterima');
+        
+        // Query dasar untuk active request
+        $activeRequestQuery = DB::table('tbl_request_barang')
+            ->whereIn('status', ['draft', 'pending']);
     
-       return view('Admin.Dashboard.index', $data);
+        // Menerapkan filter berdasarkan role
+        if ($user->role_id == 5) {
+            // User biasa: hanya melihat datanya sendiri
+            $barangMasukQuery->where('tbl_barangmasuk.user_id', $user->user_id);
+            $completedRequestQuery->where('user_id', $user->user_id);
+            $activeRequestQuery->where('user_id', $user->user_id);
+        } 
+        elseif ($user->role_id == 4) {
+            // Kepala Divisi: melihat data diri sendiri dan divisinya
+            $barangMasukQuery->where('tbl_barangmasuk.divisi', $user->divisi);
+            $completedRequestQuery->where('departemen', $user->departemen);
+            $activeRequestQuery->where('departemen', $user->departemen);
+        }
+        // Role 1,2,3 bisa melihat semua data (tidak perlu filter tambahan)
+        
+        $data = [
+            "title" => "Dashboard",
+            "jenis" => JenisBarangModel::orderBy('jenisbarang_id', 'DESC')->count(),
+            "satuan" => SatuanModel::orderBy('satuan_id', 'DESC')->count(),
+            "merk" => MerkModel::orderBy('merk_id', 'DESC')->count(),
+            "barang" => BarangModel::leftJoin('tbl_jenisbarang', 'tbl_jenisbarang.jenisbarang_id', '=', 'tbl_barang.jenisbarang_id')
+                ->leftJoin('tbl_satuan', 'tbl_satuan.satuan_id', '=', 'tbl_barang.satuan_id')
+                ->leftJoin('tbl_merk', 'tbl_merk.merk_id', '=', 'tbl_barang.merk_id')
+                ->orderBy('barang_id', 'DESC')
+                ->count(),
+            "bm" => $barangMasukQuery->count(),
+            "completed_requests" => $completedRequestQuery->count(),
+            "user" => UserModel::leftJoin('tbl_role', 'tbl_role.role_id', '=', 'tbl_user.role_id')
+                ->orderBy('user_id', 'DESC')
+                ->count(),
+            "active_requests" => $activeRequestQuery->count(),
+            "user_role" => $user->role_id
+        ];
+    
+        return view('Admin.Dashboard.index', $data);
     }
     
     public function getDivisionBookings()
