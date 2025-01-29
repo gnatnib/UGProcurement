@@ -35,7 +35,6 @@
                         <div class="col-md-6">
                             <button class="btn btn-success-light" onclick="filter()"><i class="fe fe-filter"></i> Filter</button>
                             <button class="btn btn-secondary-light" onclick="reset()"><i class="fe fe-refresh-ccw"></i> Reset</button>
-                            <button class="btn btn-primary-light" onclick="print()"><i class="fe fe-printer"></i> Print</button>
                             <button class="btn btn-info-light" onclick="csv()"><i class="fa fa-file-excel-o"></i> CSV</button>
                         </div>
                     </div>
@@ -133,37 +132,6 @@
             table.ajax.reload(null, false);
         }
 
-        function print() {
-            var tglawal = $('input[name="tglawal"]').val();
-            var tglakhir = $('input[name="tglakhir"]').val();
-            if (tglawal != '' && tglakhir != '') {
-                window.open(
-                    "{{ route('lap-permintaan.print') }}?tglawal=" + tglawal + "&tglakhir=" + tglakhir,
-                    '_blank'
-                );
-            } else {
-                swal({
-                    title: "Yakin Print Semua Data?",
-                    type: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                    confirmButtonText: "Yakin",
-                    cancelButtonText: 'Batal',
-                    showCancelButton: true,
-                    showConfirmButton: true,
-                    closeOnConfirm: false,
-                    confirmButtonColor: '#09ad95',
-                }, function(value) {
-                    if (value == true) {
-                        window.open(
-                            "{{ route('lap-permintaan.print') }}",
-                            '_blank'
-                        );
-                        swal.close();
-                    }
-                });
-            }
-        }
 
         function pdf(id) {
             window.open("{{ route('lap-permintaan.pdf') }}?id=" + id, '_blank');
@@ -177,8 +145,54 @@
             });
         }
 
+        
         function csv() {
-            window.location.href = "{{ route('lap-permintaan.csv') }}";
+        var tglawal = $('input[name="tglawal"]').val();
+        var tglakhir = $('input[name="tglakhir"]').val();
+        
+        if (tglawal != '' && tglakhir != '') {
+            // Menggunakan AJAX untuk cek data terlebih dahulu
+            $.ajax({
+                url: "{{ route('lap-permintaan.csv') }}",
+                type: 'GET',
+                data: {
+                    tglawal: tglawal,
+                    tglakhir: tglakhir
+                },
+                success: function(response) {
+                    // Cek jika response memiliki status error
+                    if (response.status === 'error') {
+                        swal({
+                            title: "Perhatian!",
+                            text: response.message,
+                            type: "warning",
+                            confirmButtonText: "Ok"
+                        });
+                    } else {
+                        // Jika response adalah file CSV, buat link download
+                        var blob = new Blob([response], { type: 'text/csv' });
+                        var downloadUrl = window.URL.createObjectURL(blob);
+                        var a = document.createElement("a");
+                        a.href = downloadUrl;
+                        a.download = "laporan_permintaan.csv";
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(downloadUrl);
+                        a.remove();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    swal({
+                        title: "Error!",
+                        text: "Tidak ada data pada periode yang dipilih",
+                        type: "error",
+                        confirmButtonText: "Ok"
+                    });
+                }
+            });
+        } else {
+            validasi("Isi dulu Form Filter Tanggal!", 'warning');
         }
+    }
     </script>
 @endsection

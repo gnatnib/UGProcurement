@@ -289,7 +289,7 @@
                 default:
                     badgeClass = 'bg-secondary';
                     icon = 'help-circle';
-                    status = 'UNKNOWN';
+                    status = 'Send To GM';
             }
 
                 return `<span class="badge ${badgeClass}-gradient">
