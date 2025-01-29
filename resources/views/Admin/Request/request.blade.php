@@ -164,73 +164,85 @@
         });
 
         function showDetail(data) {
-                $('#detail-requestid').text('-');
-                $('#detail-tanggal').text('-');
-                $('#detail-departemen').text('-');
-                $('#detail-status').html('-');
-                $('#detail-items').html('<tr><td colspan="7" class="text-center">Memuat data...</td></tr>');
-                $('#detail-jumlahitem').text('-');
-                $('#detail-totalharga').text('-');
+    // Reset tampilan modal sebelum diisi data baru
+    $('#detail-requestid').text('-');
+    $('#detail-tanggal').text('-');
+    $('#detail-departemen').text('-');
+    $('#detail-status').html('-');
+    $('#detail-items').html('<tr><td colspan="7" class="text-center">Memuat data...</td></tr>');
+    $('#detail-jumlahitem').text('-');
+    $('#detail-totalharga').text('-');
 
-                $('#detail-requestid').text(data.request_id);
-                $('#detail-tanggal').text(data.tanggal_format);
-                $('#detail-departemen').text(data.departemen);
-                $('#detail-status').html(getStatusBadge(data.status));
+    // Tampilkan data awal dari parameter `data`
+    $('#detail-requestid').text(data.request_id);
+    $('#detail-tanggal').text(data.tanggal_format);
+    $('#detail-departemen').text(data.departemen);
+    $('#detail-status').html(getStatusBadge(data.status)); // Status awal sebelum AJAX
 
-                $.ajax({
-                    url: '/admin/request-barang/get-details/' + data.request_id,
-                    method: 'GET',
-                    success: function (response) {
-                        if (response.success) {
-                            $('#detail-jumlahitem').text(response.total_items + ' Item');
-                            $('#detail-totalharga').text('Rp ' + response.total_harga.toLocaleString('id-ID'));
+    // AJAX untuk mendapatkan detail request secara lengkap
+    $.ajax({
+        url: '/admin/request-barang/get-details/' + data.request_id,
+        method: 'GET',
+        success: function (response) {
+            if (response.success) {
+                // Update status dengan data terbaru dari API
+                $('#detail-status').html(getStatusBadge(response.request.status));
 
-                             let itemsHtml = '';
-                            if (response.items && response.items.length > 0) {
-                                response.items.forEach((item, index) => {
-                                    let totalHarga = item.bm_jumlah * item.harga;
-                                    let keterangan = item.keterangan || '-';
-                                    if (keterangan.includes('Rejected by')) {
-                                        let parts = keterangan.split(/(Rejected by.*)/);
-                                        keterangan = parts[0] + '<span class="text-danger">' + parts[1] + '</span>';
-                                    }
-                                    
-                                    // Pada bagian render tabel:
-                                    itemsHtml += `
-                                    <tr>
-                                        <td class="text-center">${index + 1}</td>
-                                        <td>${item.barang_nama || '-'}</td>
-                                        <td class="text-center">${item.bm_jumlah}</td>
-                                        <td class="text-end">Rp ${parseFloat(item.harga).toLocaleString('id-ID')}</td>
-                                        <td class="text-end">Rp ${parseFloat(totalHarga).toLocaleString('id-ID')}</td>
-                                        <td class="text-center">${getStatusBadge(item.tracking_status)}</td>
-                                        <td>${keterangan}
-                                            ${item.tracking_status && item.tracking_status.toLowerCase() === 'dikirim' ?
-                                                                            `<i class="fe fe-check-circle text-success float-end" style="cursor: pointer" 
-                                                onclick="updateItemStatus('${item.bm_id}', 'diterima')" 
-                                                title="Klik untuk konfirmasi penerimaan"></i>`
-                                                                            : ''}
-                                        </td>
-                                    </tr>
-                                `;
-                                });
-                            } else {
-                                itemsHtml = '<tr><td colspan="7" class="text-center">Tidak ada data barang</td></tr>';
-                            }
-                            $('#detail-items').html(itemsHtml);
-                            $('#detail-total').text('Rp ' + response.total_harga.toLocaleString('id-ID'));
+                // Update jumlah item dan total harga
+                $('#detail-jumlahitem').text(response.total_items + ' Item');
+                $('#detail-totalharga').text('Rp ' + response.total_harga.toLocaleString('id-ID'));
+
+                let itemsHtml = '';
+                if (response.items && response.items.length > 0) {
+                    response.items.forEach((item, index) => {
+                        let totalHarga = item.bm_jumlah * item.harga;
+                        let keterangan = item.keterangan || '-';
+
+                        // Format teks merah untuk barang yang ditolak
+                        if (keterangan.includes('Rejected by')) {
+                            let parts = keterangan.split(/(Rejected by.*)/);
+                            keterangan = parts[0] + '<span class="text-danger">' + parts[1] + '</span>';
                         }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Error:', error);
-                        $('#detail-items').html('<tr><td colspan="7" class="text-center">Gagal memuat data</td></tr>');
-                        $('#detail-jumlahitem').text('-');
-                        $('#detail-totalharga').text('-');
-                    }
-                });
 
-                $('#detailModal').modal('show');
+                        // Render daftar barang
+                        itemsHtml += `
+                        <tr>
+                            <td class="text-center">${index + 1}</td>
+                            <td>${item.barang_nama || '-'}</td>
+                            <td class="text-center">${item.bm_jumlah}</td>
+                            <td class="text-end">Rp ${parseFloat(item.harga).toLocaleString('id-ID')}</td>
+                            <td class="text-end">Rp ${parseFloat(totalHarga).toLocaleString('id-ID')}</td>
+                            <td class="text-center">${getStatusBadge(item.tracking_status)}</td>
+                            <td>${keterangan}
+                                ${item.tracking_status && item.tracking_status.toLowerCase() === 'dikirim' ? 
+                                    `<i class="fe fe-check-circle text-success float-end" style="cursor: pointer" 
+                                    onclick="updateItemStatus('${item.bm_id}', 'diterima')" 
+                                    title="Klik untuk konfirmasi penerimaan"></i>` 
+                                    : ''}
+                            </td>
+                        </tr>
+                        `;
+                    });
+                } else {
+                    itemsHtml = '<tr><td colspan="7" class="text-center">Tidak ada data barang</td></tr>';
+                }
+
+                $('#detail-items').html(itemsHtml);
+                $('#detail-total').text('Rp ' + response.total_harga.toLocaleString('id-ID'));
             }
+        },
+        error: function (xhr, status, error) {
+            console.error('Error:', error);
+            $('#detail-items').html('<tr><td colspan="7" class="text-center">Gagal memuat data</td></tr>');
+            $('#detail-jumlahitem').text('-');
+            $('#detail-totalharga').text('-');
+        }
+    });
+
+    // Tampilkan modal detail
+    $('#detailModal').modal('show');
+}
+
 
         function getStatusBadge(status) {
                 status = (status || '').toLowerCase();

@@ -81,40 +81,53 @@ class RequestBarangController extends Controller
     public function getDetails($id)
     {
         try {
-            // Get request details
+            // Ambil data request barang berdasarkan ID
             $request = DB::table('tbl_request_barang as r')
                 ->leftJoin('tbl_user as u', 'u.user_id', '=', 'r.user_id')
                 ->where('r.request_id', $id)
-                ->select('r.*', 'u.user_nmlengkap', 'u.departemen')
+                ->select(
+                    'r.request_id',
+                    'r.request_tanggal',
+                    'r.departemen',
+                    'r.divisi',
+                    'r.status', // Pastikan status ikut diambil
+                    'r.keterangan',
+                    'u.user_nmlengkap'
+                )
                 ->first();
-
+    
             if (!$request) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Request tidak ditemukan'
                 ], 404);
             }
-
-            // Get items from barangmasuk with barang details for this request
+    
+            // Format tanggal agar lebih mudah dibaca
+            $request->request_tanggal = Carbon::parse($request->request_tanggal)->translatedFormat('d F Y');
+    
+            // Ambil daftar barang yang masuk berdasarkan request_id
             $items = DB::table('tbl_barangmasuk as bm')
                 ->leftJoin('tbl_barang as b', 'b.barang_kode', '=', 'bm.barang_kode')
                 ->where('bm.request_id', $id)
                 ->select(
-                    'bm.*',
+                    'bm.bm_id',
+                    'bm.bm_jumlah',
+                    'bm.harga',
                     'b.barang_nama',
                     DB::raw('(bm.bm_jumlah * bm.harga) as total_harga'),
-                    'bm.keterangan', // Make sure keterangan is selected
-                    'bm.tracking_status as item_status'
+                    'bm.keterangan',
+                    'bm.tracking_status' // Pastikan status tracking ikut diambil
                 )
                 ->get();
-
-            // Calculate totals
+    
+            // Hitung total barang dan harga keseluruhan
             $totalItems = $items->count();
             $totalHarga = $items->sum('total_harga');
-
+    
             return response()->json([
                 'success' => true,
-                'request' => $request,
+                'request' => $request, // Pastikan status diambil dari sini
                 'items' => $items,
                 'total_items' => $totalItems,
                 'total_harga' => $totalHarga
@@ -127,6 +140,7 @@ class RequestBarangController extends Controller
             ], 500);
         }
     }
+    
 
     public function hapus(Request $request)
     {
