@@ -23,7 +23,7 @@ return new class extends Migration
             $table->dropColumn('status');
         });
         Schema::table('tbl_request_barang', function (Blueprint $table) {
-            $table->enum('status', ['draft', 'pending', 'Diproses', 'Dikirim', 'Diterima'])->default('draft');
+            $table->enum('status', ['draft', 'pending', 'Diproses', 'Dikirim', 'Diterima','Ditolak'])->default('draft');
         });
     }
 

@@ -277,6 +277,7 @@ class RequestBarangController extends Controller
         }
     }
 
+    //untuk view tabel request nya
     public function getdata(Request $request)
     {
         if ($request->ajax()) {
@@ -329,12 +330,16 @@ class RequestBarangController extends Controller
                         case 'Diproses':
                             $badge = '<span class="badge bg-primary">Diproses</span>';
                             break;
+                        case 'Ditolak':
+                            $badge = '<span class="badge bg-danger">Ditolak</span>';
+                            break;
                         case 'Dikirim':
                             $badge = '<span class="badge bg-info">Dikirim</span>';
                             break;
                         case 'Diterima':
                             $badge = '<span class="badge bg-success">Diterima</span>';
                             break;
+                        
                     }
                     return $badge;
                 })
