@@ -563,27 +563,46 @@ class RequestBarangController extends Controller
         }
     }
 
-    public function updateStatus(Request $request)
-    {
-        try {
-            DB::beginTransaction();
+    public function updateStatus(Request $request, $id)
+{
+    try {
+        DB::beginTransaction();
 
-            DB::table('tbl_request_barang')
-                ->where('request_id', $request->request_id)
-                ->where('user_id', auth()->user()->user_id)
-                ->update([
-                    'status' => $request->status,
-                    'updated_at' => now()
-                ]);
+        // Cek dulu apakah data barangmasuk ada
+        $barangmasuk = DB::table('tbl_barangmasuk')
+            ->where('bm_id', $id)
+            ->first();
 
-            DB::commit();
-            return response()->json(['status' => 'success', 'message' => 'Status berhasil diupdate']);
-        } catch (\Exception $e) {
-            DB::rollback();
-            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
+        if (!$barangmasuk) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data barang masuk tidak ditemukan'
+            ], 404);
         }
-    }
 
+        // Update tracking_status, bukan status
+        DB::table('tbl_barangmasuk')
+            ->where('bm_id', $id)
+            ->update([
+                'tracking_status' => $request->status,
+                'updated_at' => now()
+            ]);
+
+        DB::commit();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Status barang berhasil diperbarui'
+        ]);
+
+    } catch (\Exception $e) {
+        DB::rollback();
+        return response()->json([
+            'success' => false,
+            'message' => 'Error: ' . $e->getMessage()
+        ], 500);
+    }
+}
     public function getBarang(Request $request)
     {
         if ($request->ajax()) {
