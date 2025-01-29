@@ -125,6 +125,7 @@
                                                         <th class="text-end" width="15%">Total</th>
                                                         <th class="text-center" width="10%">Status</th>
                                                         <th>Keterangan</th>
+                                                        
                                                     </tr>
                                                 </thead>
                                                 <tbody id="detail-items">
@@ -193,6 +194,8 @@
                                         let parts = keterangan.split(/(Rejected by.*)/);
                                         keterangan = parts[0] + '<span class="text-danger">' + parts[1] + '</span>';
                                     }
+                                    
+                                    // Pada bagian render tabel:
                                     itemsHtml += `
                                     <tr>
                                         <td class="text-center">${index + 1}</td>
@@ -201,7 +204,13 @@
                                         <td class="text-end">Rp ${parseFloat(item.harga).toLocaleString('id-ID')}</td>
                                         <td class="text-end">Rp ${parseFloat(totalHarga).toLocaleString('id-ID')}</td>
                                         <td class="text-center">${getStatusBadge(item.tracking_status)}</td>
-                                        <td>${keterangan}</td>
+                                        <td>${keterangan}
+                                            ${item.tracking_status && item.tracking_status.toLowerCase() === 'dikirim' ?
+                                                                            `<i class="fe fe-check-circle text-success float-end" style="cursor: pointer" 
+                                                onclick="updateItemStatus('${item.bm_id}', 'diterima')" 
+                                                title="Klik untuk konfirmasi penerimaan"></i>`
+                                                                            : ''}
+                                        </td>
                                     </tr>
                                 `;
                                 });
@@ -236,10 +245,15 @@
                     badgeClass = 'bg-primary';
                     icon = 'loader';
                     break;
-                case 'rejected':
+                case 'ditolak':
                     badgeClass = 'bg-danger';
                     icon = 'x-circle';
                     status = 'DITOLAK';
+                    break;
+                case 'reject':
+                    badgeClass = 'bg-danger';
+                    icon = 'x-circle';
+                    status = 'Reject';
                     break;
                 case 'dikirim':
                     badgeClass = 'bg-info';
@@ -250,7 +264,7 @@
                     icon = 'edit-3';
                     status = 'DRAFT';
                     break;
-                case 'approved':
+                case 'approve':
                     badgeClass = 'bg-success';
                     icon = 'check';
                     status = 'DISETUJUI';
@@ -479,6 +493,83 @@
                         'Terjadi kesalahan saat memeriksa status',
                         'error'
                     );
+                }
+            });
+        }
+       function updateItemStatus(barangmasukId, newStatus) {
+            // Tambahkan style untuk memastikan SweetAlert muncul di atas modal Bootstrap
+            if (!document.getElementById('swal-styles')) {
+                const style = document.createElement('style');
+                style.id = 'swal-styles';
+                style.innerHTML = `
+            .swal2-container {
+                z-index: 9999 !important; 
+            }
+            .swal2-popup {
+                z-index: 10000 !important;
+            }
+            .modal-backdrop {
+                z-index: 1050 !important;
+            }
+            .modal {
+                z-index: 1051 !important;
+            }
+        `;
+                document.head.appendChild(style);
+            }
+
+            Swal.fire({
+                title: 'Konfirmasi Penerimaan',
+                text: "Apakah Anda yakin telah menerima barang ini?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Terima!',
+                cancelButtonText: 'Batal',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/admin/request-barang/update-status/' + barangmasukId,
+                        type: 'POST',
+                        data: {
+                            _token: $('meta[name="csrf-token"]').attr('content'),
+                            status: newStatus
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil!',
+                                    text: 'Status barang berhasil diperbarui!',
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                }).then(() => {
+                                    // Refresh detail modal content
+                                    let currentRequestId = $('#detail-requestid').text();
+                                    showDetail({
+                                        request_id: currentRequestId,
+                                        tanggal_format: $('#detail-tanggal').text(),
+                                        departemen: $('#detail-departemen').text(),
+                                        status: $('#detail-status').text()
+                                    });
+                                });
+                            } else {
+                                Swal.fire('Error!', response.message, 'error');
+                            }
+                        },
+                        error: function (xhr) {
+                            const response = xhr.responseJSON;
+                            Swal.fire(
+                                'Error!',
+                                response?.message || 'Terjadi kesalahan saat mengupdate status!',
+                                'error'
+                            );
+                        }
+                    });
                 }
             });
         }
