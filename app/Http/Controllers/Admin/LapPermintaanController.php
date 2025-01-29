@@ -41,9 +41,9 @@ class LapPermintaanController extends Controller
         $data['data'] = BarangmasukModel::select(
             'tbl_barangmasuk.barang_kode',
             'tbl_barangmasuk.bm_jumlah',
-            'tbl_barangmasuk.harga as barang_harga', // Menggunakan harga dari tbl_barangmasuk
+            'tbl_barangmasuk.harga as barang_harga',
+            'tbl_barangmasuk.keterangan', // Mengambil keterangan dari tbl_barangmasuk
             'tbl_barang.barang_nama',
-            'tbl_request_barang.keterangan',
             'tbl_request_barang.request_tanggal',
             'tbl_request_barang.departemen'
         )
@@ -51,7 +51,7 @@ class LapPermintaanController extends Controller
             ->join('tbl_request_barang', 'tbl_request_barang.request_id', '=', 'tbl_barangmasuk.request_id')
             ->where('tbl_barangmasuk.request_id', $request->id)
             ->get();
-
+    
         $data["title"] = "PDF Permintaan";
         $data['web'] = WebModel::first();
         $data['request'] = RequestBarangModel::find($request->id);
@@ -59,7 +59,7 @@ class LapPermintaanController extends Controller
             ->where('request_id', $request->id)
             ->get()
             ->keyBy('signer_type');
-
+    
         $pdf = PDF::loadView('Admin.Laporan.Permintaan.pdf', $data);
         return $pdf->download('permintaan-' . $request->id . '.pdf');
     }
