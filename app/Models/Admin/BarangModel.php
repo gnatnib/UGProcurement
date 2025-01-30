@@ -18,7 +18,6 @@ class BarangModel extends Model
         'barang_nama',
         'barang_slug',
         'barang_harga',
-        'barang_stok',
         'barang_gambar',
     ]; 
 

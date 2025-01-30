@@ -87,32 +87,6 @@ class BarangController extends Controller
 
                     return $currency;
                 })
-                ->addColumn('totalstok', function ($row) use ($request) {
-                    if ($request->tglawal == '') {
-                        $jmlmasuk = BarangmasukModel::leftJoin('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')->leftJoin('tbl_user', 'tbl_user.user_id', '=', 'tbl_barangmasuk.user_id')->where('tbl_barangmasuk.barang_kode', '=', $row->barang_kode)->sum('tbl_barangmasuk.bm_jumlah');
-                    } else {
-                        $jmlmasuk = BarangmasukModel::leftJoin('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')->leftJoin('tbl_user', 'tbl_user.user_id', '=', 'tbl_barangmasuk.user_id')->whereBetween('bm_tanggal', [$request->tglawal, $request->tglakhir])->where('tbl_barangmasuk.barang_kode', '=', $row->barang_kode)->sum('tbl_barangmasuk.bm_jumlah');
-                    }
-
-
-                    if ($request->tglawal) {
-                        $jmlkeluar = BarangkeluarModel::leftJoin('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangkeluar.barang_kode')->whereBetween('bk_tanggal', [$request->tglawal, $request->tglakhir])->where('tbl_barangkeluar.barang_kode', '=', $row->barang_kode)->sum('tbl_barangkeluar.bk_jumlah');
-                    } else {
-                        $jmlkeluar = BarangkeluarModel::leftJoin('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangkeluar.barang_kode')->where('tbl_barangkeluar.barang_kode', '=', $row->barang_kode)->sum('tbl_barangkeluar.bk_jumlah');
-                    }
-
-                    $totalstok = $row->barang_stok + ($jmlmasuk - $jmlkeluar);
-                    if ($totalstok == 0) {
-                        $result = '<span class="">' . $totalstok . '</span>';
-                    } else if ($totalstok > 0) {
-                        $result = '<span class="text-success">' . $totalstok . '</span>';
-                    } else {
-                        $result = '<span class="text-danger">' . $totalstok . '</span>';
-                    }
-
-
-                    return $result;
-                })
                 ->addColumn('action', function ($row) {
                     $array = array(
                         "barang_id" => $row->barang_id,
@@ -122,7 +96,6 @@ class BarangController extends Controller
                         "barang_kode" => $row->barang_kode,
                         "barang_nama" => trim(preg_replace('/[^A-Za-z0-9-]+/', '_', $row->barang_nama)),
                         "barang_harga" => $row->barang_harga,
-                        "barang_stok" => $row->barang_stok,
                         "barang_gambar" => $row->barang_gambar,
                     );
                     $button = '';
@@ -153,7 +126,7 @@ class BarangController extends Controller
 
                     return $button;
                 })
-                ->rawColumns(['action', 'img', 'jenisbarang', 'satuan', 'merk', 'currency', 'totalstok'])->make(true);
+                ->rawColumns(['action', 'img', 'jenisbarang', 'satuan', 'merk', 'currency'])->make(true);
         }
     }
 
@@ -192,45 +165,13 @@ class BarangController extends Controller
 
                     return $currency;
                 })
-                ->addColumn('totalstok', function ($row) use ($request) {
-                    if ($request->tglawal == '') {
-                        $jmlmasuk = BarangmasukModel::leftJoin('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')
-                            ->leftJoin('tbl_user', 'tbl_user.user_id', '=', 'tbl_barangmasuk.user_id')  // Ganti tbl_customer dengan tbl_user
-                            ->where('tbl_barangmasuk.barang_kode', '=', $row->barang_kode)
-                            ->sum('tbl_barangmasuk.bm_jumlah');
-                    } else {
-                        $jmlmasuk = BarangmasukModel::leftJoin('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')
-                            ->leftJoin('tbl_user', 'tbl_user.user_id', '=', 'tbl_barangmasuk.user_id')  // Ganti tbl_customer dengan tbl_user
-                            ->whereBetween('bm_tanggal', [$request->tglawal, $request->tglakhir])
-                            ->where('tbl_barangmasuk.barang_kode', '=', $row->barang_kode)
-                            ->sum('tbl_barangmasuk.bm_jumlah');
-                    }
-
-
-                    if ($request->tglawal) {
-                        $jmlkeluar = BarangkeluarModel::leftJoin('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangkeluar.barang_kode')->whereBetween('bk_tanggal', [$request->tglawal, $request->tglakhir])->where('tbl_barangkeluar.barang_kode', '=', $row->barang_kode)->sum('tbl_barangkeluar.bk_jumlah');
-                    } else {
-                        $jmlkeluar = BarangkeluarModel::leftJoin('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangkeluar.barang_kode')->where('tbl_barangkeluar.barang_kode', '=', $row->barang_kode)->sum('tbl_barangkeluar.bk_jumlah');
-                    }
-
-                    $totalstok = $row->barang_stok + ($jmlmasuk - $jmlkeluar);
-                    if ($totalstok == 0) {
-                        $result = '<span class="">' . $totalstok . '</span>';
-                    } else if ($totalstok > 0) {
-                        $result = '<span class="text-success">' . $totalstok . '</span>';
-                    } else {
-                        $result = '<span class="text-danger">' . $totalstok . '</span>';
-                    }
-
-
-                    return $result;
-                })
                 ->addColumn('action', function ($row) use ($request) {
                     $array = array(
                         "barang_kode" => $row->barang_kode,
                         "barang_nama" => trim(preg_replace('/[^A-Za-z0-9-]+/', '_', $row->barang_nama)),
                         "satuan_nama" => trim(preg_replace('/[^A-Za-z0-9-]+/', '_', $row->satuan_nama)),
                         "jenisbarang_nama" => trim(preg_replace('/[^A-Za-z0-9-]+/', '_', $row->jenisbarang_nama)),
+                        "barang_harga" => $row->barang_harga  // Tambahkan harga ke array
                     );
                     $button = '';
                     if ($request->get('param') == 'tambah') {
@@ -249,7 +190,7 @@ class BarangController extends Controller
 
                     return $button;
                 })
-                ->rawColumns(['action', 'img', 'jenisbarang', 'satuan', 'merk', 'currency', 'totalstok'])->make(true);
+                ->rawColumns(['action', 'img', 'jenisbarang', 'satuan', 'merk', 'currency'])->make(true);
         }
     }
 
@@ -277,8 +218,7 @@ class BarangController extends Controller
             'barang_kode' => $request->kode,
             'barang_nama' => $request->nama,
             'barang_slug' => $slug,
-            'barang_harga' => $request->harga,
-            'barang_stok' => 0,
+            'barang_harga' => $request->harga
 
         ]);
 
@@ -309,8 +249,7 @@ class BarangController extends Controller
                 'barang_kode' => $request->kode,
                 'barang_nama' => $request->nama,
                 'barang_slug' => $slug,
-                'barang_harga' => $request->harga,
-                'barang_stok' => $request->stok,
+                'barang_harga' => $request->harga
             ]);
         } else {
             //update data without image
@@ -322,7 +261,6 @@ class BarangController extends Controller
                 'barang_nama' => $request->nama,
                 'barang_slug' => $slug,
                 'barang_harga' => $request->harga,
-                'barang_stok' => $request->stok,
             ]);
         }
 

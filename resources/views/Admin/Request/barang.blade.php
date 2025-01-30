@@ -126,10 +126,6 @@
                     name: 'merk_nama'
                 },
                 {
-                    data: 'totalstok',
-                    name: 'barang_stok'
-                },
-                {
                     data: 'currency',
                     name: 'barang_harga'
                 },

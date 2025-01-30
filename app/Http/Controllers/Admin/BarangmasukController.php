@@ -166,21 +166,22 @@ class BarangmasukController extends Controller
     {
         try {
             $user = Session::get('user');
-
+    
             $latestRequest = DB::table('tbl_request_barang')
                 ->where('user_id', $user->user_id)
                 ->orderBy('created_at', 'desc')
                 ->first();
-
+    
             if (!$latestRequest) {
                 return response()->json([
                     'success' => false,
                     'title' => 'Tidak dapat menambah barang!',
                     'message' => 'Anda harus membuat request terlebih dahulu sebelum menambah barang masuk.',
                     'type' => 'warning'
-                ], 400); // Using 400 Bad Request status code
+                ], 400);
             }
-
+    
+            // Buat record barang masuk dengan harga yang diinput user
             $barangmasuk = BarangmasukModel::create([
                 'bm_tanggal' => $request->tglmasuk,
                 'bm_kode' => $request->bmkode,
@@ -188,14 +189,15 @@ class BarangmasukController extends Controller
                 'request_id' => $latestRequest->request_id,
                 'keterangan' => $request->keterangan,
                 'bm_jumlah' => $request->jml,
-                'harga' => $request->harga,
+                'harga' => $request->harga, // Harga dari input user hanya disimpan di tabel barang masuk
                 'user_id' => $user->user_id,
                 'divisi' => $user->divisi,
                 'status' => null,
                 'approval' => null,
             ]);
-
+    
             return response()->json(['success' => true]);
+    
         } catch (\Exception $e) {
             Log::error('Error saving data: ' . $e->getMessage());
             return response()->json([

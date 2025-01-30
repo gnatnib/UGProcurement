@@ -33,7 +33,6 @@
                                     <th class="border-bottom-0">Satuan</th>
                                     <th class="border-bottom-0">Merk</th>
                                     <th class="border-bottom-0">Harga</th>
-                                    <th class="border-bottom-0">Stok</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -93,10 +92,6 @@
                         data: 'currency',
                         name: 'currency'
                     },
-                    {
-                        data: 'totalstok',
-                        name: 'totalstok'
-                    }
                 ],
                 language: {
                     paginate: {

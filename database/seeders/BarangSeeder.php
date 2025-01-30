@@ -25,7 +25,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'BLOWER METAL AC',
                 'barang_slug' => 'blower-metal-ac',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -39,7 +39,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'DUCT TAPE KARET',
                 'barang_slug' => 'duct-tape-karet',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -53,7 +53,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'DUCT TAPE ALUMUNIUM',
                 'barang_slug' => 'duct-tape-alumunium',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -67,7 +67,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'EXHAUST FAN 10" FV25TGU5',
                 'barang_slug' => 'exhaust-fan-10-fv25tgu5',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -81,7 +81,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'EXHAUST FAN 8" FV20TGU5',
                 'barang_slug' => 'exhaust-fan-8-fv20tgu5',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -95,7 +95,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'FREON R134A',
                 'barang_slug' => 'freon-r134a',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -109,7 +109,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'FREON R-22',
                 'barang_slug' => 'freon-r-22',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -123,7 +123,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'FREON R-32',
                 'barang_slug' => 'freon-r-32',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -137,7 +137,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'FREON R410A',
                 'barang_slug' => 'freon-r410a',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -151,7 +151,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KARET BEARING',
                 'barang_slug' => 'karet-bearing',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -165,7 +165,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PEMBERSIH CLEANER BESAR',
                 'barang_slug' => 'pembersih-cleaner-besar',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -179,7 +179,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PEMBERSIH LOGAM - WD-40',
                 'barang_slug' => 'pembersih-logam-wd-40',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -194,7 +194,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'V-BELT TYPE A-25',
                 'barang_slug' => 'v-belt-type-a-25',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -208,7 +208,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => '  V-BELT TYPE A-43',
                 'barang_slug' => 'v-belt-type-a-43',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -222,7 +222,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'V-BELT TYPE A-45',
                 'barang_slug' => 'v-belt-type-a-45',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -236,7 +236,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'V-BELT TYPE A-49',
                 'barang_slug' => 'v-belt-type-a-49',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -250,7 +250,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'V-BELT TYPE A-64',
                 'barang_slug' => 'v-belt-type-a-64',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -264,7 +264,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'V-BELT TYPE A-73',
                 'barang_slug' => 'v-belt-type-a-73',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -278,7 +278,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'V-BELT TYPE B-94',
                 'barang_slug' => 'v-belt-type-b-94',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -292,7 +292,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'V-BELT TYPE B-95',
                 'barang_slug' => 'v-belt-type-b-95',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -306,7 +306,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'V-BELT TYPE B-96',
                 'barang_slug' => 'v-belt-type-b-96',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -320,7 +320,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'V-BELT TYPE B-97',
                 'barang_slug' => 'v-belt-type-b-97',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -334,7 +334,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'V-BELT TYPE B-145',
                 'barang_slug' => 'v-belt-type-b-145',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -349,7 +349,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'EMBER PLASTIK KECIL',
                 'barang_slug' => 'ember-plastik-kecil',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -363,7 +363,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'GAYUNG PLASTIK',
                 'barang_slug' => 'gayung-plastik',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -377,7 +377,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'JELIGEN 1 LITER',
                 'barang_slug' => 'jeligen-1-liter',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -391,7 +391,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'JELIGEN 5 LITER',
                 'barang_slug' => 'jeligen-5-liter',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -405,7 +405,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KAIN LAP MICROFIBER',
                 'barang_slug' => 'kain-lap-microfiber',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -419,7 +419,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KAIN LOBBY DUSTER',
                 'barang_slug' => 'kain-lobby-duster',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -433,7 +433,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KAIN MAJUN',
                 'barang_slug' => 'kain-majun',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -447,7 +447,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KAIN MOP PEL',
                 'barang_slug' => 'kain-mop-pel',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -461,7 +461,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KAIN PEL BIRU',
                 'barang_slug' => 'kain-pel-biru',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -475,7 +475,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KAIN PLANEL',
                 'barang_slug' => 'kain-planel',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -489,7 +489,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KANTONG PLASTIK KRESEK PUTIH',
                 'barang_slug' => 'kantong-plastik-kresek-putih',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -503,7 +503,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PLASTIK SAMPAH HITAM UK.90x120',
                 'barang_slug' => 'plastik-sampah-hitam-uk-90x120',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -517,7 +517,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KANTONG PLASTIKSAMPAH HITAM UK.60x100',
                 'barang_slug' => 'kantong-plastiksampah-hitam-uk-60x100',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -531,7 +531,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAP HANDUK',
                 'barang_slug' => 'lap-handuk',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -545,7 +545,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAP KANEBO',
                 'barang_slug' => 'lap-kanebo',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -559,7 +559,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SARUNG TANGAN KARET',
                 'barang_slug' => 'sarung-tangan-karet-ansel',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -573,7 +573,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SARUNG TANGAN KAIN',
                 'barang_slug' => 'sarung-tangan-kain',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -587,7 +587,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SARUNG TANGAN KARET',
                 'barang_slug' => 'sarung-tangan-karet-kenmaster',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -601,7 +601,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SLANG POMPA',
                 'barang_slug' => 'slang-pompa',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -615,7 +615,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'TEMPAT SAMPAH TUTUP INJAK SEDANG',
                 'barang_slug' => 'tempat-sampah-tutup-injak-sedang',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -629,7 +629,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'TEMPAT SAMPAH TUTUP MANUAL BESAR',
                 'barang_slug' => 'tempat-sampah-tutup-manual-besar',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -643,7 +643,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'TEMPAT SAMPAH TUTUP INJAK',
                 'barang_slug' => 'tempat-sampah-tutup-injak',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -657,7 +657,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'TEMPAT SAMPAH TUTUP GOYANG BESAR',
                 'barang_slug' => 'tempat-sampah-tutup-goyang-besar',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -671,7 +671,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'TEMPAT SAMPAH TUTUP GOYANG KECIL',
                 'barang_slug' => 'tempat-sampah-tutup-goyang-kecil',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -685,7 +685,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'TEMPAT SAMPAH TUTUP GOYANG SEDANG',
                 'barang_slug' => 'tempat-sampah-tutup-goyang-sedang',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -699,7 +699,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'MASKER',
                 'barang_slug' => 'masker',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -713,7 +713,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SIKAT CLOSET BULAT',
                 'barang_slug' => 'sikat-closet-bulat',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -727,7 +727,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'POMPA CLOSET / KOP',
                 'barang_slug' => 'pompa-closet-kop',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -741,7 +741,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KEMOCENG',
                 'barang_slug' => 'kemoceng',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -755,7 +755,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAPU LANGIT2 /RAK BOLL',
                 'barang_slug' => 'sapu-langit2-rak-boll',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -769,7 +769,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'STICK KACA',
                 'barang_slug' => 'stick-kaca',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -783,7 +783,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'WASHER KACA 35 CM',
                 'barang_slug' => 'washer-kaca-35-cm',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -797,7 +797,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'BOTOL SPRAYER',
                 'barang_slug' => 'botol-sprayer',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -811,7 +811,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LONG STICK 3 METER',
                 'barang_slug' => 'long-stick-3-meter',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -825,7 +825,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LONG STICK 4,5 METER',
                 'barang_slug' => 'long-stick-4-5-meter',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -839,7 +839,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LONG STICK 8 METER',
                 'barang_slug' => 'long-stick-8-meter',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -853,7 +853,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SIKAT KARPET 17"',
                 'barang_slug' => 'sikat-karpet-17-inch',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -867,7 +867,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SIKAT KARPET 20"',
                 'barang_slug' => 'sikat-karpet-20-inch',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -881,7 +881,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'MOP HOLDER',
                 'barang_slug' => 'mop-holder',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -895,7 +895,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SIKAT LANTAI 60 CM',
                 'barang_slug' => 'sikat-lantai-60-cm',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -909,7 +909,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SIKAT LANTAI 30 CM',
                 'barang_slug' => 'sikat-lantai-30-cm',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -923,7 +923,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SIKAT TANGAN NILON',
                 'barang_slug' => 'sikat-tangan-nilon',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -937,7 +937,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'STICK LOBBY DUSTER',
                 'barang_slug' => 'stick-lobby-duster',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -951,7 +951,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'STICK MOP PEL',
                 'barang_slug' => 'stick-mop-pel',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -965,7 +965,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'DORONGAN KARET',
                 'barang_slug' => 'dorongan-karet',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -979,7 +979,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PAD POLYSER MERAH 17 INCI',
                 'barang_slug' => 'pad-polyser-merah-17-inci',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -993,7 +993,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PAD POLYSER MERAH 20 INCI',
                 'barang_slug' => 'pad-polyser-merah-20-inci',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1007,7 +1007,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PAD POLYSER PUTIH 17 INCI',
                 'barang_slug' => 'pad-polyser-putih-17-inci',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1021,7 +1021,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PAD POLYSER PUTIH 20 INCI',
                 'barang_slug' => 'pad-polyser-putih-20-inci',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1035,7 +1035,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PENGKI 1 SET',
                 'barang_slug' => 'pengki-1-set',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1049,7 +1049,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PENGKI PLASTIK BESAR',
                 'barang_slug' => 'pengki-plastik-besar',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1063,7 +1063,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PENGKI PLASTIK KECIL',
                 'barang_slug' => 'pengki-plastik-kecil',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1077,7 +1077,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PENGKI PLASTIK SEDANG',
                 'barang_slug' => 'pengki-plastik-sedang',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1091,7 +1091,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAPU LIDI TANGKAI',
                 'barang_slug' => 'sapu-lidi-tangkai',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1105,7 +1105,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAPU LIDI TANPA TANGKAI',
                 'barang_slug' => 'sapu-lidi-tanpa-tangkai',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1119,7 +1119,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAPU NILON',
                 'barang_slug' => 'sapu-nilon',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1133,7 +1133,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'TAPAS HIJAU / GREEN LET',
                 'barang_slug' => 'tapas-hijau-green-let',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1147,7 +1147,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PEMBERSIH LANTAI SUPER KLEEN',
                 'barang_slug' => 'pembersih-lantai-super-kleen',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1161,7 +1161,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PEMBERSIH KACA GLASS CLEANER',
                 'barang_slug' => 'pembersih-kaca-glass-cleaner',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1175,7 +1175,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SHAMPO KARPET',
                 'barang_slug' => 'shampo-karpet',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1189,7 +1189,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PEMBERSIH KAYU FURNI SAIN',
                 'barang_slug' => 'pembersih-kayu-furni-sain',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1203,7 +1203,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PEMBERSIH KERAMIK',
                 'barang_slug' => 'pembersih-keramik',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1217,7 +1217,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PEMBERSIH LANTAI FLOOR CLEANER SOS',
                 'barang_slug' => 'pembersih-lantai-floor-cleaner-sos',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1231,7 +1231,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PEMBERSIH METAL SHINE',
                 'barang_slug' => 'pembersih-metal-shine',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1245,7 +1245,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PEMBERSIH PIRING',
                 'barang_slug' => 'pembersih-piring',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1259,7 +1259,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'BOWL CLEANER',
                 'barang_slug' => 'bowl-cleaner',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1273,7 +1273,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'HAND SOAP',
                 'barang_slug' => 'hand-soap',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1287,7 +1287,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'TISSUE',
                 'barang_slug' => 'tissue',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1301,7 +1301,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'TISSUE HAND TOWEL 69919301',
                 'barang_slug' => 'tissue-hand-towel-69919301',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1315,7 +1315,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'TISSUE KOTAK 69911030',
                 'barang_slug' => 'tissue-kotak-69911030',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1329,7 +1329,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'TISSUE NON BRAND',
                 'barang_slug' => 'tissue-non-brand',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1343,7 +1343,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'TISSUE ROLL JUMBO ECO',
                 'barang_slug' => 'tissue-roll-jumbo-eco',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1357,7 +1357,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'TISSUE ROLL KECIL EVO 69911125',
                 'barang_slug' => 'tissue-roll-kecil-evo-69911125',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1371,7 +1371,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'DETERGEN',
                 'barang_slug' => 'detergen',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1385,7 +1385,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PEMBERSIH LANTAI STAR POWDER',
                 'barang_slug' => 'pembersih-lantai-star-powder',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1399,7 +1399,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PEMBERSIH LANTAI',
                 'barang_slug' => 'pembersih-lantai-vim',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1413,7 +1413,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'MARBLE POWDER',
                 'barang_slug' => 'marble-powder',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1427,7 +1427,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KAMPER BOLA',
                 'barang_slug' => 'kamper-bola',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1441,7 +1441,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KAMPER GANTUNG',
                 'barang_slug' => 'kamper-gantung',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1455,7 +1455,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PENGHARUM RUANGAN 320 GRAM',
                 'barang_slug' => 'pengharum-ruangan-320-gram',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1469,7 +1469,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'GRANIT POWDER',
                 'barang_slug' => 'granit-powder',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1483,7 +1483,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'RACUN CAIR SERANGGA',
                 'barang_slug' => 'racun-cair-serangga',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1497,7 +1497,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'REFIL KARET STICK KACA',
                 'barang_slug' => 'refil-karet-stick-kaca',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1512,7 +1512,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'AC SPLIT 1KVA',
                 'barang_slug' => 'ac-split-1kva',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1526,7 +1526,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'AIR ACCU (REFILL)',
                 'barang_slug' => 'air-accu-refill',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1540,7 +1540,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'BALLAST 10 WATT',
                 'barang_slug' => 'ballast-10-watt-philips',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1554,7 +1554,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'BALLAST 18 WATT',
                 'barang_slug' => 'ballast-18-watt-philips',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1568,7 +1568,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'BALLAST 20 WATT',
                 'barang_slug' => 'ballast-20-watt-philips',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1582,7 +1582,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'BALLAST 36 WATT',
                 'barang_slug' => 'ballast-36-watt-philips',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1596,7 +1596,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'BELL ALARM',
                 'barang_slug' => 'bell-alarm',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1610,7 +1610,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'FITTING LAMPU HALOGEN 19',
                 'barang_slug' => 'fitting-lampu-halogen-19',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1624,7 +1624,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'FITTING LAMPU JANTUNG',
                 'barang_slug' => 'fitting-lampu-jantung',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1638,7 +1638,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'FITTING LAMPU PLS',
                 'barang_slug' => 'fitting-lampu-pls',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1652,7 +1652,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'FITTING LAMPU TL',
                 'barang_slug' => 'fitting-lampu-tl',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1666,7 +1666,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'FITTING LAMPU TL RING',
                 'barang_slug' => 'fitting-lampu-tl-ring',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1680,7 +1680,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'FITTING LAMPU PLC GANTUNG',
                 'barang_slug' => 'fitting-lampu-plc-gantung',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1694,7 +1694,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'FITTING LAMPU PLC KERAMIC',
                 'barang_slug' => 'fitting-lampu-plc-keramic',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1708,7 +1708,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'FITTING LAMPU PLCS 18 WATT',
                 'barang_slug' => 'fitting-lampu-plcs-18-watt',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1722,7 +1722,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'FITTING STARTER',
                 'barang_slug' => 'fitting-starter',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1736,7 +1736,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'FITTING LAMPU TL 120 WATT',
                 'barang_slug' => 'fitting-lampu-tl-120-watt',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1750,7 +1750,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'FUSE 10 AMPERE',
                 'barang_slug' => 'fuse-10-ampere',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1764,7 +1764,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'FUSE 16 AMPERE',
                 'barang_slug' => 'fuse-16-ampere',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1778,7 +1778,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'ISOLASI LISTRIK',
                 'barang_slug' => 'isolasi-listrik',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1792,7 +1792,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KABEL NYMHY 3X2,5MM',
                 'barang_slug' => 'kabel-nymhy-3x25mm',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1806,7 +1806,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KABEL NYM 3X2,5MM',
                 'barang_slug' => 'kabel-nym-3x25mm',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1820,7 +1820,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KABEL NYY 3X2,5MM',
                 'barang_slug' => 'kabel-nyy-3x25mm',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1834,7 +1834,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KABEL NYYHY 3X2,5MM',
                 'barang_slug' => 'kabel-nyyhy-3x25mm',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1848,7 +1848,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAMPU HALOGEN 50 WATT',
                 'barang_slug' => 'lampu-halogen-50-watt',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1862,7 +1862,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAMPU HALOGEN 50 WATT/BALLAST',
                 'barang_slug' => 'lampu-halogen-50-watt-ballast',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1876,7 +1876,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAMPU JANTUNG 25 WATT',
                 'barang_slug' => 'lampu-jantung-25-watt',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1890,7 +1890,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAMPU LED 12 WATT KUNING',
                 'barang_slug' => 'lampu-led-12-watt-kuning',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1904,7 +1904,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAMPU LED 12 WATT PUTIH',
                 'barang_slug' => 'lampu-led-12-watt-putih',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1918,7 +1918,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAMPU LED 19 WATT',
                 'barang_slug' => 'lampu-led-19-watt',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1932,7 +1932,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAMPU LED PAR 30',
                 'barang_slug' => 'lampu-led-par-30',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1946,7 +1946,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAMPU LED PAR 38 80 WATT',
                 'barang_slug' => 'lampu-led-par-38-80-watt',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1960,7 +1960,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAMPU PIJAR 40 WATT',
                 'barang_slug' => 'lampu-pijar-40-watt',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1974,7 +1974,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAMPU PLC 11 WATT PUTIH',
                 'barang_slug' => 'lampu-plc-11-watt-putih',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -1988,7 +1988,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAMPU PLC 14 WATT PUTIH',
                 'barang_slug' => 'lampu-plc-14-watt-putih',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2002,7 +2002,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAMPU PLC 18 WATT KUNING',
                 'barang_slug' => 'lampu-plc-18-watt-kuning',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2016,7 +2016,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAMPU PLC 18 WATT PUTIH',
                 'barang_slug' => 'lampu-plc-18-watt-putih',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2030,7 +2030,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAMPU PLCS 11 WATT',
                 'barang_slug' => 'lampu-plcs-11-watt',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2044,7 +2044,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAMPU PLCS 18 WATT KUNING',
                 'barang_slug' => 'lampu-plcs-18-watt-kuning',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2058,7 +2058,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAMPU PLCS 18 WATT PUTIH',
                 'barang_slug' => 'lampu-plcs-18-watt-putih',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2072,7 +2072,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAMPU PLS 9 WATT KUNING',
                 'barang_slug' => 'lampu-pls-9-watt-kuning',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2086,7 +2086,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAMPU PLS 9 WATT PUTIH',
                 'barang_slug' => 'lampu-pls-9-watt-putih',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2100,7 +2100,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAMPU T5 LED 13 WATT PUTIH',
                 'barang_slug' => 'lampu-t5-led-13-watt-putih',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2114,7 +2114,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAMPU T5 14 WATT PUTIH',
                 'barang_slug' => 'lampu-t5-14-watt-putih',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2128,7 +2128,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAMPU T5 21 ESSENSIAL PUTIH',
                 'barang_slug' => 'lampu-t5-21-essensial-putih',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2142,7 +2142,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAMPU T5 28 ESSENSIAL KUNING',
                 'barang_slug' => 'lampu-t5-28-essensial-kuning',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2156,7 +2156,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAMPU T5 28 ESSENSIAL PUTIH',
                 'barang_slug' => 'lampu-t5-28-essensial-putih',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2170,7 +2170,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAMPU T5 28 KUNING',
                 'barang_slug' => 'lampu-t5-28-kuning',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2184,7 +2184,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAMPU T5 28 PUTIH',
                 'barang_slug' => 'lampu-t5-28-putih',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2198,7 +2198,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAMPU T5 8 WATT KUNING',
                 'barang_slug' => 'lampu-t5-8-watt-kuning',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2212,7 +2212,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAMPU T5 8 WATT PUTIH',
                 'barang_slug' => 'lampu-t5-8-watt-putih',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2226,7 +2226,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAMPU TL 10 WATT KUNING',
                 'barang_slug' => 'lampu-tl-10-watt-kuning',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2240,7 +2240,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAMPU TL 10 WATT PUTIH',
                 'barang_slug' => 'lampu-tl-10-watt-putih',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2254,7 +2254,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAMPU TL 18 WATT 33, 54 KUNING',
                 'barang_slug' => 'lampu-tl-18-watt-33-54-kuning',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2268,7 +2268,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAMPU TL 18 WATT 33, 54 PUTIH',
                 'barang_slug' => 'lampu-tl-18-watt-33-54-putih',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2282,7 +2282,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAMPU TL 36 WATT 33, 54 PUTIH',
                 'barang_slug' => 'lampu-tl-36-watt-33-54-putih',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2296,7 +2296,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAMPU TL RING 22 WATT',
                 'barang_slug' => 'lampu-tl-ring-22-watt',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2310,7 +2310,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LAMPU TL RING 32 WATT',
                 'barang_slug' => 'lampu-tl-ring-32-watt',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2324,7 +2324,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'MCB 10 AMPERE 1 PHASE',
                 'barang_slug' => 'mcb-10-ampere-1-phase',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2338,7 +2338,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'MCB 10 AMPERE 3 PHASE',
                 'barang_slug' => 'mcb-10-ampere-3-phase',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2352,7 +2352,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'MCB 16 AMPERE 1 PHASE',
                 'barang_slug' => 'mcb-16-ampere-1-phase',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2366,7 +2366,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'MCB 16 AMPERE 3 PHASE',
                 'barang_slug' => 'mcb-16-ampere-3-phase',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2380,7 +2380,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'MCB H3CR-A8',
                 'barang_slug' => 'mcb-h3cr-a8',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2394,7 +2394,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PELINDUNG KABEL DURADUS HITAM',
                 'barang_slug' => 'pelindung-kabel-duradus-hitam',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2408,7 +2408,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PELINDUNG KABEL DURADUS PUTIH',
                 'barang_slug' => 'pelindung-kabel-duradus-putih',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2422,7 +2422,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PEMBERSIH KARAT CONTAK CLEANER',
                 'barang_slug' => 'pembersih-karat-contak-cleaner',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2436,7 +2436,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAKLAR ENGKEL IN BOW',
                 'barang_slug' => 'saklar-engkel-in-bow',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2450,7 +2450,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAKLAR ENGKEL IN BOW',
                 'barang_slug' => 'saklar-engkel-in-bow-broco',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2464,7 +2464,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAKLAR PUSH BUTTON ON/OFF',
                 'barang_slug' => 'saklar-push-button-on-off',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2478,7 +2478,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAKLAR SERI OUT BOW',
                 'barang_slug' => 'saklar-seri-out-bow',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2492,7 +2492,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'STARTER S10',
                 'barang_slug' => 'starter-s10',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2506,7 +2506,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'STARTER S2',
                 'barang_slug' => 'starter-s2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2520,7 +2520,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'STEKER ARDE',
                 'barang_slug' => 'steker-arde',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2534,7 +2534,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'STOP KONTAK 2 LUBANG',
                 'barang_slug' => 'stop-kontak-2-lubang',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2548,7 +2548,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'STOP KONTAK 3 LUBANG',
                 'barang_slug' => 'stop-kontak-3-lubang',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2562,7 +2562,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'STOP KONTAK 4 LUBANG',
                 'barang_slug' => 'stop-kontak-4-lubang',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2576,7 +2576,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'STOP KONTAK IN BOW 1 LUBANG',
                 'barang_slug' => 'stop-kontak-in-bow-1-lubang',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2590,7 +2590,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'STOP KONTAK IN BOW 2 LUBANG',
                 'barang_slug' => 'stop-kontak-in-bow-2-lubang',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2604,7 +2604,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'STOP KONTAK 1 LUBANG OUT BOW',
                 'barang_slug' => 'stop-kontak-1-lubang-out-bow',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2618,7 +2618,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'STOP KONTAK SERI OUT BOW',
                 'barang_slug' => 'stop-kontak-seri-out-bow',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2632,7 +2632,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'T DUS 3 LOBANG',
                 'barang_slug' => 't-dus-3-lobang',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2646,7 +2646,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'T DUS 4 LOBANG',
                 'barang_slug' => 't-dus-4-lobang',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2660,7 +2660,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'T. KOMBINASI',
                 'barang_slug' => 't-kombinasi',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2674,7 +2674,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'TRAVO LAMPU HALOGEN / BALLAST',
                 'barang_slug' => 'travo-lampu-halogen-ballast',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2689,7 +2689,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KRAN LEHER ANGSA PANTRY',
                 'barang_slug' => 'kran-leher-angsa-pantry',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2703,7 +2703,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KRAN GATE VALVE 1/2" KUNINGAN',
                 'barang_slug' => 'kran-gate-valve-1-2-kuningan',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2717,7 +2717,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KRAN GATE VALVE 3/4"',
                 'barang_slug' => 'kran-gate-valve-3-4',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2731,7 +2731,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KRAN GATE VALVE 1 1/2"',
                 'barang_slug' => 'kran-gate-valve-1-1-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2745,7 +2745,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KRAN GATE VALVE 1"',
                 'barang_slug' => 'kran-gate-valve-1',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2759,7 +2759,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KRAN GATE VALVE 2"',
                 'barang_slug' => 'kran-gate-valve-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2773,7 +2773,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KRAN GATE VALVE PVC 3/4"',
                 'barang_slug' => 'kran-gate-valve-pvc-3-4',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2787,7 +2787,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KRAN LEHER ANGSA',
                 'barang_slug' => 'kran-leher-angsa',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2801,7 +2801,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KRAN TAMAN 821',
                 'barang_slug' => 'kran-taman-821',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2815,7 +2815,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KRAN STOP KRAN',
                 'barang_slug' => 'kran-stop-kran',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2829,7 +2829,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KRAN TEKAN',
                 'barang_slug' => 'kran-tekan',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2843,7 +2843,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KRAN TEMBOK',
                 'barang_slug' => 'kran-tembok',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2857,7 +2857,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KRAN TEMBOK',
                 'barang_slug' => 'kran-tembok-wasser',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2871,7 +2871,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KRAN UNGKIT',
                 'barang_slug' => 'kran-ungkit',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2885,7 +2885,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PEMBERSIH LUMUT-SODA API',
                 'barang_slug' => 'pembersih-lumut-soda-api',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2899,7 +2899,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PENJEPIT PIPA-KLEM 1 1/2" X 2"',
                 'barang_slug' => 'penjepit-pipa-klem-1-1-2-x-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2913,7 +2913,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PENJEPIT PIPA-KLEM 2"',
                 'barang_slug' => 'penjepit-pipa-klem-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2927,7 +2927,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PENJEPIT PIPA-KLEM SADEL 2 1/2 X 1/2"',
                 'barang_slug' => 'penjepit-pipa-klem-sadel-2-1-2-x-1-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2941,7 +2941,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PENJEPIT PIPA-KLEM SADEL 2 X 1/2"',
                 'barang_slug' => 'penjepit-pipa-klem-sadel-2-x-1-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2955,7 +2955,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PENJEPIT PIPA-KLEM SADEL 3 X 1/2"',
                 'barang_slug' => 'penjepit-pipa-klem-sadel-3-x-1-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2969,7 +2969,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PENUTUP PIPA-DOP PVC 3"',
                 'barang_slug' => 'penutup-pipa-dop-pvc-3',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2983,7 +2983,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PENUTUP PIPA-DOP BESI 1"',
                 'barang_slug' => 'penutup-pipa-dop-besi-1',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -2997,7 +2997,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PENUTUP PIPA-DOP BESI 1/2"',
                 'barang_slug' => 'penutup-pipa-dop-besi-1-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3011,7 +3011,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PENUTUP PIPA-DOP BESI 3/4"',
                 'barang_slug' => 'penutup-pipa-dop-besi-3-4',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3025,7 +3025,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PENUTUP PIPA-DOP PVC 1 1/2"',
                 'barang_slug' => 'penutup-pipa-dop-pvc-1-1-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3039,7 +3039,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PENUTUP PIPA-DOP PVC 1 1/4"',
                 'barang_slug' => 'penutup-pipa-dop-pvc-1-1-4',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3053,7 +3053,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PENUTUP PIPA-DOP PVC 1"',
                 'barang_slug' => 'penutup-pipa-dop-pvc-1',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3067,7 +3067,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PENUTUP PIPA-DOP PVC 1/2"',
                 'barang_slug' => 'penutup-pipa-dop-pvc-1-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3081,7 +3081,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PENUTUP PIPA-DOP PVC 2"',
                 'barang_slug' => 'penutup-pipa-dop-pvc-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3095,7 +3095,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PEREKAT LEM PIPA PVC',
                 'barang_slug' => 'perekat-lem-pipa-pvc',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3109,7 +3109,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PEREKAT SEAL TAPE KECIL',
                 'barang_slug' => 'perekat-seal-tape-kecil',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3123,7 +3123,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PIPA PVC 1 1/2"',
                 'barang_slug' => 'pipa-pvc-1-1-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3137,7 +3137,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PIPA PVC 1 1/4"',
                 'barang_slug' => 'pipa-pvc-1-1-4',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3151,7 +3151,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PIPA PVC 1"',
                 'barang_slug' => 'pipa-pvc-1',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3165,7 +3165,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PIPA PVC 1/2"',
                 'barang_slug' => 'pipa-pvc-1-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3179,7 +3179,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PIPA PVC 2 1/2"',
                 'barang_slug' => 'pipa-pvc-2-1-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3193,7 +3193,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PIPA PVC 2"',
                 'barang_slug' => 'pipa-pvc-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3207,7 +3207,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PIPA PVC 3"',
                 'barang_slug' => 'pipa-pvc-3',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3221,7 +3221,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PIPA PVC 3/4"',
                 'barang_slug' => 'pipa-pvc-3-4',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3235,7 +3235,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-DOUBLE NEPEL KUNINGAN 1/2"',
                 'barang_slug' => 'sambungan-pipa-double-nepel-kuningan-1-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3249,7 +3249,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-DOUBLE NEPEL KUNINGAN 3/4"',
                 'barang_slug' => 'sambungan-pipa-double-nepel-kuningan-3-4',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3263,7 +3263,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-KNEE BESI 1"',
                 'barang_slug' => 'sambungan-pipa-knee-besi-1',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3277,7 +3277,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-KNEE BESI 1/2"',
                 'barang_slug' => 'sambungan-pipa-knee-besi-1-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3291,7 +3291,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-KNEE BESI 3/4"',
                 'barang_slug' => 'sambungan-pipa-knee-besi-3-4',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3305,7 +3305,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-KNEE PVC 1 1/2"',
                 'barang_slug' => 'sambungan-pipa-knee-pvc-1-1-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3319,7 +3319,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-KNEE PVC 1 1/4"',
                 'barang_slug' => 'sambungan-pipa-knee-pvc-1-1-4',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3333,7 +3333,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-KNEE PVC 1"',
                 'barang_slug' => 'sambungan-pipa-knee-pvc-1',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3347,7 +3347,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-KNEE PVC 1/2"',
                 'barang_slug' => 'sambungan-pipa-knee-pvc-1-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3361,7 +3361,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-KNEE PVC 2"',
                 'barang_slug' => 'sambungan-pipa-knee-pvc-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3375,7 +3375,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-KNEE PVC 3"',
                 'barang_slug' => 'sambungan-pipa-knee-pvc-3',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3389,7 +3389,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-KNEE PVC 3/4"',
                 'barang_slug' => 'sambungan-pipa-knee-pvc-3-4',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3403,7 +3403,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-KNEE PVC DRAT DALAM 1"',
                 'barang_slug' => 'sambungan-pipa-knee-pvc-drat-dalam-1',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3417,7 +3417,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-KNEE PVC DRAT DALAM 3/4"',
                 'barang_slug' => 'sambungan-pipa-knee-pvc-drat-dalam-3-4',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3431,7 +3431,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-PLUG BESI 1"',
                 'barang_slug' => 'sambungan-pipa-plug-besi-1',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3445,7 +3445,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-PLUG BESI 3/4"',
                 'barang_slug' => 'sambungan-pipa-plug-besi-3-4',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3459,7 +3459,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-PLUG BESI 1/2"',
                 'barang_slug' => 'sambungan-pipa-plug-besi-1-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3473,7 +3473,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-PLUG PVC 1"',
                 'barang_slug' => 'sambungan-pipa-plug-pvc-1',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3487,7 +3487,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-PLUG PVC 1/2"',
                 'barang_slug' => 'sambungan-pipa-plug-pvc-1-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3501,7 +3501,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-PLUG PVC 3/4"',
                 'barang_slug' => 'sambungan-pipa-plug-pvc-3-4',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3515,7 +3515,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-SOCK BESI 1"',
                 'barang_slug' => 'sambungan-pipa-sock-besi-1',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3529,7 +3529,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-SOCK BESI 1/2"',
                 'barang_slug' => 'sambungan-pipa-sock-besi-1-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3543,7 +3543,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-SOCK BESI 3/4"',
                 'barang_slug' => 'sambungan-pipa-sock-besi-3-4',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3557,7 +3557,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-SOCK PVC 1 1/2"',
                 'barang_slug' => 'sambungan-pipa-sock-pvc-1-1-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3571,7 +3571,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-SOCK PVC 1 1/4"',
                 'barang_slug' => 'sambungan-pipa-sock-pvc-1-1-4',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3585,7 +3585,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-SOCK PVC 1"',
                 'barang_slug' => 'sambungan-pipa-sock-pvc-1',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3599,7 +3599,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-SOCK PVC 1/2"',
                 'barang_slug' => 'sambungan-pipa-sock-pvc-1-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3613,7 +3613,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-SOCK PVC 2"',
                 'barang_slug' => 'sambungan-pipa-sock-pvc-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3627,7 +3627,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-SOCK PVC 3"',
                 'barang_slug' => 'sambungan-pipa-sock-pvc-3',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3641,7 +3641,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-SOCK PVC 3/4"',
                 'barang_slug' => 'sambungan-pipa-sock-pvc-3-4',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3655,7 +3655,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-SOCK PVC DRAT DALAM 1"',
                 'barang_slug' => 'sambungan-pipa-sock-pvc-drat-dalam-1',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3669,7 +3669,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-SOCK PVC DRAT DALAM 1/2"',
                 'barang_slug' => 'sambungan-pipa-sock-pvc-drat-dalam-1-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3683,7 +3683,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-SOCK PVC DRAT DALAM 3/4"',
                 'barang_slug' => 'sambungan-pipa-sock-pvc-drat-dalam-3-4',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3697,7 +3697,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-SOCK PVC DRAT LUAR 1"',
                 'barang_slug' => 'sambungan-pipa-sock-pvc-drat-luar-1',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3711,7 +3711,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-SOCK PVC DRAT LUAR 1/2"',
                 'barang_slug' => 'sambungan-pipa-sock-pvc-drat-luar-1-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3725,7 +3725,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-SOCK PVC DRAT LUAR 3/4"',
                 'barang_slug' => 'sambungan-pipa-sock-pvc-drat-luar-3-4',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3739,7 +3739,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-T BESI DRAT LUAR DALAM 1/2"',
                 'barang_slug' => 'sambungan-pipa-t-besi-drat-luar-dalam-1-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3753,7 +3753,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-T PVC 1"',
                 'barang_slug' => 'sambungan-pipa-t-pvc-1',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3767,7 +3767,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-T PVC 1/2"',
                 'barang_slug' => 'sambungan-pipa-t-pvc-1-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3781,7 +3781,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-T PVC 2"',
                 'barang_slug' => 'sambungan-pipa-t-pvc-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3795,7 +3795,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-T PVC 3 KE 2',
                 'barang_slug' => 'sambungan-pipa-t-pvc-3-ke-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3809,7 +3809,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-T PVC DRAT DALAM 1/2"',
                 'barang_slug' => 'sambungan-pipa-t-pvc-drat-dalam-1-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3823,7 +3823,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-VLOK SOCK BESI 1 KE 1 1/2"',
                 'barang_slug' => 'sambungan-pipa-vlok-sock-besi-1-ke-1-1-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3837,7 +3837,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-VLOK SOCK BESI 1"',
                 'barang_slug' => 'sambungan-pipa-vlok-sock-besi-1',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3851,7 +3851,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-VLOK SOCK BESI 3/4 KE 1"',
                 'barang_slug' => 'sambungan-pipa-vlok-sock-besi-3-4-ke-1',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3865,7 +3865,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-VLOK SOCK BESI 3/4 KE 1/2"',
                 'barang_slug' => 'sambungan-pipa-vlok-sock-besi-3-4-ke-1-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3879,7 +3879,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-VLOK SOCK PVC 1 1/2" X 1 1/4"',
                 'barang_slug' => 'sambungan-pipa-vlok-sock-pvc-1-1-2-x-1-1-4',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3893,7 +3893,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-VLOK SOCK PVC 1" X 1/2"',
                 'barang_slug' => 'sambungan-pipa-vlok-sock-pvc-1-x-1-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3907,7 +3907,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-VLOK SOCK PVC 1" X 3/4"',
                 'barang_slug' => 'sambungan-pipa-vlok-sock-pvc-1-x-3-4',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3921,7 +3921,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA-VLOK SOCK PVC 2" X 1 1/2"',
                 'barang_slug' => 'sambungan-pipa-vlok-sock-pvc-2-x-1-1-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3935,7 +3935,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SAMBUNGAN PIPA VLOK TRAP 1/2',
                 'barang_slug' => 'sambungan-pipa-vlok-trap-1-2',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3949,7 +3949,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SHOWER WC',
                 'barang_slug' => 'shower-wc',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3963,7 +3963,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SLANG FLEXIBLE 50 CM',
                 'barang_slug' => 'slang-flexible-50-cm',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3977,7 +3977,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SLANG-SHIFON PANTRY',
                 'barang_slug' => 'slang-shifon-pantry',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -3991,7 +3991,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SOAP DISPENSER PLASTIK',
                 'barang_slug' => 'soap-dispenser-plastik',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4005,7 +4005,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'TUTUP CLOSET PUTIH',
                 'barang_slug' => 'tutup-closet-putih',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4019,7 +4019,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'TUTUP FLOOR DRAIN',
                 'barang_slug' => 'tutup-floor-drain',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4033,7 +4033,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'URINE PROTEKTOR',
                 'barang_slug' => 'urine-protektor',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4047,7 +4047,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LEM PIPA PVC',
                 'barang_slug' => 'lem-pipa-pvc',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4062,7 +4062,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'ALAT UKUR-METERAN 5 METER',
                 'barang_slug' => 'alat-ukur-meteran-5-meter',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4076,7 +4076,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'DEMPUL GYPSUM',
                 'barang_slug' => 'dempul-gypsum',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4090,7 +4090,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'GANTUNGAN BAJU',
                 'barang_slug' => 'gantungan-baju',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4104,7 +4104,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KUNCI AHU',
                 'barang_slug' => 'kunci-ahu',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4118,7 +4118,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KUNCI DOOR CLOSER DORMATS 65',
                 'barang_slug' => 'kunci-door-closer-dormats-65',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4132,7 +4132,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KUNCI DOOR CLOSER TS 68',
                 'barang_slug' => 'kunci-door-closer-ts-68',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4146,7 +4146,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KUNCI DOOR CLOSER TS 73V',
                 'barang_slug' => 'kunci-door-closer-ts-73v',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4160,7 +4160,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KUNCI FLOOR HINGS BTS 84',
                 'barang_slug' => 'kunci-floor-hings-bts-84',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4174,7 +4174,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KUNCI GRENDEL PINTU / SELOT',
                 'barang_slug' => 'kunci-grendel-pintu-selot',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4188,7 +4188,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KUNCI LACI',
                 'barang_slug' => 'kunci-laci',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4202,7 +4202,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KUNCI JENDELA / RAMBUNCIS',
                 'barang_slug' => 'kunci-jendela-rambuncis',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4216,7 +4216,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KUNCI PANEL',
                 'barang_slug' => 'kunci-panel',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4230,7 +4230,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KUNCI SERI SAMPING',
                 'barang_slug' => 'kunci-seri-samping',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4244,7 +4244,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KUNCI SERI DEPAN',
                 'barang_slug' => 'kunci-seri-depan',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4258,7 +4258,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KUNCI TANGGA DARURAT',
                 'barang_slug' => 'kunci-tangga-darurat',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4272,7 +4272,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KUNCI TOILET DEKSON',
                 'barang_slug' => 'kunci-toilet-dekson',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4286,7 +4286,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KUNCI TOILET SOLID',
                 'barang_slug' => 'kunci-toilet-solid',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4300,7 +4300,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KUNCI SILINDER',
                 'barang_slug' => 'kunci-silinder',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4314,7 +4314,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LEM PLASTIK',
                 'barang_slug' => 'lem-plastik',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4328,7 +4328,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LEM KAYU',
                 'barang_slug' => 'lem-kayu',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4342,7 +4342,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LEM-SEALANT HITAM',
                 'barang_slug' => 'lem-sealant-hitam-vitech',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4356,7 +4356,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LEM-SEALANT BENING',
                 'barang_slug' => 'lem-sealant-bening-vitech',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4370,7 +4370,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'LEM-SEALANT PUTIH',
                 'barang_slug' => 'lem-sealant-putih-vitech',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4384,7 +4384,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'PERALATAN SIPIL-KAPE ALUMINIUM',
                 'barang_slug' => 'peralatan-sipil-kape-aluminium-frt',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4398,7 +4398,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'SEMEN ABU ABU',
                 'barang_slug' => 'semen-abu-abu-tiga-roda',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4412,7 +4412,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'Z MACAM MACAM',
                 'barang_slug' => 'z-macam-macam',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4427,7 +4427,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KABEL CCTV RG59',
                 'barang_slug' => 'kabel-cctv-rg59-belden',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4441,7 +4441,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'KABEL TELEPON 2 PAIR 10X2X0,6',
                 'barang_slug' => 'kabel-telepon-2-pair-10x2x0-6',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4455,7 +4455,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'ROSSET TELEPON',
                 'barang_slug' => 'rosset-telepon',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4469,7 +4469,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'TELEPON ALCATEL IZZI',
                 'barang_slug' => 'telepon-alcatel',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -4483,7 +4483,7 @@ class BarangSeeder extends Seeder
                 'barang_nama' => 'TELEPON PANASONIC ANALOG',
                 'barang_slug' => 'telepon-panasonic',
                 'barang_harga' => '0',
-                'barang_stok' => '0',
+                
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
