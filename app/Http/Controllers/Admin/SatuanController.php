@@ -101,4 +101,13 @@ class SatuanController extends Controller
 
         return response()->json(['success' => 'Berhasil']);
     }
+
+    public function viewList()
+    {
+        $data = [
+            "title" => "Daftar Satuan Barang",
+            "satuan" => SatuanModel::orderBy('satuan_nama', 'ASC')->get()
+        ];
+        return view('Admin.Satuan.view', $data);
+    }
 }

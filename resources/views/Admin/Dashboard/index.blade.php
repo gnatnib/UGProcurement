@@ -15,7 +15,7 @@
 
     <!-- ROW 1 OPEN -->
     <div class="row">
-        <div class="col-sm-6 col-md-6 col-lg-6 col-xl-3">
+        <a href="{{ route('jenisbarang.view') }}" class="col-sm-6 col-md-6 col-lg-6 col-xl-3">
             <div class="card bg-primary img-card box-primary-shadow">
                 <div class="card-body">
                     <div class="d-flex">
@@ -27,9 +27,9 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </a>
         <!-- COL END -->
-        <div class="col-sm-6 col-md-6 col-lg-6 col-xl-3">
+        <a href="{{ route('satuan.view') }}" class="col-sm-6 col-md-6 col-lg-6 col-xl-3">
             <div class="card bg-azure img-card box-secondary-shadow">
                 <div class="card-body">
                     <div class="d-flex">
@@ -41,9 +41,9 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </a>
         <!-- COL END -->
-        <div class="col-sm-6 col-md-6 col-lg-6 col-xl-3">
+        <a href="{{ route('merk.view') }}" class="col-sm-6 col-md-6 col-lg-6 col-xl-3">
             <div class="card bg-cyan img-card box-success-shadow">
                 <div class="card-body">
                     <div class="d-flex">
@@ -55,7 +55,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </a>
         <!-- COL END -->
         <a href="{{ route('barang.view') }}" class="col-sm-6 col-md-6 col-lg-6 col-xl-3">
             <div class="card bg-info img-card box-info-shadow">
@@ -308,39 +308,39 @@
                         .catch(error => console.error('Error:', error));
                 });
                 document.addEventListener('DOMContentLoaded', function() {
-                fetch('/admin/top-five-barang')
-                    .then(response => response.json())
-                    .then(result => {
-                        if (result.success && result.data.length > 0) {
-                            const list = document.getElementById('topBarangList');
-                            list.innerHTML = ''; // Clear existing content
+                    fetch('/admin/top-five-barang')
+                        .then(response => response.json())
+                        .then(result => {
+                            if (result.success && result.data.length > 0) {
+                                const list = document.getElementById('topBarangList');
+                                list.innerHTML = ''; // Clear existing content
 
-                            // Add header dengan keterangan bulan
-                            const header = document.createElement('div');
-                            header.className = 'top-barang-header';
-                            header.innerHTML = `
+                                // Add header dengan keterangan bulan
+                                const header = document.createElement('div');
+                                header.className = 'top-barang-header';
+                                header.innerHTML = `
                                 <h3>Top 5 Barang - ${new Date().toLocaleString('id-ID', { month: 'long', year: 'numeric' })}</h3>
                                 <p>Barang yang paling sering direquest</p>
                             `;
-                            list.appendChild(header);
+                                list.appendChild(header);
 
-                            // Container untuk items
-                            const itemsContainer = document.createElement('div');
-                            itemsContainer.className = 'top-barang-container';
+                                // Container untuk items
+                                const itemsContainer = document.createElement('div');
+                                itemsContainer.className = 'top-barang-container';
 
-                            result.data.forEach((item, index) => {
-                                const listItem = document.createElement('div');
-                                listItem.className = 'top-barang-item';
+                                result.data.forEach((item, index) => {
+                                    const listItem = document.createElement('div');
+                                    listItem.className = 'top-barang-item';
 
-                                // Formatting harga to IDR
-                                const formattedHarga = new Intl.NumberFormat('id-ID', {
-                                    style: 'currency',
-                                    currency: 'IDR',
-                                    minimumFractionDigits: 0,
-                                    maximumFractionDigits: 0
-                                }).format(item.total_harga);
+                                    // Formatting harga to IDR
+                                    const formattedHarga = new Intl.NumberFormat('id-ID', {
+                                        style: 'currency',
+                                        currency: 'IDR',
+                                        minimumFractionDigits: 0,
+                                        maximumFractionDigits: 0
+                                    }).format(item.total_harga);
 
-                                listItem.innerHTML = `
+                                    listItem.innerHTML = `
                                     <div class="item-content">
                                         <div class="rank-badge rank-${index + 1}">#${index + 1}</div>
                                         <div class="item-details">
@@ -359,23 +359,50 @@
                                         </div>
                                     </div>
                                 `;
-                                itemsContainer.appendChild(listItem);
-                            });
+                                    itemsContainer.appendChild(listItem);
+                                });
 
-                            list.appendChild(itemsContainer);
-                        }
-                    })
-                    .catch(error => console.error('Error fetching top barang:', error));
-            });
+                                list.appendChild(itemsContainer);
+                            }
+                        })
+                        .catch(error => console.error('Error fetching top barang:', error));
+                });
 
-            function getPercentage(current, max) {
-                return (current / max * 100).toFixed(1);
-            }
+                function getPercentage(current, max) {
+                    return (current / max * 100).toFixed(1);
+                }
             </script>
         @endpush
     @endif
 
     <style>
+        a.col-sm-6.col-md-6.col-lg-6.col-xl-3 .card {
+            border: 2px solid transparent;
+            position: relative;
+        }
+
+        a.col-sm-6.col-md-6.col-lg-6.col-xl-3 .card:hover {
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+
+        a.col-sm-6.col-md-6.col-lg-6.col-xl-3 .card::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 20px;
+            height: 20px;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>');
+            background-size: contain;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+
+        a.col-sm-6.col-md-6.col-lg-6.col-xl-3 .card:hover::after {
+            opacity: 1;
+            right: 8px;
+        }
+
         .card {
             transition: all 0.3s ease;
         }
@@ -439,18 +466,21 @@
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-            margin: 10px;  /* Dikurangi dari 20px */
+            margin: 10px;
+            /* Dikurangi dari 20px */
         }
 
         .top-barang-header {
             background: linear-gradient(135deg, #3498db, #2980b9);
             color: white;
-            padding: 12px;  /* Dikurangi dari 20px */
+            padding: 12px;
+            /* Dikurangi dari 20px */
             text-align: center;
         }
 
         .top-barang-header h3 {
-            font-size: 1.2rem;  /* Dikurangi dari 1.5rem */
+            font-size: 1.2rem;
+            /* Dikurangi dari 1.5rem */
             margin: 0 0 3px 0;
             font-weight: bold;
         }
@@ -466,7 +496,8 @@
         }
 
         .top-barang-item {
-            padding: 10px;  /* Dikurangi dari 15px */
+            padding: 10px;
+            /* Dikurangi dari 15px */
             border-bottom: 1px solid #eee;
             transition: all 0.3s ease;
         }
@@ -483,9 +514,9 @@
         }
 
         .rank-badge {
-            width: 28px;   
-            height: 28px;  
-            font-size: 0.8rem;  
+            width: 28px;
+            height: 28px;
+            font-size: 0.8rem;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -544,7 +575,7 @@
         .progress-bar-container {
             width: 100%;
             height: 4px;
-            margin-top: 5px; 
+            margin-top: 5px;
             background-color: #eee;
             border-radius: 3px;
             overflow: hidden;
@@ -594,80 +625,82 @@
         }
 
         .item-info-left {
-    flex-grow: 1;
-}
+            flex-grow: 1;
+        }
 
-.item-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: start;
-    margin-bottom: 10px;
-    flex-direction: column;
-}
+        .item-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+            flex-direction: column;
+        }
 
-.item-info h4 {
-    margin: 0;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 5px;
-}
+        .item-info h4 {
+            margin: 0;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
 
-.item-info p {
-    margin: 0;
-    color: #666;
-    font-size: 0.9rem;
-    margin-bottom: 5px;
-}
+        .item-info p {
+            margin: 0;
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
 
-.price {
-    font-weight: bold;
-    color: #2ecc71;
-    font-size: 1.1rem;
-}
+        .price {
+            font-weight: bold;
+            color: #2ecc71;
+            font-size: 1.1rem;
+        }
 
-/* Tambahkan ini di bagian paling bawah file CSS */
-@media (max-width: 768px) {
-    .top-barang-header h3 {
-        font-size: 1rem;
-    }
-    
-    .top-barang-header p {
-        font-size: 0.7rem;
-    }
-    
-    .item-info h4 {
-        font-size: 0.8rem;  /* Dikurangi dari 0.9rem */
-        margin-bottom: 3px;  /* Dikurangi dari 5px */
-    }
-    
-    .item-info p {
-        font-size: 0.7rem;
-    }
-    
-    .price {
-        font-size: 0.9rem;
-    }
-    
-    .rank-badge {
-        width: 20px;
-        height: 20px;
-        font-size: 0.7rem;
-    }
-}
+        /* Tambahkan ini di bagian paling bawah file CSS */
+        @media (max-width: 768px) {
+            .top-barang-header h3 {
+                font-size: 1rem;
+            }
 
-@media (max-width: 576px) {
-    #topBarangList {
-        margin: 5px;
-    }
-    
-    .top-barang-item {
-        padding: 8px;
-    }
-    
-    .item-content {
-        gap: 10px;
-    }
-}
+            .top-barang-header p {
+                font-size: 0.7rem;
+            }
+
+            .item-info h4 {
+                font-size: 0.8rem;
+                /* Dikurangi dari 0.9rem */
+                margin-bottom: 3px;
+                /* Dikurangi dari 5px */
+            }
+
+            .item-info p {
+                font-size: 0.7rem;
+            }
+
+            .price {
+                font-size: 0.9rem;
+            }
+
+            .rank-badge {
+                width: 20px;
+                height: 20px;
+                font-size: 0.7rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            #topBarangList {
+                margin: 5px;
+            }
+
+            .top-barang-item {
+                padding: 8px;
+            }
+
+            .item-content {
+                gap: 10px;
+            }
+        }
     </style>
 
     <!-- MODAL BARANG LIST -->
