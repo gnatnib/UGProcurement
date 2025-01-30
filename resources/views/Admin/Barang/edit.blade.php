@@ -48,13 +48,6 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="stokU" class="form-label">Stok Awal <span
-                                    class="text-danger">*</span></label>
-                            <input type="text"
-                                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');"
-                                name="stokU" class="form-control">
-                        </div>
-                        <div class="form-group">
                             <label for="hargaU" class="form-label">Harga <span class="text-danger">*</span></label>
                             <input type="text"
                                 oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');"
@@ -94,7 +87,6 @@
             const kode = $("input[name='kodeU']").val();
             const nama = $("input[name='namaU']").val();
             const harga = $("input[name='hargaU']").val();
-            const stok = $("input[name='stokU']").val();
             setLoadingU(true);
             resetValidU();
             if (kode == "") {
@@ -112,11 +104,6 @@
                 $("input[name='hargaU']").addClass('is-invalid');
                 setLoadingU(false);
                 return false;
-            } else if (stok == "") {
-                validasi('Stok Awal wajib di isi!', 'warning');
-                $("input[name='stok']").addClass('is-invalid');
-                setLoadingU(false);
-                return false;
             } else {
                 submitFormU();
             }
@@ -130,7 +117,6 @@
             const satuan = $("select[name='satuanU']").val();
             const merk = $("select[name='merkU']").val();
             const harga = $("input[name='hargaU']").val();
-            const stok = $("input[name='stokU']").val();
             const foto = $('#GetFileU')[0].files;
 
             var fd = new FormData();
@@ -143,7 +129,6 @@
             fd.append('satuan', satuan);
             fd.append('merk', merk);
             fd.append('harga', harga);
-            fd.append('stok', stok);
             $.ajax({
                 type: 'POST',
                 url: "{{ url('admin/barang/proses_ubah') }}/" + id,
@@ -170,7 +155,6 @@
             $("select[name='satuanU']").removeClass('is-invalid');
             $("select[name='merkU']").removeClass('is-invalid');
             $("input[name='hargaU']").removeClass('is-invalid');
-            $("input[name='stokU']").removeClass('is-invalid');
         };
 
         function resetU() {
@@ -182,7 +166,6 @@
             $("select[name='satuanU']").val('');
             $("select[name='merkU']").val('');
             $("input[name='hargaU']").val('');
-            $("input[name='stokU']").val('');
             $("#outputImgU").attr("src", "{{ url('/assets/default/barang/image.png') }}");
             $("#GetFileU").val('');
             setLoadingU(false);

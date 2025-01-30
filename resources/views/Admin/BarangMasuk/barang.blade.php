@@ -18,7 +18,6 @@
                             <th class="border-bottom-0">Jenis</th>
                             <th class="border-bottom-0">Satuan</th>
                             <th class="border-bottom-0">Merk</th>
-                            <th class="border-bottom-0">Stok</th>
                             <th class="border-bottom-0">Harga</th>
                             <th class="border-bottom-0" width="1%">Action</th>
                         </thead>
@@ -53,6 +52,22 @@
         $("#nmbarang").val(data.barang_nama.replace(/_/g, ' '));
         $("#satuan").val(data.satuan_nama.replace(/_/g, ' '));
         $("#jenis").val(data.jenisbarang_nama.replace(/_/g, ' '));
+        
+        // Tambahkan ajax call untuk mengambil data barang termasuk harga
+        $.ajax({
+            type: 'GET',
+            url: "/admin/barang/getbarang/" + data.barang_kode,
+            dataType: 'json',
+            success: function(response) {
+                if (response && response.length > 0) {
+                    $("input[name='harga']").val(response[0].barang_harga);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error fetching price:", error);
+            }
+        });
+        
         $('#modaldemo8').removeClass('d-none');
         $('#modalBarang').modal('hide');
     }
@@ -124,10 +139,6 @@
                 {
                     data: 'merk',
                     name: 'merk_nama'
-                },
-                {
-                    data: 'totalstok',
-                    name: 'barang_stok'
                 },
                 {
                     data: 'currency',
