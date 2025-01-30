@@ -56,7 +56,6 @@
             Route::get('/admin/dashboard', [DashboardController::class, 'index']);
             Route::get('/admin/division-bookings', [DashboardController::class, 'getDivisionBookings']);
             Route::get('/admin/top-five-barang', [DashboardController::class, 'getTopFiveBarang']);
-
         });
 
         Route::middleware(['checkRoleUser:/jenisbarang,submenu'])->group(function () {
@@ -97,6 +96,9 @@
             Route::post('/admin/barang/proses_tambah', [BarangController::class, 'proses_tambah'])->name('barang.store');
             Route::post('/admin/barang/proses_ubah/{barang}', [BarangController::class, 'proses_ubah']);
             Route::post('/admin/barang/proses_hapus/{barang}', [BarangController::class, 'proses_hapus']);
+
+            //liat lists barang untuk dashboard
+            Route::get('/admin/barang-view', [BarangController::class, 'viewList'])->name('barang.view');
         });
 
         Route::middleware(['checkRoleUser:/customer,menu'])->group(function () {
@@ -126,7 +128,6 @@
             Route::post('/admin/barang-keluar/proses_tambah/', [BarangkeluarController::class, 'proses_tambah'])->name('barang-keluar.store');
             Route::post('/admin/barang-keluar/proses_ubah/{barangkeluar}', [BarangkeluarController::class, 'proses_ubah']);
             Route::post('/admin/barang-keluar/proses_hapus/{barangkeluar}', [BarangkeluarController::class, 'proses_hapus']);
-            
         });
 
         Route::middleware(['checkRoleUser:/lap-barang-masuk,submenu'])->group(function () {
@@ -136,7 +137,6 @@
             Route::get('/admin/lapbarangmasuk/pdf/', [LapBarangMasukController::class, 'pdf'])->name('lap-bm.pdf');
             Route::get('/admin/lapbarangmasuk/csv/', [LapBarangMasukController::class, 'csv'])->name('lap-bm.csv');
             Route::get('/admin/lap-bm/getlap-bm', [LapBarangMasukController::class, 'show'])->name('lap-bm.getlap-bm');
-            
         });
 
         Route::middleware(['checkRoleUser:/lap-barang-keluar,submenu'])->group(function () {
