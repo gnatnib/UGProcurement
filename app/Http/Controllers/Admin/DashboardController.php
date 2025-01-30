@@ -89,22 +89,30 @@ class DashboardController extends Controller
         ]);
     }
     public function getTopFiveBarang()
-{
-    $topBarang = DB::table('tbl_barangmasuk')
-        ->select('tbl_barang.barang_nama', DB::raw('COUNT(tbl_barangmasuk.barang_kode) as total_jumlah'), DB::raw('SUM(tbl_barangmasuk.harga * tbl_barangmasuk.bm_jumlah) as total_harga'))
-        ->join('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')
-        ->where('tbl_barangmasuk.tracking_status', '=', 'diterima')
-        ->whereMonth('tbl_barangmasuk.created_at', date('m'))
-        ->whereYear('tbl_barangmasuk.created_at', date('Y'))
-        ->groupBy('tbl_barangmasuk.barang_kode', 'tbl_barang.barang_nama')
-        ->orderBy('total_jumlah', 'DESC')
-        ->limit(5)
-        ->get();
-
-    return response()->json([
-        'success' => true,
-        'data' => $topBarang
-    ]);
-}
+    {
+        // Ambil data barang masuk yang dikelompokkan berdasarkan barang
+        $topBarang = DB::table('tbl_barangmasuk')
+            ->select(
+                'tbl_barang.barang_nama',
+                'tbl_barangmasuk.barang_kode',
+                DB::raw('COUNT(DISTINCT tbl_barangmasuk.bm_kode) as total_request'), // Hitung berapa kali direquest
+                DB::raw('SUM(tbl_barangmasuk.bm_jumlah) as total_jumlah'), // Total jumlah item
+                DB::raw('SUM(tbl_barangmasuk.harga * tbl_barangmasuk.bm_jumlah) as total_harga') // Total harga
+            )
+            ->join('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')
+            ->join('tbl_request_barang', 'tbl_request_barang.request_id', '=', 'tbl_barangmasuk.request_id')
+            ->where('tbl_request_barang.status', '=', 'Diterima') // Filter hanya yang statusnya Diterima
+            ->whereMonth('tbl_barangmasuk.created_at', date('m'))
+            ->whereYear('tbl_barangmasuk.created_at', date('Y'))
+            ->groupBy('tbl_barangmasuk.barang_kode', 'tbl_barang.barang_nama')
+            ->orderBy('total_request', 'DESC') // Urutkan berdasarkan jumlah request
+            ->limit(5)
+            ->get();
+    
+        return response()->json([
+            'success' => true,
+            'data' => $topBarang
+        ]);
+    }
 
 }
