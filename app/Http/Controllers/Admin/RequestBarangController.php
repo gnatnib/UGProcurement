@@ -292,7 +292,15 @@ class RequestBarangController extends Controller
                     'r.departemen',
                     'r.status',
                     'r.created_at',
-                    DB::raw('(SELECT COUNT(1) FROM tbl_barangmasuk WHERE request_id = r.request_id) > 0 as has_barang_masuk')
+                    DB::raw('(SELECT COUNT(1) FROM tbl_barangmasuk WHERE request_id = r.request_id) > 0 as has_barang_masuk'),
+                    DB::raw('(
+                    SELECT COUNT(*) = 0 
+                    FROM tbl_barangmasuk 
+                    WHERE request_id = r.request_id 
+                    AND tracking_status != "Diterima" 
+                    AND tracking_status != "Ditolak"
+                ) as all_items_received')
+                    
                 ]);
 
             // Jika role_id = 5 (User), hanya tampilkan request miliknya
@@ -352,7 +360,11 @@ class RequestBarangController extends Controller
                         <i class="fe fe-plus"></i> Tambah Barang Masuk
                     </button>';
                     }
-
+                    if ($row->all_items_received && $row->status !== 'Diterima'&& $row->status == 'Dikirim') {
+                    $buttons .= '<button onclick="selesaiRequest(\'' . $row->request_id . '\')" class="btn btn-sm btn-primary me-2">
+                        <i class="fe fe-check-circle"></i> Selesai Request
+                    </button>';
+                    }
                     // Only show delete button if:
                     // 1. There are no barang masuk records
                     // 2. For role_id = 5, only show if status is 'draft'
@@ -371,13 +383,40 @@ class RequestBarangController extends Controller
                     }
 
                     // If no buttons, return a dash
-                    return $buttons ?: '-';
+                    return $buttons ?: ' ';
                 })
                 ->rawColumns(['status', 'action'])
                 ->make(true);
         }
     }
+        public function completeRequest($requestId)
+    {
+        try {
+            DB::beginTransaction();
 
+            // Update request status to 'diterima'
+            DB::table('tbl_request_barang')
+                ->where('request_id', $requestId)
+                ->update([
+                    'status' => 'Diterima',
+                    'updated_at' => now()
+                ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Request berhasil diselesaikan'
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
+    }
     public function proses_tambah(Request $request)
     {
         try {

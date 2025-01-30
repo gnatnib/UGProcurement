@@ -176,6 +176,7 @@
                 Route::get('/check-status', [RequestBarangController::class, 'checkRequestStatus'])->name('request-barang.check-status');
                 Route::get('/get-details/{id}', [RequestBarangController::class, 'getDetails'])->name('request-barang.get-details');
                 Route::post('/update-status/{id}', [RequestBarangController::class, 'updateStatus'])->name('request-barang.updateStatus');
+                Route::post('/complete/{id}', [RequestBarangController::class, 'completeRequest']);
             });
         });
 
