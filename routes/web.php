@@ -65,6 +65,9 @@
             Route::post('/admin/jenisbarang/proses_tambah/', [JenisBarangController::class, 'proses_tambah'])->name('jenisbarang.store');
             Route::post('/admin/jenisbarang/proses_ubah/{jenisbarang}', [JenisBarangController::class, 'proses_ubah']);
             Route::post('/admin/jenisbarang/proses_hapus/{jenisbarang}', [JenisBarangController::class, 'proses_hapus']);
+
+            //view buat dashboard
+            Route::get('/admin/jenisbarang-view', [JenisBarangController::class, 'viewList'])->name('jenisbarang.view');
         });
         // Tambahkan route untuk getData
         Route::get('/admin/jenisbarang/get-data', [JenisBarangController::class, 'getData'])->name('jenisbarang.get');
@@ -76,6 +79,9 @@
             Route::post('/admin/satuan/proses_tambah/', [SatuanController::class, 'proses_tambah'])->name('satuan.store');
             Route::post('/admin/satuan/proses_ubah/{satuan}', [SatuanController::class, 'proses_ubah']);
             Route::post('/admin/satuan/proses_hapus/{satuan}', [SatuanController::class, 'proses_hapus']);
+
+            //view untuk dashboard
+            Route::get('/admin/satuan-view', [SatuanController::class, 'viewList'])->name('satuan.view');
         });
 
         Route::middleware(['checkRoleUser:/merk,submenu'])->group(function () {
@@ -86,6 +92,9 @@
             Route::post('/admin/merk/proses_ubah/{merk}', [MerkController::class, 'proses_ubah']);
             Route::post('/admin/merk/proses_hapus/{merk}', [MerkController::class, 'proses_hapus']);
             Route::get('/admin/merk/get-by-jenis/{jenisbarang_id}', [MerkController::class, 'getByJenis'])->name('merk.getByJenis');
+
+            //view untuk dashboard
+            Route::get('/admin/merk-view', [MerkController::class, 'viewList'])->name('merk.view');
         });
 
         Route::middleware(['checkRoleUser:/barang,submenu'])->group(function () {

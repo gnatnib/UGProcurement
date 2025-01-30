@@ -25,10 +25,10 @@ class MerkController extends Controller
                 ->select('tbl_merk.*', 'tbl_jenisbarang.jenisbarang_nama')
                 ->orderBy('tbl_merk.merk_id', 'DESC')
                 ->get();
-    
+
             return DataTables::of($data)
                 ->addIndexColumn()
-                ->addColumn('jenisbarang', function($row) {
+                ->addColumn('jenisbarang', function ($row) {
                     return $row->jenisbarang_nama ?? '-';
                 })
                 ->addColumn('ket', function ($row) {
@@ -45,17 +45,17 @@ class MerkController extends Controller
                     $button = '';
                     $hakEdit = AksesModel::leftJoin('tbl_submenu', 'tbl_submenu.submenu_id', '=', 'tbl_akses.submenu_id')
                         ->where(array(
-                            'tbl_akses.role_id' => Session::get('user')->role_id, 
-                            'tbl_submenu.submenu_judul' => 'Merk', 
+                            'tbl_akses.role_id' => Session::get('user')->role_id,
+                            'tbl_submenu.submenu_judul' => 'Merk',
                             'tbl_akses.akses_type' => 'update'
                         ))->count();
                     $hakDelete = AksesModel::leftJoin('tbl_submenu', 'tbl_submenu.submenu_id', '=', 'tbl_akses.submenu_id')
                         ->where(array(
-                            'tbl_akses.role_id' => Session::get('user')->role_id, 
-                            'tbl_submenu.submenu_judul' => 'Merk', 
+                            'tbl_akses.role_id' => Session::get('user')->role_id,
+                            'tbl_submenu.submenu_judul' => 'Merk',
                             'tbl_akses.akses_type' => 'delete'
                         ))->count();
-    
+
                     if ($hakEdit > 0 && $hakDelete > 0) {
                         $button .= '
                         <div class="g-2">
@@ -85,7 +85,7 @@ class MerkController extends Controller
     public function proses_tambah(Request $request)
     {
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->merk)));
-    
+
         //insert data
         MerkModel::create([
             'merk_nama' => $request->merk,
@@ -93,14 +93,14 @@ class MerkController extends Controller
             'merk_keterangan' => $request->ket,
             'jenisbarang_id' => $request->jenisbarang_id  // Tambah ini
         ]);
-    
+
         return response()->json(['success' => 'Berhasil']);
     }
 
     public function proses_ubah(Request $request, MerkModel $merk)
     {
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->merk)));
-    
+
         //update data
         $merk->update([
             'merk_nama' => $request->merk,
@@ -108,11 +108,11 @@ class MerkController extends Controller
             'merk_keterangan' => $request->ket,
             'jenisbarang_id' => $request->jenisbarang_id  // Tambah ini
         ]);
-    
+
         return response()->json(['success' => 'Berhasil']);
     }
 
-    
+
     public function proses_hapus(Request $request, MerkModel $merk)
     {
         //delete
@@ -133,4 +133,15 @@ class MerkController extends Controller
         }
     }
 
+    public function viewList()
+    {
+        $data = [
+            "title" => "Daftar Merk Barang",
+            "merk" => MerkModel::leftJoin('tbl_jenisbarang', 'tbl_jenisbarang.jenisbarang_id', '=', 'tbl_merk.jenisbarang_id')
+                ->select('tbl_merk.*', 'tbl_jenisbarang.jenisbarang_nama')
+                ->orderBy('merk_nama', 'ASC')
+                ->get()
+        ];
+        return view('Admin.Merk.view', $data);
+    }
 }

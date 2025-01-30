@@ -116,11 +116,19 @@ class JenisBarangController extends Controller
 
     public function proses_hapus(Request $request, JenisBarangModel $jenisbarang)
     {
-        
+
         //delete
         $jenisbarang->delete();
 
         return response()->json(['success' => 'Berhasil']);
     }
 
+    public function viewList()
+    {
+        $data = [
+            "title" => "Daftar Jenis Barang",
+            "jenisbarang" => JenisBarangModel::orderBy('jenisbarang_nama', 'ASC')->get()
+        ];
+        return view('Admin.JenisBarang.view', $data);
+    }
 }
