@@ -340,4 +340,16 @@ class BarangController extends Controller
 
         return response()->json(['success' => 'Berhasil']);
     }
+
+    public function viewList()
+    {
+        $data["title"] = "Daftar Barang";
+        $data["hakTambah"] = AksesModel::leftJoin('tbl_submenu', 'tbl_submenu.submenu_id', '=', 'tbl_akses.submenu_id')
+            ->where(array(
+                'tbl_akses.role_id' => Session::get('user')->role_id,
+                'tbl_submenu.submenu_judul' => 'Barang',
+                'tbl_akses.akses_type' => 'create'
+            ))->count();
+        return view('Admin.Barang.view', $data);
+    }
 }

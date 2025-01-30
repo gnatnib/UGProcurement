@@ -314,7 +314,7 @@ class AksesTableSeeder extends Seeder
 
     private function seedOtherMenuPermissions()
     {
-        $otherMenuIds = range(1, 6); // Settings, Menu, Role, User, Akses, Web
+        $otherMenuIds = [1, 3, 4, 5, 6]; // Settings, Menu, Role, User, Akses, Web
         $roles = [1]; // Only Super Admin and Admin get these permissions
 
         foreach ($roles as $role_id) {
