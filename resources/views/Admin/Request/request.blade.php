@@ -162,9 +162,9 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-
+    
     function showDetail(data) {
-        statusChanged = false;
+       
         // Reset tampilan modal sebelum diisi data baru
         $('#detail-requestid').text('-');
         $('#detail-tanggal').text('-');
@@ -350,6 +350,13 @@
         }
 
         $(document).ready(function() {
+             $('#detailModal').on('hidden.bs.modal', function() {
+                if (window.statusChanged === true) {
+                    // Refresh datatable tanpa reload halaman
+                    $('#table-1').DataTable().ajax.reload(null, false);
+                    window.statusChanged = false;
+                }
+            });
             var table = $('#table-1').DataTable({
                 processing: true,
                 serverSide: true,
@@ -509,7 +516,7 @@
                 }
             });
         }
-        let statusChanged = false;
+        window.statusChanged = false;
         function updateItemStatus(barangmasukId, newStatus) {
             // Tambahkan style untuk memastikan SweetAlert muncul di atas modal Bootstrap
             if (!document.getElementById('swal-styles')) {
@@ -555,7 +562,7 @@
                         },
                         success: function (response) {
                             if (response.success) {
-                                statusChanged = true; 
+                                window.statusChanged = true;
                                 Swal.fire({
                                     icon: 'success',
                                     title: 'Berhasil!',
@@ -588,15 +595,7 @@
                 }
             });
         }
-        // Add event listener for modal close
-        $(document).ready(function () {
-            $('#detailModal').on('hidden.bs.modal', function () {
-                if (statusChanged) {
-                    location.reload(); // Reload only if status was changed
-                    statusChanged = false; // Reset the flag
-                }
-            });
-        });
+        
         // Add this to your existing JavaScript
             function selesaiRequest(requestId) {
                 Swal.fire({
