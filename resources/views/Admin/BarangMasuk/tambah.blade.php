@@ -72,7 +72,7 @@
                                     class="text-danger">*</span></label>
                             <input type="text" name="jml" value="0" class="form-control"
                                 oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');"
-                                placeholder="">
+                                placeholder="Masukkan jumlah item yang diinginkan">
                         </div>
                     </div>
                 </div>
@@ -130,50 +130,50 @@
         }
 
         function searchBarang() {
-        const kodeBarang = $('input[name="kdbarang"]').val().trim();
-        if (!kodeBarang) {
-            validasi('Kode barang tidak boleh kosong!', 'warning');
-            return;
-        }
-
-        $("#loaderkd").removeClass('d-none');
-
-        $.ajax({
-            type: 'GET',
-            url: "/admin/barang/getbarang/" + kodeBarang,
-            dataType: 'json',
-            success: function(data) {
-                $("#loaderkd").addClass('d-none');
-                console.log("Server response:", data);
-
-                if (data && data.length > 0) {
-                    $("#status").val("true");
-                    $("#nmbarang").val(data[0].barang_nama);
-                    $("#satuan").val(data[0].satuan_nama);
-                    $("#jenis").val(data[0].jenisbarang_nama);
-                    // Set harga dari database
-                    $("input[name='harga']").val(data[0].barang_harga);
-                } else {
-                    $("#status").val("false");
-                    $("#nmbarang").val('');
-                    $("#satuan").val('');
-                    $("#jenis").val('');
-                    $("input[name='harga']").val('0');
-                    validasi('Barang tidak ditemukan!', 'warning');
-                }
-            },
-            error: function(xhr, status, error) {
-                $("#loaderkd").addClass('d-none');
-                $("#status").val("false");
-                console.error("Error details:", {
-                    status: status,
-                    error: error,
-                    response: xhr.responseText
-                });
-                validasi('Terjadi kesalahan saat mencari barang: ' + error, 'error');
+            const kodeBarang = $('input[name="kdbarang"]').val().trim();
+            if (!kodeBarang) {
+                validasi('Kode barang tidak boleh kosong!', 'warning');
+                return;
             }
-        });
-    }
+
+            $("#loaderkd").removeClass('d-none');
+
+            $.ajax({
+                type: 'GET',
+                url: "/admin/barang/getbarang/" + kodeBarang,
+                dataType: 'json',
+                success: function(data) {
+                    $("#loaderkd").addClass('d-none');
+                    console.log("Server response:", data);
+
+                    if (data && data.length > 0) {
+                        $("#status").val("true");
+                        $("#nmbarang").val(data[0].barang_nama);
+                        $("#satuan").val(data[0].satuan_nama);
+                        $("#jenis").val(data[0].jenisbarang_nama);
+                        // Set harga dari database
+                        $("input[name='harga']").val(data[0].barang_harga);
+                    } else {
+                        $("#status").val("false");
+                        $("#nmbarang").val('');
+                        $("#satuan").val('');
+                        $("#jenis").val('');
+                        $("input[name='harga']").val('0');
+                        validasi('Barang tidak ditemukan!', 'warning');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    $("#loaderkd").addClass('d-none');
+                    $("#status").val("false");
+                    console.error("Error details:", {
+                        status: status,
+                        error: error,
+                        response: xhr.responseText
+                    });
+                    validasi('Terjadi kesalahan saat mencari barang: ' + error, 'error');
+                }
+            });
+        }
 
         function validasi(pesan, type = 'warning') {
             swal({
@@ -275,6 +275,33 @@
             $('#modaldemo8').on('hidden.bs.modal', function() {
                 reset();
             });
+        });
+
+        // Add these event handlers outside the document.ready
+        // Handle harga input
+        $("input[name='harga']").on('focus', function() {
+            if (this.value === '0') {
+                this.value = '';
+            }
+        });
+
+        $("input[name='harga']").on('blur', function() {
+            if (this.value === '') {
+                this.value = '0';
+            }
+        });
+
+        // Handle jumlah item input 
+        $("input[name='jml']").on('focus', function() {
+            if (this.value === '0') {
+                this.value = '';
+            }
+        });
+
+        $("input[name='jml']").on('blur', function() {
+            if (this.value === '') {
+                this.value = '0';
+            }
         });
 
         function submitForm() {

@@ -237,123 +237,123 @@ class ApproveController extends Controller
     }
 
     public function bulkUpdate(Request $request)
-{
-    try {
-        DB::beginTransaction();
+    {
+        try {
+            DB::beginTransaction();
 
-        $user = Session::get('user');
+            $user = Session::get('user');
 
-        // Check for user's signature before allowing bulk update
-        $hasUserSignature = SignatureModel::where([
-            'request_id' => $request->request_id,
-            'role_id' => $user->role_id
-        ])->exists();
+            // Check for user's signature before allowing bulk update
+            $hasUserSignature = SignatureModel::where([
+                'request_id' => $request->request_id,
+                'role_id' => $user->role_id
+            ])->exists();
 
-        if (!$hasUserSignature) {
-            throw new \Exception('Please sign the request before approving items');
-        }
-
-        // Validasi data
-        if (empty($request->request_id) || empty($request->approvals)) {
-            throw new \Exception('Data tidak lengkap');
-        }
-
-        // Update barangmasuk records
-        foreach ($request->approvals as $bm_id => $approval) {
-            $updateData = [
-                'approval' => $approval['status'],
-                'tracking_status' => $approval['status'] === 'Approve' ? 'Diproses' : 'Ditolak',
-                'updated_at' => now()
-            ];
-
-            if ($approval['status'] === 'Reject') {
-                $rejectReason = !empty($approval['reason']) ? $approval['reason'] : 'No reason provided';
-                $currKeterangan = DB::table('tbl_barangmasuk')->where('bm_id', $bm_id)->value('keterangan');
-                $newReject = sprintf(
-                    'Rejected by %s (%s): %s',
-                    $user->name,
-                    $user->role_id == 2 ? 'GMHCGA' : 'GM',
-                    $rejectReason
-                );
-                $updateData['keterangan'] = $currKeterangan ? $currKeterangan . "\n" . $newReject : $newReject;
+            if (!$hasUserSignature) {
+                throw new \Exception('Please sign the request before approving items');
             }
 
-            DB::table('tbl_barangmasuk')
-                ->where('bm_id', $bm_id)
-                ->update($updateData);
+            // Validasi data
+            if (empty($request->request_id) || empty($request->approvals)) {
+                throw new \Exception('Data tidak lengkap');
+            }
+
+            // Update barangmasuk records
+            foreach ($request->approvals as $bm_id => $approval) {
+                $updateData = [
+                    'approval' => $approval['status'],
+                    'tracking_status' => $approval['status'] === 'Approve' ? 'Diproses' : 'Ditolak',
+                    'updated_at' => now()
+                ];
+
+                if ($approval['status'] === 'Reject') {
+                    $rejectReason = !empty($approval['reason']) ? $approval['reason'] : 'No reason provided';
+                    $currKeterangan = DB::table('tbl_barangmasuk')->where('bm_id', $bm_id)->value('keterangan');
+                    $newReject = sprintf(
+                        'Rejected by %s (%s): %s',
+                        $user->name,
+                        $user->role_id == 2 ? 'GMHCGA' : 'GM',
+                        $rejectReason
+                    );
+                    $updateData['keterangan'] = $currKeterangan ? $currKeterangan . "\n" . $newReject : $newReject;
+                }
+
+                DB::table('tbl_barangmasuk')
+                    ->where('bm_id', $bm_id)
+                    ->update($updateData);
+            }
+
+            // Check the status of all items in this request
+            $allItems = DB::table('tbl_barangmasuk')
+                ->where('request_id', $request->request_id)
+                ->get();
+
+            Log::info('Item statuses:', $allItems->map(function ($item) {
+                return [
+                    'tracking_status' => $item->tracking_status,
+                    'approval' => $item->approval
+                ];
+            })->toArray());
+
+            $allRejected = $allItems->every(function ($item) {
+                // Tambahkan pemeriksaan lebih ketat
+                return in_array($item->tracking_status, ['Ditolak', 'rejected']) ||
+                    in_array($item->approval, ['Reject', 'rejected']);
+            });
+
+            // Check if both signatures exist for status update
+            $gmSignature = SignatureModel::where([
+                'request_id' => $request->request_id,
+                'signer_type' => 'GM'
+            ])->exists();
+
+            $gmhcgaSignature = SignatureModel::where([
+                'request_id' => $request->request_id,
+                'signer_type' => 'GMHCGA'
+            ])->exists();
+
+            if ($allRejected) {
+                DB::table('tbl_request_barang')
+                    ->where('request_id', $request->request_id)
+                    ->update([
+                        'status' => 'Ditolak', // Pastikan menggunakan nilai 'rejected'
+                        'updated_at' => now()
+                    ]);
+            } else if ($gmSignature && $gmhcgaSignature) {
+                DB::table('tbl_request_barang')
+                    ->where('request_id', $request->request_id)
+                    ->update([
+                        'status' => 'Diproses',
+                        'updated_at' => now()
+                    ]);
+            } else {
+                DB::table('tbl_request_barang')
+                    ->where('request_id', $request->request_id)
+                    ->update([
+                        'status' => 'pending',
+                        'updated_at' => now()
+                    ]);
+            }
+
+
+            DB::commit();
+            return response()->json([
+                'success' => true,
+                'message' => 'Status approval berhasil diupdate',
+                'hasAllSignatures' => ($gmSignature && $gmhcgaSignature)
+            ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            Log::error('Error in bulkUpdate:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
         }
-
-        // Check the status of all items in this request
-        $allItems = DB::table('tbl_barangmasuk')
-            ->where('request_id', $request->request_id)
-            ->get();
-
-        Log::info('Item statuses:', $allItems->map(function ($item) {
-            return [
-                'tracking_status' => $item->tracking_status,
-                'approval' => $item->approval
-            ];
-        })->toArray());
-
-        $allRejected = $allItems->every(function ($item) {
-            // Tambahkan pemeriksaan lebih ketat
-            return in_array($item->tracking_status, ['Ditolak', 'rejected']) || 
-                   in_array($item->approval, ['Reject', 'rejected']);
-        });
-
-        // Check if both signatures exist for status update
-        $gmSignature = SignatureModel::where([
-            'request_id' => $request->request_id,
-            'signer_type' => 'GM'
-        ])->exists();
-
-        $gmhcgaSignature = SignatureModel::where([
-            'request_id' => $request->request_id,
-            'signer_type' => 'GMHCGA'
-        ])->exists();
-
-        if ($allRejected) {
-            DB::table('tbl_request_barang')
-                ->where('request_id', $request->request_id)
-                ->update([
-                    'status' => 'Ditolak', // Pastikan menggunakan nilai 'rejected'
-                    'updated_at' => now()
-                ]);
-        } else if ($gmSignature && $gmhcgaSignature) {
-            DB::table('tbl_request_barang')
-                ->where('request_id', $request->request_id)
-                ->update([
-                    'status' => 'Diproses',
-                    'updated_at' => now()
-                ]);
-        } else {
-            DB::table('tbl_request_barang')
-                ->where('request_id', $request->request_id)
-                ->update([
-                    'status' => 'pending',
-                    'updated_at' => now()
-                ]);
-        }
-
-
-        DB::commit();
-        return response()->json([
-            'success' => true,
-            'message' => 'Status approval berhasil diupdate',
-            'hasAllSignatures' => ($gmSignature && $gmhcgaSignature)
-        ]);
-    } catch (\Exception $e) {
-        DB::rollback();
-        Log::error('Error in bulkUpdate:', [
-            'message' => $e->getMessage(),
-            'trace' => $e->getTraceAsString()
-        ]);
-        return response()->json([
-            'success' => false,
-            'message' => 'Terjadi kesalahan: ' . $e->getMessage()
-        ], 500);
     }
-}
 
 
     public function storeSignature(Request $request)
