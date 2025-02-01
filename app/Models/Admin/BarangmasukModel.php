@@ -17,6 +17,7 @@ class BarangmasukModel extends Model
         'request_id',
         'bm_tanggal',
         'bm_jumlah',
+        'satuan',
         'harga',
         'approval',
         'status',

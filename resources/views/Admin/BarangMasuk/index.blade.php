@@ -44,7 +44,7 @@
                                     <th>Tanggal Permintaan</th>
                                     <th>Barang</th>
                                     <th>Jumlah Item</th>
-                                    <th>Harga Satuan</th>
+                                    <th>Harga</th>
                                     <th>Approval</th>
                                     <th>Request ID</th>
                                     <th>Tracking Status</th>
@@ -88,7 +88,7 @@
                                             <div id="detail-jumlah" class="fs-6 fw-semibold"></div>
                                         </div>
                                         <div>
-                                            <label class="text-muted small mb-1">Harga Satuan</label>
+                                            <label class="text-muted small mb-1">Harga</label>
                                             <div id="detail-harga" class="fs-6 fw-semibold text-success"></div>
                                         </div>
                                     </div>
@@ -215,8 +215,7 @@
                         d.request_id = new URLSearchParams(window.location.search).get('request_id');
                     }
                 },
-                columns: [ // Fixed the columns array syntax
-                    {
+                columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
                         searchable: false
@@ -230,7 +229,7 @@
                         name: 'barang_nama'
                     },
                     {
-                        data: 'bm_jumlah',
+                        data: 'jumlah_item', // Updated to use the new column
                         name: 'bm_jumlah'
                     },
                     {
@@ -272,7 +271,7 @@
             $('#detail-bmkode').text(data.bm_kode);
             $('#detail-tanggal').text(data.tgl);
             $('#detail-barang').text(data.barang);
-            $('#detail-jumlah').text(data.bm_jumlah + ' Unit');
+            $('#detail-jumlah').text(data.bm_jumlah + ' ' + data.satuan);
             $('#detail-requestid').text(data.request_id);
             $('#detail-keterangan').text(data.keterangan || '-');
             $('#detail-harga').text('Rp ' + parseInt(data.harga).toLocaleString('id-ID'));

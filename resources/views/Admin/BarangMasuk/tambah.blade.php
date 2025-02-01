@@ -57,7 +57,13 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Satuan</label>
-                                    <input type="text" class="form-control" id="satuan" readonly>
+                                    <select class="form-select form-control" id="satuan">
+                                        <option value="">Pilih Satuan</option>
+                                        @foreach ($satuanList as $satuan)
+                                            <option value="{{ $satuan->satuan_nama }}">{{ $satuan->satuan_nama }}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -79,14 +85,16 @@
 
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary d-none" id="btnLoader" type="button" disabled="">
+                <button class="btn btn-primary d-none" id="btnLoader" type="button" disabled>
                     <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
                     Loading...
                 </button>
-                <a href="javascript:void(0)" onclick="checkForm()" id="btnSimpan" class="btn btn-primary">Simpan <i
-                        class="fe fe-check"></i></a>
-                <a href="javascript:void(0)" class="btn btn-light" onclick="reset()" data-bs-dismiss="modal">Batal
-                    <i class="fe fe-x"></i></a>
+                <a href="javascript:void(0)" onclick="checkForm()" id="btnSimpan" class="btn btn-primary">
+                    Simpan <i class="fe fe-check"></i>
+                </a>
+                <a href="javascript:void(0)" class="btn btn-light" onclick="reset()" data-bs-dismiss="modal">
+                    Batal <i class="fe fe-x"></i>
+                </a>
             </div>
         </div>
     </div>
@@ -149,7 +157,7 @@
                     if (data && data.length > 0) {
                         $("#status").val("true");
                         $("#nmbarang").val(data[0].barang_nama);
-                        $("#satuan").val(data[0].satuan_nama);
+                        $("#satuan").val(data[0].satuan_nama).trigger('change');
                         $("#jenis").val(data[0].jenisbarang_nama);
                         // Set harga dari database
                         $("input[name='harga']").val(data[0].barang_harga);
@@ -311,6 +319,10 @@
             const keterangan = $("textarea[name='keterangan']").val();
             const jml = $("input[name='jml']").val();
             const harga = $("input[name='harga']").val();
+            const satuan = $("#satuan").val(); // Get the selected satuan value
+
+            // Show loading state
+            setLoading(true);
 
             $.ajax({
                 type: 'POST',
@@ -323,10 +335,11 @@
                     keterangan: keterangan,
                     jml: jml,
                     harga: harga,
-                    update_harga: true // Flag untuk mengupdate harga di database
+                    satuan: satuan
                 },
                 dataType: 'json',
                 success: function(response) {
+                    setLoading(false); // Hide loading state
                     if (response.success) {
                         $('#modaldemo8').modal('hide');
                         swal({
@@ -335,16 +348,22 @@
                         });
                         table.ajax.reload(null, false);
                         reset();
+                    } else {
+                        swal({
+                            title: response.title || "Error!",
+                            text: response.message || "Terjadi kesalahan saat menyimpan data",
+                            type: response.type || "error"
+                        });
                     }
                 },
-                error: function(xhr) {
+                error: function(xhr, status, error) {
+                    setLoading(false); // Hide loading state
                     const response = xhr.responseJSON;
                     swal({
                         title: response.title || "Error!",
                         text: response.message || "Terjadi kesalahan saat menyimpan data",
                         type: response.type || "error"
                     });
-                    setLoading(false);
                 }
             });
         }
@@ -357,33 +376,27 @@
         }
 
         function reset() {
-            // Clear form validation states
+            // Reset form fields
             resetValid();
-
-            // Clear all input fields
             $("input[name='bmkode']").val('');
             $("input[name='kdbarang']").val('');
             $("textarea[name='keterangan']").val('');
             $("input[name='jml']").val('0');
             $("input[name='harga']").val('0');
-
-            // Clear the read-only fields
             $("#nmbarang").val('');
-            $("#satuan").val('');
+            $("#satuan").val('').trigger('change'); // Reset satuan dropdown
             $("#jenis").val('');
-
-            // Reset status
             $("#status").val('false');
 
-            // Set loading state to false
+            // Reset loading state
             setLoading(false);
 
-            // Set today's date last to ensure it's always set
+            // Set today's date
             setTodayDate();
         }
 
         function setLoading(bool) {
-            if (bool == true) {
+            if (bool) {
                 $('#btnLoader').removeClass('d-none');
                 $('#btnSimpan').addClass('d-none');
             } else {
