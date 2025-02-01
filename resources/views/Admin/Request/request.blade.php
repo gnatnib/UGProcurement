@@ -53,7 +53,7 @@
         </div>
     </div>
     <!-- Modal Detail -->
-    <div class="modal fade" id="detailModal">
+    <div class="modal fade" id="detailModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-primary-gradient text-white">
@@ -68,48 +68,48 @@
                                 <div class="card shadow-sm h-100">
                                     <div class="card-body">
                                         <h6 class="fw-bold mb-4 text-primary">Informasi Request</h6>
-                                        <div class="d-flex flex-column gap-3">
-                                            <div>
-                                                <label class="text-muted small mb-1">Request ID</label>
-                                                <div id="detail-requestid" class="fs-6 fw-semibold"></div>
-                                            </div>
-                                            <div>
-                                                <label class="text-muted small mb-1">Tanggal Request</label>
-                                                <div id="detail-tanggal" class="fs-6 fw-semibold"></div>
-                                            </div>
-                                            <div>
-                                                <label class="text-muted small mb-1">Departemen</label>
-                                                <div id="detail-departemen" class="fs-6 fw-semibold"></div>
-                                            </div>
+                                        <div class="mb-3">
+                                            <label class="text-muted small mb-1">Request ID</label>
+                                            <div id="detail-requestid" class="fs-6 fw-semibold">-</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="text-muted small mb-1">Tanggal Request</label>
+                                            <div id="detail-tanggal" class="fs-6 fw-semibold">-</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="text-muted small mb-1">Departemen</label>
+                                            <div id="detail-departemen" class="fs-6 fw-semibold">-</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="text-muted small mb-1">Divisi</label>
+                                            <div id="detail-divisi" class="fs-6 fw-semibold">-</div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
+    
                             <!-- Status Request -->
                             <div class="col-md-6">
                                 <div class="card shadow-sm h-100">
                                     <div class="card-body">
                                         <h6 class="fw-bold mb-4 text-primary">Status Request</h6>
-                                        <div class="d-flex flex-column gap-3">
-                                            <div>
-                                                <label class="text-muted small mb-1">Status Request</label>
-                                                <div id="detail-status" class="fs-6 mt-1"></div>
-                                            </div>
-                                            <div>
-                                                <label class="text-muted small mb-1">Jumlah Item</label>
-                                                <div id="detail-jumlahitem" class="fs-6 fw-semibold"></div>
-                                            </div>
-                                            <div>
-                                                <label class="text-muted small mb-1">Total Harga</label>
-                                                <div id="detail-totalharga" class="fs-6 fw-semibold text-success"></div>
-                                            </div>
+                                        <div class="mb-3">
+                                            <label class="text-muted small mb-1">Status</label>
+                                            <div id="detail-status" class="fs-6 mt-1">-</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="text-muted small mb-1">Jumlah Item</label>
+                                            <div id="detail-jumlahitem" class="fs-6 fw-semibold">-</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="text-muted small mb-1">Total Harga</label>
+                                            <div id="detail-totalharga" class="fs-6 fw-semibold text-success">-</div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
-                            <!-- Daftar Barang -->
+    
+                            <!-- Tabel Barang -->
                             <div class="col-12">
                                 <div class="card shadow-sm">
                                     <div class="card-body">
@@ -119,23 +119,24 @@
                                                 <thead class="bg-light">
                                                     <tr>
                                                         <th class="text-center" width="5%">No</th>
-                                                        <th>Barang</th>
+                                                        <th>Nama Barang</th>
                                                         <th class="text-center" width="10%">Jumlah</th>
                                                         <th class="text-end" width="15%">Harga Satuan</th>
                                                         <th class="text-end" width="15%">Total</th>
                                                         <th class="text-center" width="10%">Status</th>
                                                         <th>Keterangan</th>
-                                                        
                                                     </tr>
                                                 </thead>
                                                 <tbody id="detail-items">
-                                                    <!-- Items will be inserted here dynamically -->
+                                                    <tr>
+                                                        <td colspan="7" class="text-center">Memuat data...</td>
+                                                    </tr>
                                                 </tbody>
                                                 <tfoot class="bg-light">
                                                     <tr>
-                                                        <td colspan="6" class="text-end fw-bold">Harga Keseluruhan</td>
-                                                        <td colspan="1" class="fw-bold text-success text-end"
-                                                            id="detail-total"></td>
+                                                        <td colspan="4" class="text-end fw-bold">Total Keseluruhan</td>
+                                                        <td colspan="3" class="fw-bold text-success text-end"
+                                                            id="detail-total">-</td>
                                                     </tr>
                                                 </tfoot>
                                             </table>
@@ -164,86 +165,84 @@
             }
         });
     
-    function showDetail(data) {
-       
-        // Reset tampilan modal sebelum diisi data baru
-        $('#detail-requestid').text('-');
-        $('#detail-tanggal').text('-');
-        $('#detail-departemen').text('-');
-        $('#detail-status').html('-');
-        $('#detail-items').html('<tr><td colspan="7" class="text-center">Memuat data...</td></tr>');
-        $('#detail-jumlahitem').text('-');
-        $('#detail-totalharga').text('-');
+    
+        function showDetail(data) {
+                // Reset modal content
+                $('#detail-requestid').text('-');
+                $('#detail-tanggal').text('-');
+                $('#detail-departemen').text('-');
+                $('#detail-divisi').text('-');
+                $('#detail-status').html('-');
+                $('#detail-items').html('<tr><td colspan="7" class="text-center">Memuat data...</td></tr>');
+                $('#detail-jumlahitem').text('-');
+                $('#detail-totalharga').text('-');
 
-        // Tampilkan data awal dari parameter `data`
-        $('#detail-requestid').text(data.request_id);
-        $('#detail-tanggal').text(data.tanggal_format);
-        $('#detail-departemen').text(data.departemen);
-        $('#detail-status').html(getStatusBadge(data.status)); // Status awal sebelum AJAX
+                // Show modal
+                $('#detailModal').modal('show');
 
-        // AJAX untuk mendapatkan detail request secara lengkap
-        $.ajax({
-            url: '/admin/request-barang/get-details/' + data.request_id,
-            method: 'GET',
-            success: function (response) {
-                if (response.success) {
-                    // Update status dengan data terbaru dari API
-                    $('#detail-status').html(getStatusBadge(response.request.status));
+                // Encode request_id dengan base64
+                const encodedId = btoa(data.request_id);
 
-                    // Update jumlah item dan total harga
-                    $('#detail-jumlahitem').text(response.total_items + ' Item');
-                    $('#detail-totalharga').text('Rp ' + response.total_harga.toLocaleString('id-ID'));
+                // Fetch details
+                $.ajax({
+                    url: `/admin/request-barang/get-details/${encodedId}`,
+                    method: 'GET',
+                    success: function (response) {
+                        if (response.success) {
+                            // Update informasi request
+                            $('#detail-requestid').text(response.request.request_id);
+                            $('#detail-tanggal').text(response.request.request_tanggal);
+                            $('#detail-departemen').text(response.request.departemen);
+                            $('#detail-divisi').text(response.request.divisi);
+                            $('#detail-status').html(getStatusBadge(response.request.status));
 
-                    let itemsHtml = '';
-                    if (response.items && response.items.length > 0) {
-                        response.items.forEach((item, index) => {
-                            let totalHarga = item.bm_jumlah * item.harga;
-                            let keterangan = item.keterangan || '-';
+                            // Update summary
+                            $('#detail-jumlahitem').text(`${response.total_items} Item`);
+                            $('#detail-totalharga').text(`Rp ${response.total_harga.toLocaleString('id-ID')}`);
 
-                            // Format teks merah untuk barang yang ditolak
-                            if (keterangan.includes('Rejected by')) {
-                                let parts = keterangan.split(/(Rejected by.*)/);
-                                keterangan = parts[0] + '<span class="text-danger">' + parts[1] + '</span>';
-                            }
-
-                            // Render daftar barang
-                            itemsHtml += `
+                            // Generate items table
+                            let itemsHtml = '';
+                            if (response.items && response.items.length > 0) {
+                                response.items.forEach((item, index) => {
+                                    itemsHtml += `
                             <tr>
                                 <td class="text-center">${index + 1}</td>
                                 <td>${item.barang_nama || '-'}</td>
                                 <td class="text-center">${item.bm_jumlah}</td>
                                 <td class="text-end">Rp ${parseFloat(item.harga).toLocaleString('id-ID')}</td>
-                                <td class="text-end">Rp ${parseFloat(totalHarga).toLocaleString('id-ID')}</td>
+                                <td class="text-end">Rp ${item.total_harga.toLocaleString('id-ID')}</td>
                                 <td class="text-center">${getStatusBadge(item.tracking_status)}</td>
-                                <td>${keterangan}
-                                    ${item.tracking_status && item.tracking_status.toLowerCase() === 'dikirim' ? 
-                                        `<i class="fe fe-check-circle text-success float-end" style="cursor: pointer" 
-                                        onclick="updateItemStatus('${item.bm_id}', 'diterima')" 
-                                        title="Klik untuk konfirmasi penerimaan"></i>` 
-                                        : ''}
+                                <td>${item.keterangan || '-'}
+                                    ${item.tracking_status && item.tracking_status.toLowerCase() === 'dikirim' ?
+                                        `<i class="fe fe-check-circle text-success float-end" 
+                                            style="cursor: pointer" 
+                                            onclick="updateItemStatus('${item.bm_id}', 'diterima')" 
+                                            title="Klik untuk konfirmasi penerimaan">
+                                        </i>` : ''
+                                    }
                                 </td>
-                            </tr>
-                            `;
-                        });
-                    } else {
-                        itemsHtml = '<tr><td colspan="7" class="text-center">Tidak ada data barang</td></tr>';
+                            </tr>`;
+                                });
+                            } else {
+                                itemsHtml = '<tr><td colspan="7" class="text-center">Tidak ada data barang</td></tr>';
+                            }
+                            $('#detail-items').html(itemsHtml);
+                            $('#detail-total').text(`Rp ${response.total_harga.toLocaleString('id-ID')}`);
+                        }
+                    },
+                    error: function (xhr) {
+                        const response = xhr.responseJSON;
+                        $('#detail-items').html(`
+                <tr>
+                    <td colspan="7" class="text-center text-danger">
+                        <i class="fe fe-alert-circle me-2"></i>
+                        ${response?.message || 'Gagal memuat data'}
+                    </td>
+                </tr>`);
                     }
-
-                    $('#detail-items').html(itemsHtml);
-                    $('#detail-total').text('Rp ' + response.total_harga.toLocaleString('id-ID'));
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error('Error:', error);
-                $('#detail-items').html('<tr><td colspan="7" class="text-center">Gagal memuat data</td></tr>');
-                $('#detail-jumlahitem').text('-');
-                $('#detail-totalharga').text('-');
+                });
             }
-    });
 
-    // Tampilkan modal detail
-    $('#detailModal').modal('show');
-}
 
 
         function getStatusBadge(status) {
@@ -664,7 +663,49 @@
                     }
                 }
 
-                function saveSignature() {
+                // Perbaiki fungsi completeRequest untuk encode request ID
+                    function completeRequest(requestId) {
+                        // Encode request ID dengan base64
+                        const encodedId = btoa(requestId);
+
+                        $.ajax({
+                            url: `/admin/request-barang/complete/${encodedId}`,
+                            type: 'POST',
+                            data: {
+                                _token: $('meta[name="csrf-token"]').attr('content')
+                            },
+                            success: function (response) {
+                                if (response.success) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Berhasil!',
+                                        text: 'Request berhasil diselesaikan!',
+                                        timer: 1500,
+                                        showConfirmButton: false
+                                    }).then(() => {
+                                        $('#table-1').DataTable().ajax.reload();
+                                    });
+                                } else {
+                                    Swal.fire(
+                                        'Error!',
+                                        response.message || 'Terjadi kesalahan saat menyelesaikan request!',
+                                        'error'
+                                    );
+                                }
+                            },
+                            error: function (xhr) {
+                                const response = xhr.responseJSON;
+                                Swal.fire(
+                                    'Error!',
+                                    response?.message || 'Terjadi kesalahan saat menyelesaikan request!',
+                                    'error'
+                                );
+                            }
+                        });
+                    }
+
+                    // Update fungsi saveSignature untuk menangani request ID dengan benar
+                    function saveSignature() {
                         if (!signaturePad || signaturePad.isEmpty()) {
                             Swal.fire('Error!', 'Harap memberikan tanda tangan', 'error');
                             return;
@@ -696,42 +737,6 @@
                             },
                             error: function (xhr) {
                                 Swal.fire('Error!', xhr.responseJSON?.message || 'Gagal menyimpan tanda tangan', 'error');
-                            }
-                        });
-                    }
-                function completeRequest(requestId) {
-                        $.ajax({
-                            url: `/admin/request-barang/complete/${requestId}`,
-                            type: 'POST',
-                            data: {
-                                _token: $('meta[name="csrf-token"]').attr('content')
-                            },
-                            success: function (response) {
-                                if (response.success) {
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'Berhasil!',
-                                        text: 'Request berhasil diselesaikan!',
-                                        timer: 1500,
-                                        showConfirmButton: false
-                                    }).then(() => {
-                                        $('#table-1').DataTable().ajax.reload();
-                                    });
-                                } else {
-                                    Swal.fire(
-                                        'Error!',
-                                        response.message || 'Terjadi kesalahan saat menyelesaikan request!',
-                                        'error'
-                                    );
-                                }
-                            },
-                            error: function (xhr) {
-                                const response = xhr.responseJSON;
-                                Swal.fire(
-                                    'Error!',
-                                    response?.message || 'Terjadi kesalahan saat menyelesaikan request!',
-                                    'error'
-                                );
                             }
                         });
                     }

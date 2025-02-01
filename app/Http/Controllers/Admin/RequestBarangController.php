@@ -79,68 +79,75 @@ class RequestBarangController extends Controller
         }
     }
 
-    public function getDetails($id)
-    {
-        try {
-            // Ambil data request barang berdasarkan ID
-            $request = DB::table('tbl_request_barang as r')
-                ->leftJoin('tbl_user as u', 'u.user_id', '=', 'r.user_id')
-                ->where('r.request_id', $id)
-                ->select(
-                    'r.request_id',
-                    'r.request_tanggal',
-                    'r.departemen',
-                    'r.divisi',
-                    'r.status', // Pastikan status ikut diambil
-                    'r.keterangan',
-                    'u.user_nmlengkap'
-                )
-                ->first();
+    // File: app/Http/Controllers/Admin/RequestBarangController.php
 
-            if (!$request) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Request tidak ditemukan'
-                ], 404);
-            }
+public function getDetails($encodedId)
+{
+    try {
+        // Decode ID dari base64
+        $id = base64_decode($encodedId);
 
-            // Format tanggal agar lebih mudah dibaca
-            $request->request_tanggal = Carbon::parse($request->request_tanggal)->translatedFormat('d F Y');
+        // Ambil data header request
+        $request = DB::table('tbl_request_barang as r')
+            ->leftJoin('tbl_user as u', 'u.user_id', '=', 'r.user_id')
+            ->select(
+                'r.request_id',
+                'r.request_tanggal',
+                'r.departemen',
+                'r.divisi',
+                'r.status',
+                'r.keterangan',
+                'u.user_nmlengkap'
+            )
+            ->where('r.request_id', $id)
+            ->first();
 
-            // Ambil daftar barang yang masuk berdasarkan request_id
-            $items = DB::table('tbl_barangmasuk as bm')
-                ->leftJoin('tbl_barang as b', 'b.barang_kode', '=', 'bm.barang_kode')
-                ->where('bm.request_id', $id)
-                ->select(
-                    'bm.bm_id',
-                    'bm.bm_jumlah',
-                    'bm.harga',
-                    'b.barang_nama',
-                    DB::raw('(bm.bm_jumlah * bm.harga) as total_harga'),
-                    'bm.keterangan',
-                    'bm.tracking_status' // Pastikan status tracking ikut diambil
-                )
-                ->get();
-
-            // Hitung total barang dan harga keseluruhan
-            $totalItems = $items->count();
-            $totalHarga = $items->sum('total_harga');
-
-            return response()->json([
-                'success' => true,
-                'request' => $request, // Pastikan status diambil dari sini
-                'items' => $items,
-                'total_items' => $totalItems,
-                'total_harga' => $totalHarga
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Error in getDetails: ' . $e->getMessage());
+        if (!$request) {
             return response()->json([
                 'success' => false,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
-            ], 500);
+                'message' => 'Data request tidak ditemukan'
+            ], 404);
         }
+
+        // Format tanggal
+        $request->request_tanggal = Carbon::parse($request->request_tanggal)->translatedFormat('d F Y');
+
+        // Ambil detail barang
+        $items = DB::table('tbl_barangmasuk as bm')
+            ->leftJoin('tbl_barang as b', 'b.barang_kode', '=', 'bm.barang_kode')
+            ->where('bm.request_id', $id)
+            ->select(
+                'bm.bm_id',
+                'bm.barang_kode',
+                'b.barang_nama',
+                'bm.bm_jumlah',
+                'bm.harga',
+                DB::raw('(bm.bm_jumlah * bm.harga) as total_harga'),
+                'bm.keterangan',
+                'bm.tracking_status'
+            )
+            ->get();
+
+        // Hitung total
+        $totalItems = $items->count();
+        $totalHarga = $items->sum('total_harga');
+
+        return response()->json([
+            'success' => true,
+            'request' => $request,
+            'items' => $items,
+            'total_items' => $totalItems,
+            'total_harga' => $totalHarga
+        ]);
+
+    } catch (\Exception $e) {
+        Log::error('Error in getDetails: ' . $e->getMessage());
+        return response()->json([
+            'success' => false,
+            'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+        ], 500);
     }
+}
 
 
     public function hapus(Request $request)
@@ -441,40 +448,45 @@ class RequestBarangController extends Controller
                 ->make(true);
         }
     }
-    public function completeRequest($requestId)
-    {
-        try {
-            DB::beginTransaction();
-            $hasSignature = DB::table('tbl_signatures')
-                ->where('request_id', $requestId)
-                ->where('action', 'Complete')
-                ->exists();
+    public function completeRequest($encodedId)
+{
+    try {
+        DB::beginTransaction();
+        
+        // Decode ID dari base64
+        $requestId = base64_decode($encodedId);
+        
+        $hasSignature = DB::table('tbl_signatures')
+            ->where('request_id', $requestId)
+            ->where('action', 'Complete')
+            ->exists();
 
-            if (!$hasSignature) {
-                throw new \Exception('Tanda tangan diperlukan untuk menyelesaikan request');
-            }
-            // Update request status to 'diterima'
-            DB::table('tbl_request_barang')
-                ->where('request_id', $requestId)
-                ->update([
-                    'status' => 'Diterima',
-                    'updated_at' => now()
-                ]);
-
-            DB::commit();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Request berhasil diselesaikan'
-            ]);
-        } catch (\Exception $e) {
-            DB::rollback();
-            return response()->json([
-                'success' => false,
-                'message' => 'Error: ' . $e->getMessage()
-            ], 500);
+        if (!$hasSignature) {
+            throw new \Exception('Tanda tangan diperlukan untuk menyelesaikan request');
         }
+        
+        // Update request status to 'diterima'
+        DB::table('tbl_request_barang')
+            ->where('request_id', $requestId)
+            ->update([
+                'status' => 'Diterima',
+                'updated_at' => now()
+            ]);
+
+        DB::commit();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Request berhasil diselesaikan'
+        ]);
+    } catch (\Exception $e) {
+        DB::rollback();
+        return response()->json([
+            'success' => false,
+            'message' => 'Error: ' . $e->getMessage()
+        ], 500);
     }
+}
     public function proses_tambah(Request $request)
     {
         try {
