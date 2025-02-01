@@ -165,17 +165,17 @@
                 style="max-width: 150px; max-height: 100px; object-fit: contain;">
         @endif
         <div class="signature-line"></div>
-        <p><i>nama jelas & tanggal</i></p>
+        <p>{{ isset($signatures['GM']) ? $signatures['GM']->user_nmlengkap : '________________' }}</p>
     </div>
 
     <div class="signature-cell">
         <p>Penerima Barang,</p>
-        @if(isset($signatures['RECEIVER']) && !empty($signatures['RECEIVER']->signature_base64))
-            <img src="{{ $signatures['RECEIVER']->signature_base64 }}" alt="Tanda Tangan Penerima"
+        @if(isset($signatures['User']) && !empty($signatures['User']->signature_base64))
+            <img src="{{ $signatures['User']->signature_base64 }}" alt="Tanda Tangan Penerima"
                 style="max-width: 150px; max-height: 100px; object-fit: contain;">
         @endif
         <div class="signature-line"></div>
-        <p><i>nama jelas & tanggal</i></p>
+        <p>{{ isset($signatures['User']) ? $signatures['User']->user_nmlengkap : '________________' }}</p>
     </div>
 
     <div class="signature-cell">
@@ -185,7 +185,7 @@
                 style="max-width: 150px; max-height: 100px; object-fit: contain;">
         @endif
         <div class="signature-line"></div>
-        <p><i>nama jelas</i></p>
+        <p>{{ isset($signatures['GMHCGA']) ? $signatures['GMHCGA']->user_nmlengkap : '________________' }}</p>
     </div>
 </div>
 </body>
