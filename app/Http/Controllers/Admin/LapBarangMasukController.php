@@ -133,16 +133,19 @@ public function storeSignature(Request $request)
 {
     if ($request->ajax()) {
         $user = Session::get('user');  // Ambil user dari session
-        
-        if ($request->tglawal == '') {
-            $data = RequestBarangModel::where('status', 'Diterima')
-                ->where('departemen', $user->departemen)  // Gunakan departemen dari session
-                ->orderBy('request_id', 'DESC')
-                ->get();
+
+        // Cek role_id, jika 4 atau 5 hanya lihat departemen sendiri, jika 1,2,3 lihat semua
+        if (in_array($user->role_id, [4, 5])) {
+            $query = RequestBarangModel::where('status', 'Diterima')
+                ->where('departemen', $user->departemen);  // Filter berdasarkan departemen user
         } else {
-            $data = RequestBarangModel::where('status', 'Diterima')
-                ->where('departemen', $user->departemen)  // Gunakan departemen dari session
-                ->whereBetween('request_tanggal', [$request->tglawal, $request->tglakhir])
+            $query = RequestBarangModel::where('status', 'Diterima');
+        }
+
+        if ($request->tglawal == '') {
+            $data = $query->orderBy('request_id', 'DESC')->get();
+        } else {
+            $data = $query->whereBetween('request_tanggal', [$request->tglawal, $request->tglakhir])
                 ->orderBy('request_id', 'DESC')
                 ->get();
         }
@@ -171,6 +174,7 @@ public function storeSignature(Request $request)
             ->make(true);
     }
 }
+
 
 
 public function csv(Request $request)
