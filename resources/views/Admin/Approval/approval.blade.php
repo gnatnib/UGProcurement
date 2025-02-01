@@ -97,11 +97,9 @@
             <div class="modal-content">
                 <div class="modal-header d-flex justify-content-between align-items-center">
                     <h5 class="modal-title">Detail Request Barang</h5>
-                    <div id="signRequestButtonContainer">
-                        <button type="button" class="btn btn-primary" onclick="showSignatureModal()">
-                            <i class="fe fe-edit-2"></i> Sign Request
-                        </button>
-                    </div>
+                    <button type="button" class="btn btn-primary" onclick="showSignatureModal()">
+                        <i class="fe fe-edit-2"></i> Sign Request
+                    </button>
                 </div>
 
                 <!-- Signature Area -->
@@ -406,10 +404,17 @@
                 );
 
                 // Show/hide Sign Request button based on whether current user has signed
-                const signRequestButton = document.querySelector('#signRequestButtonContainer button');
-                if (signRequestButton) {
-                    signRequestButton.style.display = currentUserSignature ? 'none' : 'inline-block';
-                }
+                const signRequestButton = `
+            <button type="button" class="btn btn-primary" onclick="showSignatureModal()" ${currentUserSignature ? 'style="display: none;"' : ''}>
+                <i class="fe fe-edit-2"></i> Sign Request
+            </button>
+        `;
+
+                // Update modal header with conditional button
+                $('.modal-header').html(`
+            <h5 class="modal-title">Detail Request Barang</h5>
+            ${signRequestButton}
+        `);
 
                 let html = '';
                 data.forEach(item => {

@@ -155,6 +155,7 @@
 @endsection
 
 @section('scripts')
+
     <script>
         // Add this at the top of your script section
         $.ajaxSetup({
@@ -598,17 +599,107 @@
         
         // Add this to your existing JavaScript
             function selesaiRequest(requestId) {
-                Swal.fire({
-                    title: 'Konfirmasi',
-                    text: "Apakah Anda yakin ingin menyelesaikan request ini?",
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Ya, selesaikan!',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
+                $('#current_request_id').val(requestId);
+                    Swal.fire({
+                        title: 'Konfirmasi',
+                        text: "Apakah Anda yakin ingin menyelesaikan request ini?",
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Ya, selesaikan!',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            showSignatureModal(requestId);
+                        }
+                    });
+                }
+            // Initialize signature pad when modal is shown
+                let signaturePad;
+                // Add hidden input to store request_id
+                    $(document).ready(function () {
+                        // Add modal
+                        $('body').append(`
+                        <div class="modal fade" id="signatureModal">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Tanda Tangan Konfirmasi</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <input type="hidden" id="current_request_id">
+                                        <canvas id="signaturePad" class="border rounded w-100" width="400" height="200"></canvas>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-light" onclick="clearSignature()">
+                                            <i class="fe fe-refresh-cw"></i> Clear
+                                        </button>
+                                        <button type="button" class="btn btn-primary" onclick="saveSignature()">
+                                            <i class="fe fe-check"></i> Save
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+
+                        // Initialize signature pad when modal is shown
+                        $('#signatureModal').on('shown.bs.modal', function () {
+                            const canvas = document.getElementById('signaturePad');
+                            signaturePad = new SignaturePad(canvas, {
+                                backgroundColor: 'rgb(255, 255, 255)'
+                            });
+                        });
+                    });
+
+                function showSignatureModal() {
+                        $('#signatureModal').modal('show');
+                    }
+
+                function clearSignature() {
+                    if (signaturePad) {
+                        signaturePad.clear();
+                    }
+                }
+
+                function saveSignature() {
+                        if (!signaturePad || signaturePad.isEmpty()) {
+                            Swal.fire('Error!', 'Harap memberikan tanda tangan', 'error');
+                            return;
+                        }
+
+                        const requestId = $('#current_request_id').val();
+                        if (!requestId) {
+                            Swal.fire('Error!', 'Request ID tidak ditemukan', 'error');
+                            return;
+                        }
+
+                        const signatureData = signaturePad.toDataURL();
+
+                        $.ajax({
+                            url: "/admin/request-barang/store-signature",
+                            type: 'POST',
+                            data: {
+                                _token: $('meta[name="csrf-token"]').attr('content'),
+                                request_id: requestId,
+                                signature: signatureData
+                            },
+                            success: function (response) {
+                                if (response.success) {
+                                    $('#signatureModal').modal('hide');
+                                    completeRequest(requestId);
+                                } else {
+                                    Swal.fire('Error!', response.message || 'Gagal menyimpan tanda tangan', 'error');
+                                }
+                            },
+                            error: function (xhr) {
+                                Swal.fire('Error!', xhr.responseJSON?.message || 'Gagal menyimpan tanda tangan', 'error');
+                            }
+                        });
+                    }
+                function completeRequest(requestId) {
                         $.ajax({
                             url: `/admin/request-barang/complete/${requestId}`,
                             type: 'POST',
@@ -629,7 +720,7 @@
                                 } else {
                                     Swal.fire(
                                         'Error!',
-                                        response.message,
+                                        response.message || 'Terjadi kesalahan saat menyelesaikan request!',
                                         'error'
                                     );
                                 }
@@ -644,7 +735,14 @@
                             }
                         });
                     }
-                });
-            }
+                
     </script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
+    <style>
+        #signaturePad {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+        }
+    </style>
 @endsection

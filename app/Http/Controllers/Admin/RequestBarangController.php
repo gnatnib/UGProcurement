@@ -11,6 +11,7 @@ use App\Models\Admin\BarangmasukModel;
 use App\Models\Admin\BarangModel;
 use App\Models\Admin\CustomerModel;
 use Carbon\Carbon;
+use App\Models\Admin\SignatureModel;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -276,7 +277,59 @@ class RequestBarangController extends Controller
             return response()->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
         }
     }
+   public function storeSignature(Request $request) 
+{
+    try {
+        DB::beginTransaction();
 
+        // Validate request
+        if (!$request->has('request_id') || !$request->request_id) {
+            throw new \Exception('Request ID is required');
+        }
+
+        if (!$request->has('signature') || !$request->signature) {
+            throw new \Exception('Signature data is required');
+        }
+
+        $user = Session::get('user');
+        $signatureData = $request->signature;
+
+        // Remove the data:image/png;base64, prefix if it exists
+        if (strpos($signatureData, 'data:image/png;base64,') === 0) {
+            $signatureData = substr($signatureData, strpos($signatureData, ',') + 1);
+        }
+
+        // Validate that the request exists
+        $requestExists = DB::table('tbl_request_barang')
+            ->where('request_id', $request->request_id)
+            ->exists();
+
+        if (!$requestExists) {
+            throw new \Exception('Request ID tidak ditemukan');
+        }
+
+        // Create new signature record
+        $signature = new SignatureModel();
+        $signature->request_id = $request->request_id;
+        $signature->user_id = $user->user_id;
+        $signature->role_id = $user->role_id;
+        $signature->signature = $signatureData;
+        $signature->action = 'Complete';
+        $signature->signer_type = 'User';
+        $signature->save();
+
+        DB::commit();
+
+        return response()->json(['success' => true]);
+    } catch (\Exception $e) {
+        DB::rollback();
+        Log::error('Signature store error: ' . $e->getMessage());
+        return response()->json([
+            'success' => false,
+            'message' => 'Error: ' . $e->getMessage()
+        ], 500);
+    }
+}
     //untuk view tabel request nya
     public function getdata(Request $request)
     {
@@ -393,7 +446,14 @@ class RequestBarangController extends Controller
     {
         try {
             DB::beginTransaction();
+            $hasSignature = DB::table('tbl_signatures')
+            ->where('request_id', $requestId)
+            ->where('action', 'Complete')
+            ->exists();
 
+            if (!$hasSignature) {
+                throw new \Exception('Tanda tangan diperlukan untuk menyelesaikan request');
+            }
             // Update request status to 'diterima'
             DB::table('tbl_request_barang')
                 ->where('request_id', $requestId)

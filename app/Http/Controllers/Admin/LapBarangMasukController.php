@@ -36,11 +36,15 @@ class LapBarangMasukController extends Controller
 
     $data["title"] = "PDF Permintaan Barang";
     $data['web'] = WebModel::first();
-    $data['request'] = RequestBarangModel::find($request->id);
+    $request_data = RequestBarangModel::find($request->id);
+    $request_data->request_id = str_replace('-', '/', $request_data->request_id);
+    $data['request'] = $request_data;
     
     // Ambil data tanda tangan
     $signatures = DB::table('tbl_signatures')
+        ->join('tbl_user', 'tbl_signatures.user_id', '=', 'tbl_user.user_id')
         ->where('request_id', $request->id)
+        ->select('tbl_signatures.*', 'tbl_user.user_nmlengkap', 'tbl_user.role_id')
         ->get();
 
     // Proses setiap tanda tangan
@@ -69,11 +73,15 @@ class LapBarangMasukController extends Controller
             Log::error('Error processing signature: ' . $e->getMessage());
             return (object) [
                 'signature_base64' => null,
-                'signer_type' => $sig->signer_type ?? null
+                'signer_type' => $sig->signer_type ?? null,
+                'user_nmlengkap' => $sig->user_nmlengkap ?? null,
             ];
         }
     })->keyBy('signer_type');
-
+    $userSignature = $signatures->where('action', 'Complete')->first();
+    if ($userSignature) {
+        $processedSignatures['User'] = $userSignature;
+    }
     $data['signatures'] = $processedSignatures;
     
     $pdf = app('dompdf.wrapper');

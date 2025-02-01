@@ -297,7 +297,8 @@ $appreance = AppreanceModel::where('user_id', '=', Session::get('user')->user_id
 
 <!-- CUSTOM JS -->
 <script src="{{ url('/assets/js/custom.js') }}"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/4.1.5/signature_pad.umd.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
 <script>
     $(document).ready(function() {
         // BOOTSTRAP DATEPICKER
