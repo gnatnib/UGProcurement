@@ -364,7 +364,7 @@
                     orderable: false,
                     searchable: false,
                     render: function(data, type, row) {
-                        return `<button type="button" class="btn btn-success btn-sm" onclick="showDetail('${row.request_id}')">
+                        return `<button type="button" class="btn btn-success btn-sm" onclick="showDetail(encodeURIComponent('${row.request_id}'))">
                     <i class="fe fe-eye"></i> Detail
                 </button>`;
                     }
@@ -378,12 +378,12 @@
 
 
         function showDetail(request_id) {
-            $('#current_request_id').val(request_id);
+            $('#current_request_id').val(decodeURIComponent(request_id));
             itemApprovals = {};
 
             Promise.all([
-                $.get("/admin/approval/detail/" + request_id),
-                $.get("/admin/approval/view-signature/" + request_id)
+                $.get("/admin/approval/detail/" + encodeURIComponent(request_id)),
+                $.get("/admin/approval/view-signature/" + encodeURIComponent(request_id))
             ]).then(([data, signatureData]) => {
                 let signatureDisplay = '';
                 if (signatureData.success && signatureData.signatures?.length > 0) {
@@ -475,7 +475,18 @@
 
             // Check if there are any items to approve
             if (Object.keys(itemApprovals).length === 0) {
-                swal("Peringatan!", "Tidak ada item untuk diapprove", "warning");
+                swal("Peringatan!", "Anda harus menyetujui atau menolak item terlebih dahulu sebelum menyimpan", "warning");
+                return;
+            }
+
+            // Check if any items are still in 'pending' status
+            const hasPendingItems = Object.values(itemApprovals).some(approval => {
+                const status = typeof approval === 'object' ? approval.status : approval;
+                return status === 'pending';
+            });
+
+            if (hasPendingItems) {
+                swal("Peringatan!", "Anda harus menyetujui atau menolak semua item terlebih dahulu", "warning");
                 return;
             }
 

@@ -20,11 +20,11 @@ class TrackingStatusController extends Controller
             return redirect()->back()->with('error', 'Unauthorized access');
         }
         $data["departemen"] = DB::table('tbl_user')
-        ->select('departemen')
-        ->distinct()
-        ->whereNotNull('departemen')
-        ->pluck('departemen');
-        
+            ->select('departemen')
+            ->distinct()
+            ->whereNotNull('departemen')
+            ->pluck('departemen');
+
         $data["title"] = "Tracking Status";
         return view('Admin.TrackingStatus.trackingstatus', $data);
     }
@@ -47,18 +47,18 @@ class TrackingStatusController extends Controller
                         'r.status'
                     )
                     ->whereIn('r.status', ['Diproses', 'Dikirim', 'Diterima']); // Ubah ini untuk menampilkan semua status
-                    if ($request->filled('departemen')) {
-                        $query->where('creator.departemen', $request->departemen);
-                    }
+                if ($request->filled('departemen')) {
+                    $query->where('creator.departemen', $request->departemen);
+                }
 
-                    if ($request->filled('bulan')) {
-                        $query->whereMonth('r.request_tanggal', $request->bulan);
-                    }
+                if ($request->filled('bulan')) {
+                    $query->whereMonth('r.request_tanggal', $request->bulan);
+                }
 
-                    if ($request->filled('tahun')) {
-                        $query->whereYear('r.request_tanggal', $request->tahun);
-                    }
-                    $data = $query->groupBy('r.request_id', 'r.request_tanggal', 'r.request_id', 'creator.divisi', 'creator.departemen', 'r.status')
+                if ($request->filled('tahun')) {
+                    $query->whereYear('r.request_tanggal', $request->tahun);
+                }
+                $data = $query->groupBy('r.request_id', 'r.request_tanggal', 'r.request_id', 'creator.divisi', 'creator.departemen', 'r.status')
                     ->get();
 
                 return DataTables::of($data)
@@ -103,27 +103,41 @@ class TrackingStatusController extends Controller
 
     public function getDetail($request_id)
     {
-        $detail = DB::table('tbl_barangmasuk as bm')
-            ->join('tbl_barang as b', 'b.barang_kode', '=', 'bm.barang_kode')
-            ->join('tbl_request_barang as r', 'r.request_id', '=', 'bm.request_id')
-            ->select(
-                'bm.bm_id',
-                'bm.barang_kode',
-                'b.barang_nama',
-                'bm.bm_jumlah',
-                'bm.divisi',
-                'bm.keterangan',
-                'bm.tracking_status',
-                'bm.approval',
-                'r.status as request_status'
-            )
-            ->where([
-                ['bm.request_id', '=', $request_id],
-                ['bm.approval', '=', 'Approve'] // Tambahkan filter ini
-            ])
-            ->get();
+        try {
+            $request_id = urldecode($request_id);
 
-        return response()->json($detail);
+            $detail = DB::table('tbl_barangmasuk as bm')
+                ->join('tbl_barang as b', 'b.barang_kode', '=', 'bm.barang_kode')
+                ->join('tbl_request_barang as r', 'r.request_id', '=', 'bm.request_id')
+                ->select(
+                    'bm.bm_id',
+                    'bm.barang_kode',
+                    'b.barang_nama',
+                    'bm.bm_jumlah',
+                    'bm.divisi',
+                    'bm.keterangan',
+                    'bm.tracking_status',
+                    'bm.approval',
+                    'r.status as request_status'
+                )
+                ->where([
+                    ['bm.request_id', '=', $request_id],
+                    ['bm.approval', '=', 'Approve']
+                ])
+                ->get();
+
+            return response()->json($detail);
+        } catch (\Exception $e) {
+            Log::error('Error in tracking getDetail:', [
+                'request_id' => $request_id,
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Error retrieving details'
+            ], 500);
+        }
     }
 
     public function approve($id)
@@ -218,36 +232,36 @@ class TrackingStatusController extends Controller
             // Tentukan status request berdasarkan status item
             $totalApprovedItems = $allApprovedItems->count();
 
-        if ($totalApprovedItems > 0) {
-            // Count items with specific statuses
-            $dikirimCount = $allApprovedItems->filter(function($status) {
-                return $status === 'Dikirim';
-            })->count();
-            
-            $diterimaCount = $allApprovedItems->filter(function($status) {
-                return $status === 'Diterima';
-            })->count();
+            if ($totalApprovedItems > 0) {
+                // Count items with specific statuses
+                $dikirimCount = $allApprovedItems->filter(function ($status) {
+                    return $status === 'Dikirim';
+                })->count();
 
-            // Determine new status
-            $newStatus = 'Diproses'; // Default status
+                $diterimaCount = $allApprovedItems->filter(function ($status) {
+                    return $status === 'Diterima';
+                })->count();
 
-            if ($diterimaCount === $totalApprovedItems) {
-                $newStatus = 'Diterima';
-            } elseif ($dikirimCount === $totalApprovedItems) {
-                // Only change to 'Dikirim' if ALL approved items are marked as 'Dikirim'
-                $newStatus = 'Dikirim';
-            } elseif ($dikirimCount > 0 || $diterimaCount > 0) {
-                // If some items are shipped/received but not all, keep as 'Diproses'
-                $newStatus = 'Diproses';
-            }
+                // Determine new status
+                $newStatus = 'Diproses'; // Default status
 
-            // Update request status
-            DB::table('tbl_request_barang')
-                ->where('request_id', $request->request_id)
-                ->update([
-                    'status' => $newStatus,
-                    'updated_at' => now()
-                ]);
+                if ($diterimaCount === $totalApprovedItems) {
+                    $newStatus = 'Diterima';
+                } elseif ($dikirimCount === $totalApprovedItems) {
+                    // Only change to 'Dikirim' if ALL approved items are marked as 'Dikirim'
+                    $newStatus = 'Dikirim';
+                } elseif ($dikirimCount > 0 || $diterimaCount > 0) {
+                    // If some items are shipped/received but not all, keep as 'Diproses'
+                    $newStatus = 'Diproses';
+                }
+
+                // Update request status
+                DB::table('tbl_request_barang')
+                    ->where('request_id', $request->request_id)
+                    ->update([
+                        'status' => $newStatus,
+                        'updated_at' => now()
+                    ]);
             }
 
             DB::commit();

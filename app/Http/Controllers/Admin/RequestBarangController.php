@@ -96,17 +96,17 @@ class RequestBarangController extends Controller
                     'u.user_nmlengkap'
                 )
                 ->first();
-    
+
             if (!$request) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Request tidak ditemukan'
                 ], 404);
             }
-    
+
             // Format tanggal agar lebih mudah dibaca
             $request->request_tanggal = Carbon::parse($request->request_tanggal)->translatedFormat('d F Y');
-    
+
             // Ambil daftar barang yang masuk berdasarkan request_id
             $items = DB::table('tbl_barangmasuk as bm')
                 ->leftJoin('tbl_barang as b', 'b.barang_kode', '=', 'bm.barang_kode')
@@ -121,11 +121,11 @@ class RequestBarangController extends Controller
                     'bm.tracking_status' // Pastikan status tracking ikut diambil
                 )
                 ->get();
-    
+
             // Hitung total barang dan harga keseluruhan
             $totalItems = $items->count();
             $totalHarga = $items->sum('total_harga');
-    
+
             return response()->json([
                 'success' => true,
                 'request' => $request, // Pastikan status diambil dari sini
@@ -141,7 +141,7 @@ class RequestBarangController extends Controller
             ], 500);
         }
     }
-    
+
 
     public function hapus(Request $request)
     {
@@ -175,17 +175,17 @@ class RequestBarangController extends Controller
 
         // Cari nomor terakhir untuk bulan dan tahun ini
         $lastRequest = DB::table('tbl_request_barang')
-            ->where('request_id', 'LIKE', "%-$divisiCode-$month-$year")
+            ->where('request_id', 'LIKE', "%/$divisiCode/$month/$year")
             ->orderBy('request_id', 'DESC')
             ->first();
 
         $number = '01';
         if ($lastRequest) {
-            $lastNumber = explode('-', $lastRequest->request_id)[0];
+            $lastNumber = explode('/', $lastRequest->request_id)[0];
             $number = str_pad((int)$lastNumber + 1, 2, '0', STR_PAD_LEFT);
         }
 
-        return "$number-$divisiCode-$month-$year";
+        return "$number/$divisiCode/$month/$year";
     }
 
     private function getDivisionCode($division)
@@ -263,7 +263,7 @@ class RequestBarangController extends Controller
                 'user_id' => $user->user_id,
                 'request_tanggal' => date('Y-m-d'),
                 'departemen' => $user->departemen,
-                'divisi' => $user->divisi, 
+                'divisi' => $user->divisi,
                 'status' => 'draft',
                 'keterangan' => 'Request Barang Baru',
                 'created_at' => now(),
@@ -277,59 +277,59 @@ class RequestBarangController extends Controller
             return response()->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
         }
     }
-   public function storeSignature(Request $request) 
-{
-    try {
-        DB::beginTransaction();
+    public function storeSignature(Request $request)
+    {
+        try {
+            DB::beginTransaction();
 
-        // Validate request
-        if (!$request->has('request_id') || !$request->request_id) {
-            throw new \Exception('Request ID is required');
+            // Validate request
+            if (!$request->has('request_id') || !$request->request_id) {
+                throw new \Exception('Request ID is required');
+            }
+
+            if (!$request->has('signature') || !$request->signature) {
+                throw new \Exception('Signature data is required');
+            }
+
+            $user = Session::get('user');
+            $signatureData = $request->signature;
+
+            // Remove the data:image/png;base64, prefix if it exists
+            if (strpos($signatureData, 'data:image/png;base64,') === 0) {
+                $signatureData = substr($signatureData, strpos($signatureData, ',') + 1);
+            }
+
+            // Validate that the request exists
+            $requestExists = DB::table('tbl_request_barang')
+                ->where('request_id', $request->request_id)
+                ->exists();
+
+            if (!$requestExists) {
+                throw new \Exception('Request ID tidak ditemukan');
+            }
+
+            // Create new signature record
+            $signature = new SignatureModel();
+            $signature->request_id = $request->request_id;
+            $signature->user_id = $user->user_id;
+            $signature->role_id = $user->role_id;
+            $signature->signature = $signatureData;
+            $signature->action = 'Complete';
+            $signature->signer_type = 'User';
+            $signature->save();
+
+            DB::commit();
+
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            Log::error('Signature store error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
         }
-
-        if (!$request->has('signature') || !$request->signature) {
-            throw new \Exception('Signature data is required');
-        }
-
-        $user = Session::get('user');
-        $signatureData = $request->signature;
-
-        // Remove the data:image/png;base64, prefix if it exists
-        if (strpos($signatureData, 'data:image/png;base64,') === 0) {
-            $signatureData = substr($signatureData, strpos($signatureData, ',') + 1);
-        }
-
-        // Validate that the request exists
-        $requestExists = DB::table('tbl_request_barang')
-            ->where('request_id', $request->request_id)
-            ->exists();
-
-        if (!$requestExists) {
-            throw new \Exception('Request ID tidak ditemukan');
-        }
-
-        // Create new signature record
-        $signature = new SignatureModel();
-        $signature->request_id = $request->request_id;
-        $signature->user_id = $user->user_id;
-        $signature->role_id = $user->role_id;
-        $signature->signature = $signatureData;
-        $signature->action = 'Complete';
-        $signature->signer_type = 'User';
-        $signature->save();
-
-        DB::commit();
-
-        return response()->json(['success' => true]);
-    } catch (\Exception $e) {
-        DB::rollback();
-        Log::error('Signature store error: ' . $e->getMessage());
-        return response()->json([
-            'success' => false,
-            'message' => 'Error: ' . $e->getMessage()
-        ], 500);
     }
-}
     //untuk view tabel request nya
     public function getdata(Request $request)
     {
@@ -353,7 +353,7 @@ class RequestBarangController extends Controller
                     AND tracking_status != "Diterima" 
                     AND tracking_status != "Ditolak"
                 ) as all_items_received')
-                    
+
                 ]);
 
             // Jika role_id = 5 (User), hanya tampilkan request miliknya
@@ -400,7 +400,6 @@ class RequestBarangController extends Controller
                         case 'Diterima':
                             $badge = '<span class="badge bg-success">Diterima</span>';
                             break;
-                        
                     }
                     return $badge;
                 })
@@ -413,8 +412,8 @@ class RequestBarangController extends Controller
                         <i class="fe fe-plus"></i> Tambah Barang Masuk
                     </button>';
                     }
-                    if ($row->all_items_received && $row->status !== 'Diterima'&& $row->status == 'Dikirim') {
-                    $buttons .= '<button onclick="selesaiRequest(\'' . $row->request_id . '\')" class="btn btn-sm btn-primary me-2">
+                    if ($row->all_items_received && $row->status !== 'Diterima' && $row->status == 'Dikirim') {
+                        $buttons .= '<button onclick="selesaiRequest(\'' . $row->request_id . '\')" class="btn btn-sm btn-primary me-2">
                         <i class="fe fe-check-circle"></i> Selesai Request
                     </button>';
                     }
@@ -442,14 +441,14 @@ class RequestBarangController extends Controller
                 ->make(true);
         }
     }
-        public function completeRequest($requestId)
+    public function completeRequest($requestId)
     {
         try {
             DB::beginTransaction();
             $hasSignature = DB::table('tbl_signatures')
-            ->where('request_id', $requestId)
-            ->where('action', 'Complete')
-            ->exists();
+                ->where('request_id', $requestId)
+                ->where('action', 'Complete')
+                ->exists();
 
             if (!$hasSignature) {
                 throw new \Exception('Tanda tangan diperlukan untuk menyelesaikan request');
@@ -468,7 +467,6 @@ class RequestBarangController extends Controller
                 'success' => true,
                 'message' => 'Request berhasil diselesaikan'
             ]);
-
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json([
@@ -682,45 +680,44 @@ class RequestBarangController extends Controller
     }
 
     public function updateStatus(Request $request, $id)
-{
-    try {
-        DB::beginTransaction();
+    {
+        try {
+            DB::beginTransaction();
 
-        // Cek dulu apakah data barangmasuk ada
-        $barangmasuk = DB::table('tbl_barangmasuk')
-            ->where('bm_id', $id)
-            ->first();
+            // Cek dulu apakah data barangmasuk ada
+            $barangmasuk = DB::table('tbl_barangmasuk')
+                ->where('bm_id', $id)
+                ->first();
 
-        if (!$barangmasuk) {
+            if (!$barangmasuk) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data barang masuk tidak ditemukan'
+                ], 404);
+            }
+
+            // Update tracking_status, bukan status
+            DB::table('tbl_barangmasuk')
+                ->where('bm_id', $id)
+                ->update([
+                    'tracking_status' => $request->status,
+                    'updated_at' => now()
+                ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Status barang berhasil diperbarui'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollback();
             return response()->json([
                 'success' => false,
-                'message' => 'Data barang masuk tidak ditemukan'
-            ], 404);
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
         }
-
-        // Update tracking_status, bukan status
-        DB::table('tbl_barangmasuk')
-            ->where('bm_id', $id)
-            ->update([
-                'tracking_status' => $request->status,
-                'updated_at' => now()
-            ]);
-
-        DB::commit();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Status barang berhasil diperbarui'
-        ]);
-
-    } catch (\Exception $e) {
-        DB::rollback();
-        return response()->json([
-            'success' => false,
-            'message' => 'Error: ' . $e->getMessage()
-        ], 500);
     }
-}
     public function getBarang(Request $request)
     {
         if ($request->ajax()) {

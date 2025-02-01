@@ -40,9 +40,9 @@
                     <select class="form-control" name="tahun" id="filterTahun">
                         <option value="">Semua Tahun</option>
                         @php
-$currentYear = date('Y');
-$startYear = $currentYear - 3;
-$endYear = $currentYear + 1;
+                            $currentYear = date('Y');
+                            $startYear = $currentYear - 3;
+                            $endYear = $currentYear + 1;
                         @endphp
                         @foreach (range($startYear, $endYear) as $year)
                             <option value="{{ $year }}" {{ $currentYear == $year ? 'selected' : '' }}>
@@ -174,7 +174,12 @@ $endYear = $currentYear + 1;
                         data: 'action',
                         name: 'action',
                         orderable: false,
-                        searchable: false
+                        searchable: false,
+                        render: function(data, type, row) {
+                            return `<button class="btn btn-primary btn-sm" onclick="showDetail(encodeURIComponent('${row.request_id}'))">
+                    <i class="fe fe-eye"></i> Detail
+                   </button>`;
+                        }
                     }
                 ]
             });
@@ -184,9 +189,9 @@ $endYear = $currentYear + 1;
         let itemApprovals = {};
 
         function showDetail(request_id) {
-            $('#current_request_id').val(request_id);
+            $('#current_request_id').val(decodeURIComponent(request_id));
 
-            $.get("{{ url('admin/tracking/detail') }}/" + request_id, function(data) {
+            $.get("/admin/tracking/detail/" + encodeURIComponent(request_id), function(data) {
                 let html = '';
                 data.forEach(item => {
                     let badgeClass;
@@ -207,25 +212,25 @@ $endYear = $currentYear + 1;
                     }
 
                     html += `
-                    <tr id="row-${item.bm_id}">
-                        <td>${item.barang_kode}</td>
-                        <td>${item.barang_nama}</td>
-                        <td>${item.bm_jumlah}</td>
-                        <td>${item.divisi}</td>
-                        <td>${item.keterangan}</td>
-                        <td id="status-${item.bm_id}">
-                            <span class="badge bg-${badgeClass}">${currentStatus}</span>
-                        </td>
-                        <td>
-                            <select class="form-select form-select-sm" onchange="setItemStatus(${item.bm_id}, this.value)">
-                                <option value="">Pilih Status</option>
-                                <option value="Diproses" ${currentStatus === 'Diproses' ? 'selected' : ''}> Diproses</option>
-                                <option value="Dikirim" ${currentStatus === 'Dikirim' ? 'selected' : ''}>Dikirim</option>
-                                <option value="Diterima" ${currentStatus === 'Diterima' ? 'selected' : ''}>Diterima</option>
-                            </select>
-                        </td>
-                    </tr>
-                `;
+            <tr id="row-${item.bm_id}">
+                <td>${item.barang_kode}</td>
+                <td>${item.barang_nama}</td>
+                <td>${item.bm_jumlah}</td>
+                <td>${item.divisi}</td>
+                <td>${item.keterangan}</td>
+                <td id="status-${item.bm_id}">
+                    <span class="badge bg-${badgeClass}">${currentStatus}</span>
+                </td>
+                <td>
+                    <select class="form-select form-select-sm" onchange="setItemStatus(${item.bm_id}, this.value)">
+                        <option value="">Pilih Status</option>
+                        <option value="Diproses" ${currentStatus === 'Diproses' ? 'selected' : ''}> Diproses</option>
+                        <option value="Dikirim" ${currentStatus === 'Dikirim' ? 'selected' : ''}>Dikirim</option>
+                        <option value="Diterima" ${currentStatus === 'Diterima' ? 'selected' : ''}>Diterima</option>
+                    </select>
+                </td>
+            </tr>
+            `;
                 });
                 $('#detail-content').html(html);
                 $('#modalDetail').modal('show');
@@ -306,23 +311,24 @@ $endYear = $currentYear + 1;
             });
             location.reload();
         }
+
         function applyFilter() {
-                const departemen = $('#filterDepartemen').val();
-                const bulan = $('#filterBulan').val();
-                const tahun = $('#filterTahun').val();
+            const departemen = $('#filterDepartemen').val();
+            const bulan = $('#filterBulan').val();
+            const tahun = $('#filterTahun').val();
 
-                table.ajax.url("{{ route('tracking.show') }}?" + $.param({
-                    departemen: departemen,
-                    bulan: bulan,
-                    tahun: tahun
-                })).load();
-            }
+            table.ajax.url("{{ route('tracking.show') }}?" + $.param({
+                departemen: departemen,
+                bulan: bulan,
+                tahun: tahun
+            })).load();
+        }
 
-            function resetFilter() {
-                $('#filterDepartemen').val('');
-                $('#filterBulan').val('');
-                $('#filterTahun').val('');
-                applyFilter();
-            }
+        function resetFilter() {
+            $('#filterDepartemen').val('');
+            $('#filterBulan').val('');
+            $('#filterTahun').val('');
+            applyFilter();
+        }
     </script>
 @endsection
