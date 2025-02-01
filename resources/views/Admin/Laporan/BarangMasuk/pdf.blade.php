@@ -108,13 +108,17 @@
 </head>
 
 <body>
-    <div class="header">
-        <h2>PT. USAHA GEDUNG MANDIRI</h2>
-        <p>WISMA MANDIRI Lantai XII</p>
-        <p>Jl. M.H Tamrin no. 5</p>
-        <p>Jakarta 10340</p>
-        <p>Phone: (021) 2300 8000, 390 2020</p>
-        <p>Fax: (0210 230 2752)</p>
+    <div class="header" style="position: relative;">
+        <!-- Add logo -->
+        <div style="position: absolute; top: 0; right: 0;">
+            <img src="{{ public_path('assets/images/logoug.png') }}" style="width: 100px; height: auto;">
+        </div>
+        <h2 style="margin-bottom: 8px;">PT. USAHA GEDUNG MANDIRI</h2>
+        <p style="margin: 4px 0;">WISMA MANDIRI Lantai XII</p>
+        <p style="margin: 4px 0;">Jl. M.H Tamrin no. 5</p>
+        <p style="margin: 4px 0;">Jakarta 10340</p>
+        <p style="margin: 4px 0;">Phone: (021) 2300 8000, 390 2020</p>
+        <p style="margin: 4px 0;">Fax: (0210 230 2752)</p>
     </div>
 
     <h1 style="text-align: center;">Tanda Terima</h1>
@@ -122,7 +126,8 @@
         Request ID: {{ $request->request_id }}
     </div>
     <p>Tanggal: {{ Carbon\Carbon::parse($request->request_tanggal)->translatedFormat('d F Y') }}</p>
-    <p>Divisi: {{ $request->departemen }}</p>
+    <p>Divisi: {{ $request->divisi }}</p>
+    <p>Departemen: {{ $request->departemen }}</p>
 
     <table>
         <thead>

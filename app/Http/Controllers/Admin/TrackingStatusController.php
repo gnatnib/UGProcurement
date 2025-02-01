@@ -19,7 +19,12 @@ class TrackingStatusController extends Controller
         if ($role_id != 2 && $role_id != 3) {
             return redirect()->back()->with('error', 'Unauthorized access');
         }
-
+        $data["departemen"] = DB::table('tbl_user')
+        ->select('departemen')
+        ->distinct()
+        ->whereNotNull('departemen')
+        ->pluck('departemen');
+        
         $data["title"] = "Tracking Status";
         return view('Admin.TrackingStatus.trackingstatus', $data);
     }
@@ -30,7 +35,7 @@ class TrackingStatusController extends Controller
             $user = Session::get('user');
 
             try {
-                $data = DB::table('tbl_barangmasuk as bm')
+                $query = DB::table('tbl_barangmasuk as bm')
                     ->join('tbl_user as creator', 'creator.user_id', '=', 'bm.user_id')
                     ->join('tbl_request_barang as r', 'r.request_id', '=', 'bm.request_id')
                     ->select(
@@ -41,8 +46,19 @@ class TrackingStatusController extends Controller
                         'creator.departemen',
                         'r.status'
                     )
-                    ->whereIn('r.status', ['Diproses', 'Dikirim', 'Diterima']) // Ubah ini untuk menampilkan semua status
-                    ->groupBy('r.request_id', 'r.request_tanggal', 'r.request_id', 'creator.divisi', 'creator.departemen', 'r.status')
+                    ->whereIn('r.status', ['Diproses', 'Dikirim', 'Diterima']); // Ubah ini untuk menampilkan semua status
+                    if ($request->filled('departemen')) {
+                        $query->where('creator.departemen', $request->departemen);
+                    }
+
+                    if ($request->filled('bulan')) {
+                        $query->whereMonth('r.request_tanggal', $request->bulan);
+                    }
+
+                    if ($request->filled('tahun')) {
+                        $query->whereYear('r.request_tanggal', $request->tahun);
+                    }
+                    $data = $query->groupBy('r.request_id', 'r.request_tanggal', 'r.request_id', 'creator.divisi', 'creator.departemen', 'r.status')
                     ->get();
 
                 return DataTables::of($data)
@@ -194,24 +210,35 @@ class TrackingStatusController extends Controller
             }
 
             // Cek status semua item dalam request
-            $allItems = DB::table('tbl_barangmasuk')
+            $allApprovedItems = DB::table('tbl_barangmasuk')
                 ->where('request_id', $request->request_id)
                 ->where('approval', 'Approve')
                 ->pluck('tracking_status');
 
             // Tentukan status request berdasarkan status item
-            if ($allItems->every(function ($status) {
+            $totalApprovedItems = $allApprovedItems->count();
+
+        if ($totalApprovedItems > 0) {
+            // Count items with specific statuses
+            $dikirimCount = $allApprovedItems->filter(function($status) {
+                return $status === 'Dikirim';
+            })->count();
+            
+            $diterimaCount = $allApprovedItems->filter(function($status) {
                 return $status === 'Diterima';
-            })) {
+            })->count();
+
+            // Determine new status
+            $newStatus = 'Diproses'; // Default status
+
+            if ($diterimaCount === $totalApprovedItems) {
                 $newStatus = 'Diterima';
-            } elseif ($allItems->contains('Dikirim')) {
+            } elseif ($dikirimCount === $totalApprovedItems) {
+                // Only change to 'Dikirim' if ALL approved items are marked as 'Dikirim'
                 $newStatus = 'Dikirim';
-            } elseif ($allItems->contains('Diproses')) {
+            } elseif ($dikirimCount > 0 || $diterimaCount > 0) {
+                // If some items are shipped/received but not all, keep as 'Diproses'
                 $newStatus = 'Diproses';
-            } else {
-                $newStatus = DB::table('tbl_request_barang')
-                    ->where('request_id', $request->request_id)
-                    ->value('status');
             }
 
             // Update request status
@@ -221,6 +248,7 @@ class TrackingStatusController extends Controller
                     'status' => $newStatus,
                     'updated_at' => now()
                 ]);
+            }
 
             DB::commit();
             return response()->json([
