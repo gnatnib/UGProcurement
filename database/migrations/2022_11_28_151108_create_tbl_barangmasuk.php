@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('barang_kode');
             $table->string('bm_tanggal');
             $table->string('bm_jumlah');
+            $table->string('satuan')->nullable();  // Just define it where you want it in the sequence
             $table->string('divisi');
             $table->string('approval')->nullable();
             $table->string('status')->nullable();

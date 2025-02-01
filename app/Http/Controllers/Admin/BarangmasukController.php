@@ -20,7 +20,15 @@ class BarangmasukController extends Controller
     public function index()
     {
         $data["title"] = "Barang Masuk";
-        $data["hakTambah"] = AksesModel::leftJoin('tbl_submenu', 'tbl_submenu.submenu_id', '=', 'tbl_akses.submenu_id')->where(array('tbl_akses.role_id' => Session::get('user')->role_id, 'tbl_submenu.submenu_judul' => 'Barang Masuk', 'tbl_akses.akses_type' => 'create'))->count();
+        $data["hakTambah"] = AksesModel::leftJoin('tbl_submenu', 'tbl_submenu.submenu_id', '=', 'tbl_akses.submenu_id')
+            ->where(array(
+                'tbl_akses.role_id' => Session::get('user')->role_id,
+                'tbl_submenu.submenu_judul' => 'Barang Masuk',
+                'tbl_akses.akses_type' => 'create'
+            ))->count();
+
+        // Add this line to get satuan list
+        $data["satuanList"] = DB::table('tbl_satuan')->orderBy('satuan_nama', 'ASC')->get();
 
         return view('Admin.BarangMasuk.index', $data);
     }
@@ -52,6 +60,9 @@ class BarangmasukController extends Controller
                     'tbl_akses.akses_type' => 'create'
                 ])->count();
 
+            // Add this line to get satuan list
+            $data["satuanList"] = DB::table('tbl_satuan')->orderBy('satuan_nama', 'ASC')->get();
+
             $data["request_data"] = $requestData;
             $data["barangs"] = BarangModel::orderBy('barang_nama', 'ASC')->get();
 
@@ -74,12 +85,12 @@ class BarangmasukController extends Controller
                 ->leftJoin('tbl_request_barang', 'tbl_request_barang.request_id', '=', 'tbl_barangmasuk.request_id')
                 ->leftJoin('tbl_user', 'tbl_user.user_id', '=', 'tbl_barangmasuk.user_id');
 
-            // Filter by request_id
+            // Filter by request_id if provided
             if ($requestId) {
                 $query->where('tbl_barangmasuk.request_id', $requestId);
             }
 
-            // Filter data berdasarkan role
+            // Filter data based on user role
             if ($user->role_id == 4) { // GM
                 $query->where([
                     'tbl_user.divisi' => $user->divisi,
@@ -105,6 +116,12 @@ class BarangmasukController extends Controller
                 ->addColumn('barang', function ($row) {
                     return $row->barang_nama ?? '-';
                 })
+                ->addColumn('jumlah_item', function ($row) {
+                    return $row->bm_jumlah . ' ' . $row->satuan;
+                })
+                ->addColumn('harga', function ($row) {
+                    return $row->harga;
+                })
                 ->addColumn('approval', function ($row) {
                     return $row->approval ?? 'PENDING';
                 })
@@ -119,6 +136,8 @@ class BarangmasukController extends Controller
                         "user_id" => $row->user_id,
                         "bm_tanggal" => $row->bm_tanggal,
                         "bm_jumlah" => $row->bm_jumlah,
+                        "satuan" => $row->satuan,
+                        "keterangan" => $row->keterangan,
                     );
 
                     $button = '';
@@ -166,12 +185,12 @@ class BarangmasukController extends Controller
     {
         try {
             $user = Session::get('user');
-    
+
             $latestRequest = DB::table('tbl_request_barang')
                 ->where('user_id', $user->user_id)
                 ->orderBy('created_at', 'desc')
                 ->first();
-    
+
             if (!$latestRequest) {
                 return response()->json([
                     'success' => false,
@@ -180,8 +199,7 @@ class BarangmasukController extends Controller
                     'type' => 'warning'
                 ], 400);
             }
-    
-            // Buat record barang masuk dengan harga yang diinput user
+
             $barangmasuk = BarangmasukModel::create([
                 'bm_tanggal' => $request->tglmasuk,
                 'bm_kode' => $request->bmkode,
@@ -189,15 +207,15 @@ class BarangmasukController extends Controller
                 'request_id' => $latestRequest->request_id,
                 'keterangan' => $request->keterangan,
                 'bm_jumlah' => $request->jml,
-                'harga' => $request->harga, // Harga dari input user hanya disimpan di tabel barang masuk
+                'satuan' => $request->satuan,  // Add this
+                'harga' => $request->harga,
                 'user_id' => $user->user_id,
                 'divisi' => $user->divisi,
                 'status' => null,
                 'approval' => null,
             ]);
-    
+
             return response()->json(['success' => true]);
-    
         } catch (\Exception $e) {
             Log::error('Error saving data: ' . $e->getMessage());
             return response()->json([
