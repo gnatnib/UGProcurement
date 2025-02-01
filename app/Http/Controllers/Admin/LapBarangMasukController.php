@@ -32,11 +32,25 @@ class LapBarangMasukController extends Controller
     $data['data'] = BarangmasukModel::join('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')
         ->select('tbl_barangmasuk.*', 'tbl_barang.barang_nama', 'tbl_barang.barang_harga')
         ->where('request_id', $request->id)
-        ->get();
+        ->get()
+        ->map(function($item) {
+            // Capitalize first letter of status
+            $item->tracking_status = ucfirst(strtolower($item->tracking_status));
+            return $item;
+        });
 
     $data["title"] = "PDF Permintaan Barang";
     $data['web'] = WebModel::first();
-    $request_data = RequestBarangModel::find($request->id);
+    $request_data = RequestBarangModel::join('tbl_user', 'tbl_request_barang.user_id', '=', 'tbl_user.user_id')
+        ->where('request_id', $request->id)
+        ->select(
+            'tbl_request_barang.request_id',
+            'tbl_request_barang.request_tanggal',
+            'tbl_request_barang.status',
+            'tbl_user.departemen',
+            'tbl_user.divisi'
+        )
+        ->first();
     $request_data->request_id = str_replace('-', '/', $request_data->request_id);
     $data['request'] = $request_data;
     

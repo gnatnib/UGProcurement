@@ -11,7 +11,57 @@
             </ol>
         </div>
     </div>
-
+    <!-- FILTER SECTION -->
+    <div class="card-body border-bottom">
+        <form id="filterForm">
+            <div class="row align-items-end mb-3">
+                <div class="col-md-3">
+                    <label class="form-label">Departemen</label>
+                    <select class="form-control" name="departemen" id="filterDepartemen">
+                        <option value="">Semua Departemen</option>
+                        @foreach ($departemen as $d)
+                            <option value="{{ $d }}">{{ $d }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Bulan</label>
+                    <select class="form-control" name="bulan" id="filterBulan">
+                        <option value="">Semua Bulan</option>
+                        @foreach (range(1, 12) as $month)
+                            <option value="{{ $month }}" {{ date('n') == $month ? 'selected' : '' }}>
+                                {{ date('F', mktime(0, 0, 0, $month, 1)) }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Tahun</label>
+                    <select class="form-control" name="tahun" id="filterTahun">
+                        <option value="">Semua Tahun</option>
+                        @php
+$currentYear = date('Y');
+$startYear = $currentYear - 3;
+$endYear = $currentYear + 1;
+                        @endphp
+                        @foreach (range($startYear, $endYear) as $year)
+                            <option value="{{ $year }}" {{ $currentYear == $year ? 'selected' : '' }}>
+                                {{ $year }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex gap-2">
+                    <button type="button" class="btn btn-primary" onclick="applyFilter()">
+                        <i class="fe fe-filter"></i> Filter
+                    </button>
+                    <button type="button" class="btn btn-light" onclick="resetFilter()">
+                        <i class="fe fe-refresh-cw"></i> Reset
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
     <!-- ROW -->
     <div class="row row-sm">
         <div class="col-lg-12">
@@ -256,5 +306,23 @@
             });
             location.reload();
         }
+        function applyFilter() {
+                const departemen = $('#filterDepartemen').val();
+                const bulan = $('#filterBulan').val();
+                const tahun = $('#filterTahun').val();
+
+                table.ajax.url("{{ route('tracking.show') }}?" + $.param({
+                    departemen: departemen,
+                    bulan: bulan,
+                    tahun: tahun
+                })).load();
+            }
+
+            function resetFilter() {
+                $('#filterDepartemen').val('');
+                $('#filterBulan').val('');
+                $('#filterTahun').val('');
+                applyFilter();
+            }
     </script>
 @endsection
