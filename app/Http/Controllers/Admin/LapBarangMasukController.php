@@ -179,43 +179,171 @@ public function storeSignature(Request $request)
 
 public function csv(Request $request)
 {
-    $month = Carbon::now()->format('m');
-    $year = Carbon::now()->format('Y');
+    // Mengambil data user dari session
+    $user = Session::get('user');
     
-    $data = RequestBarangModel::join('tbl_barangmasuk', 'tbl_barangmasuk.request_id', '=', 'tbl_request_barang.request_id')
-        ->join('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')
-        ->whereMonth('request_tanggal', $month)
-        ->whereYear('request_tanggal', $year)
-        ->select('departemen', 'barang_nama', 'bm_jumlah as jumlah', 'barang_harga')
-        ->get()
-        ->groupBy('departemen');
+    // Query untuk mengambil data request (tanpa join dulu)
+    $requestQuery = RequestBarangModel::select(
+        'request_id',
+        'request_tanggal',
+        'departemen',
+        'divisi'
+    );
 
-    $filename = 'laporan-barang-' . $month . '-' . $year . '.csv';
-    $handle = fopen($filename, 'w+');
-    
-    fputcsv($handle, ['Departemen', 'Barang', 'Jumlah', 'Harga Satuan', 'Total']);
-
-    foreach($data as $dept => $items) {
-        $deptTotal = 0;
-        
-        foreach($items as $item) {
-            $total = $item->jumlah * $item->barang_harga;
-            fputcsv($handle, [
-                $dept,
-                $item->barang_nama,
-                $item->jumlah,
-                $item->barang_harga,
-                $total
-            ]);
-            $deptTotal += $total;
-        }
-        
-        fputcsv($handle, ['Total ' . $dept, '', '', '', $deptTotal]);
-        fputcsv($handle, []); // Empty line between departments
+    // Filter berdasarkan tanggal jika ada
+    if ($request->has('tglawal') && $request->has('tglakhir')) {
+        $requestQuery->whereBetween('request_tanggal', [$request->tglawal, $request->tglakhir]);
     }
 
-    fclose($handle);
+    // Filter berdasarkan role
+    if ($user->role_id == '5') {
+        $requestQuery->where('user_id', $user->user_id);
+    } elseif ($user->role_id == '4') {
+        $requestQuery->where(function($q) use ($user) {
+            $q->where('departemen', $user->departemen)
+              ->orWhere('user_id', $user->user_id);
+        });
+    }
 
-    return response()->download($filename)->deleteFileAfterSend(true);
+    $requests = $requestQuery->get();
+
+    // Cek apakah ada data
+    if ($requests->isEmpty()) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Tidak ada data pada periode yang dipilih'
+        ]);
+    }
+
+    // Query untuk mendapatkan detail barang dari tbl_barangmasuk
+    $requestDetails = BarangmasukModel::select(
+            'tbl_barangmasuk.request_id',
+            'tbl_barangmasuk.barang_kode',
+            'tbl_barang.barang_nama',
+            'tbl_barangmasuk.bm_jumlah',
+            'tbl_barangmasuk.satuan',
+            'tbl_barangmasuk.harga',
+            'tbl_barangmasuk.divisi',
+           
+        )
+        ->join('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')
+        ->whereIn('tbl_barangmasuk.request_id', $requests->pluck('request_id'))
+        ->get()
+        ->groupBy('request_id');
+
+    // Menghitung total barang & harga per divisi
+    $divisiSummary = $requestDetails->flatten()->groupBy('divisi')->map(function ($group) {
+        return [
+            'total_barang' => $group->sum('bm_jumlah'),
+            'total_harga' => $group->sum(fn($item) => $item->bm_jumlah * $item->harga)
+        ];
+    });
+
+    // Menghitung total barang & harga per departemen
+   
+
+    // Buat nama file CSV
+    $filename = 'laporan_permintaan_' . date('Y-m-d_His') . '.csv';
+    
+    // Buat file CSV
+    $handle = fopen('php://temp', 'r+');
+    
+    // Tulis header periode
+    fputcsv($handle, ['Periode Laporan']);
+    fputcsv($handle, ['Tanggal Awal:', $request->tglawal ?? 'Semua Tanggal']);
+    fputcsv($handle, ['Tanggal Akhir:', $request->tglakhir ?? 'Semua Tanggal']);
+    fputcsv($handle, []);
+
+    // Tulis ringkasan per divisi
+    fputcsv($handle, ['Ringkasan Total per Divisi']);
+    fputcsv($handle, ['Divisi', 'Total Barang', 'Total Harga']);
+    foreach ($divisiSummary as $divisi => $summary) {
+        fputcsv($handle, [$divisi, $summary['total_barang'], number_format($summary['total_harga'], 2, ',', '.')]);
+    }
+    fputcsv($handle, []);
+
+    
+
+    // Tulis header detail request
+    fputcsv($handle, [
+        'Request ID',
+        'Tanggal Request',
+        'Departemen',
+        'Divisi',
+        'Kode Barang',
+        'Nama Barang',
+        'Jumlah',
+        'Satuan',
+        'Harga Satuan',
+        'Total Harga'
+    ]);
+
+    // Total keseluruhan
+    $grandTotal = 0;
+
+    // Tulis data detail
+    foreach ($requests as $request) {
+        // Ambil detail barang untuk request ini
+        $barangDetails = $requestDetails[$request->request_id] ?? collect();
+        $totalHargaRequest = 0;
+
+        if ($barangDetails->isEmpty()) {
+            // Jika tidak ada detail barang, tulis baris request dengan barang kosong
+            fputcsv($handle, [
+                $request->request_id,
+                Carbon::parse($request->request_tanggal)->format('d/m/Y'),
+                $request->departemen,
+                $request->divisi,
+                '',
+                '',
+                '',
+                '',
+                '',
+                ''
+            ]);
+        } else {
+            // Tulis satu baris untuk setiap barang dalam request
+            foreach ($barangDetails as $barang) {
+                $totalHarga = $barang->bm_jumlah * $barang->harga;
+                $totalHargaRequest += $totalHarga;
+                
+                fputcsv($handle, [
+                    $request->request_id,
+                    Carbon::parse($request->request_tanggal)->format('d/m/Y'),
+                    $request->departemen,
+                    $request->divisi,
+                    $barang->barang_kode,
+                    $barang->barang_nama,
+                    $barang->bm_jumlah,
+                    $barang->satuan ?? '-',
+                    number_format($barang->harga, 2, ',', '.'),
+                    number_format($totalHarga, 2, ',', '.')
+                ]);
+            }
+        }
+
+        // Tambahkan total per request
+        fputcsv($handle, ['Total Request:', '', '', '', '', '', '', '', '', number_format($totalHargaRequest, 2, ',', '.')]);
+        fputcsv($handle, []);
+
+        $grandTotal += $totalHargaRequest;
+    }
+
+    // Tambahkan total keseluruhan
+    fputcsv($handle, ['Grand Total', '', '', '', '', '', '', '', '', number_format($grandTotal, 2, ',', '.')]);
+
+    // Set pointer ke awal file
+    rewind($handle);
+    
+    // Buat response
+    $content = stream_get_contents($handle);
+    fclose($handle);
+    
+    // Return file CSV
+    return response($content)
+        ->header('Content-Type', 'text/csv')
+        ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
 }
+
+
 }
