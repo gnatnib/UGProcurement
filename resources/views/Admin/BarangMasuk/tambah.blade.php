@@ -56,7 +56,8 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Satuan</label>
+                                    <label for="satuan" class="form-label">Satuan <span
+                                            class="text-danger">*</span></label>
                                     <select class="form-select form-control" id="satuan">
                                         <option value="">Pilih Satuan</option>
                                         @foreach ($satuanList as $satuan)
@@ -231,6 +232,7 @@
             const keterangan = $("textarea[name='keterangan']").val();
             const jml = $("input[name='jml']").val();
             const harga = $("input[name='harga']").val();
+            const satuan = $("#satuan").val();
 
             setLoading(true);
             resetValid();
@@ -253,6 +255,11 @@
             } else if (jml == "" || jml == "0") {
                 validasi('Jumlah Item wajib di isi!', 'warning');
                 $("input[name='jml']").addClass('is-invalid');
+                setLoading(false);
+                return false;
+            } else if (satuan == "") {
+                validasi('Satuan wajib di isi!', 'warning');
+                $("#satuan").addClass('is-invalid');
                 setLoading(false);
                 return false;
             } else if (harga == "" || harga == "0") {

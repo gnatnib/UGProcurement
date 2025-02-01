@@ -139,6 +139,8 @@ class ApproveController extends Controller
     public function getDetail($request_id)
     {
         try {
+            $request_id = urldecode($request_id);
+
             $detail = DB::table('tbl_barangmasuk as bm')
                 ->join('tbl_barang as b', 'b.barang_kode', '=', 'bm.barang_kode')
                 ->leftJoin('tbl_request_barang as r', 'r.request_id', '=', 'bm.request_id')
@@ -429,9 +431,16 @@ class ApproveController extends Controller
     public function viewSignature($request_id)
     {
         try {
+            $request_id = urldecode($request_id);
+
             $signatures = SignatureModel::where('request_id', $request_id)->get();
 
-            // If no signatures exist, return empty array instead of 404
+            // Debug log to check what signatures are found
+            Log::info('Found signatures for request_id: ' . $request_id, [
+                'count' => $signatures->count(),
+                'signatures' => $signatures->toArray()
+            ]);
+
             if ($signatures->isEmpty()) {
                 return response()->json([
                     'success' => true,
@@ -451,6 +460,11 @@ class ApproveController extends Controller
                     'user_id' => $signature->user_id
                 ];
             }
+
+            // Debug log for the final response
+            Log::info('Prepared signature response', [
+                'count' => count($signatureData)
+            ]);
 
             return response()->json([
                 'success' => true,

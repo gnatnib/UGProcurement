@@ -186,11 +186,17 @@
             Route::prefix('admin/approval')->group(function () {
                 Route::get('/', [ApproveController::class, 'index']);
                 Route::get('/show', [ApproveController::class, 'show'])->name('approve.show');
-                Route::get('/detail/{request_id}', [ApproveController::class, 'getDetail'])->name('approve.detail');
+                // Update this route to handle slashes
+                Route::get('/detail/{request_id}', [ApproveController::class, 'getDetail'])
+                    ->where('request_id', '.*')  // This allows any character including slashes
+                    ->name('approve.detail');
                 Route::post('/bulk-update', [ApproveController::class, 'bulkUpdate'])->name('approve.bulk-update');
                 Route::post('/set-status/{bm_id}/{status}', [ApproveController::class, 'setItemStatus']);
                 Route::post('/store-signature', [ApproveController::class, 'storeSignature'])->name('approve.store-signature');
-                Route::get('/view-signature/{request_id}', [ApproveController::class, 'viewSignature'])->name('approve.view-signature');
+                // Update this route as well
+                Route::get('/view-signature/{request_id}', [ApproveController::class, 'viewSignature'])
+                    ->where('request_id', '.*')
+                    ->name('approve.view-signature');
             });
         });
 
@@ -200,7 +206,9 @@
                 // Route yang sudah ada
                 Route::get('/', [TrackingStatusController::class, 'index']);
                 Route::get('/show', [TrackingStatusController::class, 'show'])->name('tracking.show');
-                Route::get('/detail/{request_id}', [TrackingStatusController::class, 'getDetail'])->name('tracking.detail');
+                Route::get('/detail/{request_id}', [TrackingStatusController::class, 'getDetail'])
+                    ->where('request_id', '.*')
+                    ->name('tracking.detail');
                 Route::post('/bulk-update', [TrackingStatusController::class, 'bulkUpdate'])->name('tracking.bulk-update');
 
                 // Route baru yang perlu ditambahkan untuk handling status tracking
