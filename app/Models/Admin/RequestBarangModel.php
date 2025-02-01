@@ -19,6 +19,7 @@ class RequestBarangModel extends Model
         'user_id',
         'request_tanggal',
         'departemen',
+        'divisi',
         'status',
         'keterangan',
     ];
