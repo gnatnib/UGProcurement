@@ -362,6 +362,18 @@ public function getDetails($encodedId)
                 ) as all_items_received')
 
                 ]);
+                
+            if ($request->filled(['tglawal', 'tglakhir'])) {
+            $query->whereBetween('r.request_tanggal', [
+                $request->tglawal,
+                $request->tglakhir
+            ]);
+            }
+
+            // Filter status independen dari filter tanggal
+            if ($request->filled('status')) {
+                $query->where('r.status', $request->status);
+            }
 
             // Jika role_id = 5 (User), hanya tampilkan request miliknya
             if ($user->role_id == 5) {

@@ -298,7 +298,6 @@
             });
         });
 
-        // Add these event handlers outside the document.ready
         // Handle harga input
         $("input[name='harga']").on('focus', function() {
             if (this.value === '0') {
