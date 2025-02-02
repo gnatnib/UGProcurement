@@ -462,245 +462,226 @@
         }
 
         #topBarangList {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            margin: 10px;
-            /* Dikurangi dari 20px */
-        }
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin: 0;
+    height: 380px; /* Menyamakan tinggi dengan grafik donut */
+    display: flex;
+    flex-direction: column;
+}
 
-        .top-barang-header {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            color: white;
-            padding: 12px;
-            /* Dikurangi dari 20px */
-            text-align: center;
-        }
+.top-barang-header {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    padding: 12px;
+    text-align: center;
+    flex-shrink: 0;
+}
 
-        .top-barang-header h3 {
-            font-size: 1.2rem;
-            /* Dikurangi dari 1.5rem */
-            margin: 0 0 3px 0;
-            font-weight: bold;
-        }
+.top-barang-header h3 {
+    font-size: 1.2rem;
+    margin: 0 0 3px 0;
+    font-weight: bold;
+}
 
-        .top-barang-header p {
-            margin: 0;
-            opacity: 0.8;
-            font-size: 0.9rem;
-        }
+.top-barang-header p {
+    margin: 0;
+    opacity: 0.8;
+    font-size: 0.9rem;
+}
 
-        .top-barang-container {
-            padding: 10px;
-        }
+.top-barang-container {
+    flex: 1;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto;
+}
 
-        .top-barang-item {
-            padding: 10px;
-            /* Dikurangi dari 15px */
-            border-bottom: 1px solid #eee;
-            transition: all 0.3s ease;
-        }
+.top-barang-item {
+    background: white;
+    border-radius: 6px;
+    border: 1px solid #eee;
+    padding: 10px;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
 
-        .top-barang-item:hover {
-            background-color: #f8f9fa;
-            transform: translateX(5px);
-        }
+.top-barang-item:hover {
+    background-color: #f8f9fa;
+    transform: translateX(5px);
+}
 
-        .item-content {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
+.item-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
 
-        .rank-badge {
-            width: 28px;
-            height: 28px;
-            font-size: 0.8rem;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-        }
+.rank-badge {
+    width: 28px;
+    height: 28px;
+    font-size: 0.8rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    flex-shrink: 0;
+}
 
-        .rank-1 {
-            background: #FFD700;
-        }
+.rank-1 { background: #FFD700; }
+.rank-2 { background: #C0C0C0; }
+.rank-3 { background: #CD7F32; }
+.rank-4 { background: #4CAF50; }
+.rank-5 { background: #2196F3; }
 
-        .rank-2 {
-            background: #C0C0C0;
-        }
+.item-details {
+    flex: 1;
+    min-width: 0;
+}
 
-        .rank-3 {
-            background: #CD7F32;
-        }
+.item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 8px;
+}
 
-        .rank-4 {
-            background: #4CAF50;
-        }
+.item-info h4 {
+    margin: 0;
+    font-weight: bold;
+    color: #333;
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
-        .rank-5 {
-            background: #2196F3;
-        }
+.item-info p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+}
 
-        .item-details {
-            flex-grow: 1;
-        }
+.price {
+    font-weight: bold;
+    color: #2ecc71;
+    font-size: 1rem;
+}
 
-        .item-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
+.progress-bar-container {
+    width: 100%;
+    height: 4px;
+    background-color: #eee;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 5px;
+}
 
-        .item-info h4 {
-            margin: 0;
-            font-weight: bold;
-            color: #333;
-        }
+.progress-bar {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 1s ease-in-out;
+}
 
-        .item-info p {
-            margin: 5px 0;
-            color: #666;
-        }
+.progress-1 { background: #FFD700; }
+.progress-2 { background: #C0C0C0; }
+.progress-3 { background: #CD7F32; }
+.progress-4 { background: #4CAF50; }
+.progress-5 { background: #2196F3; }
 
-        .price {
-            font-weight: bold;
-            color: #2ecc71;
-        }
+@keyframes slideIn {
+    from {
+        transform: translateX(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
 
-        .progress-bar-container {
-            width: 100%;
-            height: 4px;
-            margin-top: 5px;
-            background-color: #eee;
-            border-radius: 3px;
-            overflow: hidden;
-        }
+.top-barang-item {
+    animation: slideIn 0.3s ease-out forwards;
+}
 
-        .progress-bar {
-            height: 100%;
-            border-radius: 3px;
-            transition: width 1s ease-in-out;
-        }
+/* Custom scrollbar untuk top-barang-container */
+.top-barang-container::-webkit-scrollbar {
+    width: 6px;
+}
 
-        .progress-1 {
-            background: #FFD700;
-        }
+.top-barang-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
 
-        .progress-2 {
-            background: #C0C0C0;
-        }
+.top-barang-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
 
-        .progress-3 {
-            background: #CD7F32;
-        }
+.top-barang-container::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
 
-        .progress-4 {
-            background: #4CAF50;
-        }
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .top-barang-item {
+        padding: 8px;
+    }
+    
+    .item-info h4 {
+        font-size: 0.95rem;
+    }
+}
 
-        .progress-5 {
-            background: #2196F3;
-        }
+@media (max-width: 768px) {
+    .top-barang-header h3 {
+        font-size: 1rem;
+    }
+    
+    .top-barang-header p {
+        font-size: 0.8rem;
+    }
+    
+    .rank-badge {
+        width: 24px;
+        height: 24px;
+        font-size: 0.7rem;
+    }
+    
+    .item-info h4 {
+        font-size: 0.9rem;
+    }
+    
+    .item-info p {
+        font-size: 0.8rem;
+    }
+    
+    .price {
+        font-size: 0.9rem;
+    }
+}
 
-        /* Animasi */
-        @keyframes slideIn {
-            from {
-                transform: translateX(-20px);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        .top-barang-item {
-            animation: slideIn 0.3s ease-out forwards;
-        }
-
-        .item-info-left {
-            flex-grow: 1;
-        }
-
-        .item-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-            margin-bottom: 10px;
-            flex-direction: column;
-        }
-
-        .item-info h4 {
-            margin: 0;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .item-info p {
-            margin: 0;
-            color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 5px;
-        }
-
-        .price {
-            font-weight: bold;
-            color: #2ecc71;
-            font-size: 1.1rem;
-        }
-
-        /* Tambahkan ini di bagian paling bawah file CSS */
-        @media (max-width: 768px) {
-            .top-barang-header h3 {
-                font-size: 1rem;
-            }
-
-            .top-barang-header p {
-                font-size: 0.7rem;
-            }
-
-            .item-info h4 {
-                font-size: 0.8rem;
-                /* Dikurangi dari 0.9rem */
-                margin-bottom: 3px;
-                /* Dikurangi dari 5px */
-            }
-
-            .item-info p {
-                font-size: 0.7rem;
-            }
-
-            .price {
-                font-size: 0.9rem;
-            }
-
-            .rank-badge {
-                width: 20px;
-                height: 20px;
-                font-size: 0.7rem;
-            }
-        }
-
-        @media (max-width: 576px) {
-            #topBarangList {
-                margin: 5px;
-            }
-
-            .top-barang-item {
-                padding: 8px;
-            }
-
-            .item-content {
-                gap: 10px;
-            }
-        }
+@media (max-width: 576px) {
+    .top-barang-container {
+        padding: 8px;
+    }
+    
+    .item-content {
+        gap: 8px;
+    }
+    
+    .rank-badge {
+        width: 20px;
+        height: 20px;
+    }
+}
     </style>
 
     <!-- MODAL BARANG LIST -->

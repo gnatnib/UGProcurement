@@ -76,7 +76,7 @@ class DashboardController extends Controller
     {
         $bookings = DB::table('tbl_request_barang')
             ->select('divisi', DB::raw('COUNT(*) as total'))
-            ->whereNotIn('status', ['Diterima'])
+            ->whereNotIn('status', ['draft', 'pending', 'approved', 'rejected', 'Diproses', 'Dikirim','Ditolak'])
             ->whereMonth('created_at', date('m'))  // Tambahan: filter bulan saat ini
             ->whereYear('created_at', date('Y'))   // Tambahan: filter tahun saat ini
             ->groupBy('divisi')
