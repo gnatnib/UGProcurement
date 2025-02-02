@@ -62,7 +62,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="jmlU" class="form-label">Jumlah Item <span
+                            <label for="jmlU" class="form-label">Jumlah Barang <span
                                     class="text-danger">*</span></label>
                             <input type="text" name="jmlU" class="form-control"
                                 oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');"
@@ -178,7 +178,7 @@
                 setLoadingU(false);
                 return false;
             } else if (jml == "" || jml == "0") {
-                validasi('Jumlah Item wajib di isi!', 'warning');
+                validasi('Jumlah Barang wajib di isi!', 'warning');
                 $("input[name='jmlU']").addClass('is-invalid');
                 setLoadingU(false);
                 return false;

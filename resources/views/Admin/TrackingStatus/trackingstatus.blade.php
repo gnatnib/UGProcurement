@@ -107,7 +107,7 @@
                                 <tr>
                                     <th>Kode Barang</th>
                                     <th>Nama Barang</th>
-                                    <th>Jumlah Item</th>
+                                    <th>Jumlah Barang</th>
                                     <th>Divisi</th>
                                     <th>Keterangan</th>
                                     <th>Status</th>

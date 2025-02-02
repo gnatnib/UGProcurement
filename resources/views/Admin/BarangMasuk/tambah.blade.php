@@ -17,7 +17,8 @@
                         <div class="form-group">
                             <label for="tglmasuk" class="form-label">Tanggal Permintaan <span
                                     class="text-danger">*</span></label>
-                            <input type="text" name="tglmasuk" class="form-control datepicker-date" placeholder="" min="{{ date('Y-m-d') }}">
+                            <input type="text" name="tglmasuk" class="form-control datepicker-date" placeholder=""
+                                min="{{ date('Y-m-d') }}">
                         </div>
 
                         <div class="form-group">
@@ -75,11 +76,11 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="jml" class="form-label">Jumlah Item <span
+                            <label for="jml" class="form-label">Jumlah Barang <span
                                     class="text-danger">*</span></label>
                             <input type="text" name="jml" value="0" class="form-control"
                                 oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');"
-                                placeholder="Masukkan jumlah item yang diinginkan">
+                                placeholder="Masukkan jumlah barang yang diinginkan">
                         </div>
                     </div>
                 </div>
@@ -227,56 +228,56 @@
         }
 
         function checkForm() {
-                const tglmasuk = $("input[name='tglmasuk']").val();
-                const today = new Date().toISOString().split('T')[0]; // Mendapatkan tanggal hari ini dalam format YYYY-MM-DD
-                const status = $("#status").val();
-                const keterangan = $("textarea[name='keterangan']").val();
-                const jml = $("input[name='jml']").val();
-                const harga = $("input[name='harga']").val();
-                const satuan = $("#satuan").val();
+            const tglmasuk = $("input[name='tglmasuk']").val();
+            const today = new Date().toISOString().split('T')[0]; // Mendapatkan tanggal hari ini dalam format YYYY-MM-DD
+            const status = $("#status").val();
+            const keterangan = $("textarea[name='keterangan']").val();
+            const jml = $("input[name='jml']").val();
+            const harga = $("input[name='harga']").val();
+            const satuan = $("#satuan").val();
 
-                setLoading(true);
-                resetValid();
+            setLoading(true);
+            resetValid();
 
-                if (tglmasuk == "") {
-                    validasi('Tanggal Permintaan wajib di isi!', 'warning');
-                    $("input[name='tglmasuk']").addClass('is-invalid');
-                    setLoading(false);
-                    return false;
-                } else if (tglmasuk < today) { // Validasi untuk memastikan tanggal tidak kurang dari hari ini
-                    validasi('Tanggal Permintaan tidak boleh kurang dari hari ini!', 'warning');
-                    $("input[name='tglmasuk']").addClass('is-invalid');
-                    setLoading(false);
-                    return false;
-                } else if (status == "false") {
-                    validasi('Barang wajib di pilih!', 'warning');
-                    $("input[name='kdbarang']").addClass('is-invalid');
-                    setLoading(false);
-                    return false;
-                } else if (keterangan == "") {
-                    validasi('Keterangan wajib di isi!', 'warning');
-                    $("textarea[name='keterangan']").addClass('is-invalid');
-                    setLoading(false);
-                    return false;
-                } else if (jml == "" || jml == "0") {
-                    validasi('Jumlah Item wajib di isi!', 'warning');
-                    $("input[name='jml']").addClass('is-invalid');
-                    setLoading(false);
-                    return false;
-                } else if (satuan == "") {
-                    validasi('Satuan wajib di isi!', 'warning');
-                    $("#satuan").addClass('is-invalid');
-                    setLoading(false);
-                    return false;
-                } else if (harga == "" || harga == "0") {
-                    validasi('Harga wajib di isi!', 'warning');
-                    $("input[name='harga']").addClass('is-invalid');
-                    setLoading(false);
-                    return false;
-                } else {
-                    submitForm();
-                }
+            if (tglmasuk == "") {
+                validasi('Tanggal Permintaan wajib di isi!', 'warning');
+                $("input[name='tglmasuk']").addClass('is-invalid');
+                setLoading(false);
+                return false;
+            } else if (tglmasuk < today) { // Validasi untuk memastikan tanggal tidak kurang dari hari ini
+                validasi('Tanggal Permintaan tidak boleh kurang dari hari ini!', 'warning');
+                $("input[name='tglmasuk']").addClass('is-invalid');
+                setLoading(false);
+                return false;
+            } else if (status == "false") {
+                validasi('Barang wajib di pilih!', 'warning');
+                $("input[name='kdbarang']").addClass('is-invalid');
+                setLoading(false);
+                return false;
+            } else if (keterangan == "") {
+                validasi('Keterangan wajib di isi!', 'warning');
+                $("textarea[name='keterangan']").addClass('is-invalid');
+                setLoading(false);
+                return false;
+            } else if (jml == "" || jml == "0") {
+                validasi('Jumlah Barang wajib di isi!', 'warning');
+                $("input[name='jml']").addClass('is-invalid');
+                setLoading(false);
+                return false;
+            } else if (satuan == "") {
+                validasi('Satuan wajib di isi!', 'warning');
+                $("#satuan").addClass('is-invalid');
+                setLoading(false);
+                return false;
+            } else if (harga == "" || harga == "0") {
+                validasi('Harga wajib di isi!', 'warning');
+                $("input[name='harga']").addClass('is-invalid');
+                setLoading(false);
+                return false;
+            } else {
+                submitForm();
             }
+        }
 
         function setTodayDate() {
             const today = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format

@@ -21,7 +21,7 @@
                 <div class="card-header justify-content-between">
                     <h3 class="card-title">
                         @if (isset($request_data))
-                            Tambah Barang Masuk untuk Request: {{ $request_data->request_id }}
+                            Tambah Barang Masuk untuk Request ID: {{ $request_data->request_id }}
                         @else
                             Data Barang Masuk
                         @endif
@@ -42,11 +42,10 @@
                                 <tr>
                                     <th width="1%">No</th>
                                     <th>Tanggal Permintaan</th>
-                                    <th>Barang</th>
-                                    <th>Jumlah Item</th>
-                                    <th>Harga</th>
+                                    <th>Nama Barang</th>
+                                    <th>Jumlah Barang</th>
+                                    <th>Harga Satuan</th>
                                     <th>Approval</th>
-                                    <th>Request ID</th>
                                     <th>Tracking Status</th>
                                     <th width="1%">Action</th>
                                 </tr>
@@ -80,11 +79,11 @@
                                             <div id="detail-bmkode" class="fs-6 fw-semibold"></div>
                                         </div>
                                         <div>
-                                            <label class="text-muted small mb-1">Barang</label>
+                                            <label class="text-muted small mb-1">Nama Barang</label>
                                             <div id="detail-barang" class="fs-6 fw-semibold"></div>
                                         </div>
                                         <div>
-                                            <label class="text-muted small mb-1">Jumlah Item</label>
+                                            <label class="text-muted small mb-1">Jumlah Barang</label>
                                             <div id="detail-jumlah" class="fs-6 fw-semibold"></div>
                                         </div>
                                         <div>
@@ -242,10 +241,6 @@
                     {
                         data: 'approval',
                         name: 'approval'
-                    },
-                    {
-                        data: 'request_id',
-                        name: 'request_id'
                     },
                     {
                         data: 'tracking_status',
