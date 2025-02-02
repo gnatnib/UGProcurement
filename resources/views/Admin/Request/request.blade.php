@@ -140,7 +140,7 @@
                                             <div id="detail-jumlahitem" class="fs-6 fw-semibold">-</div>
                                         </div>
                                         <div class="mb-3">
-                                            <label class="text-muted small mb-1">Total Harga</label>
+                                            <label class="text-muted small mb-1">Total Keseluruhan</label>
                                             <div id="detail-totalharga" class="fs-6 fw-semibold text-success">-</div>
                                         </div>
                                     </div>
@@ -252,10 +252,10 @@
         <td>${item.keterangan || '-'}
             ${item.tracking_status && item.tracking_status.toLowerCase() === 'dikirim' ?
                 `<i class="fe fe-check-circle text-success float-end" 
-                                style="cursor: pointer" 
-                                onclick="updateItemStatus('${item.bm_id}', 'diterima')" 
-                                title="Klik untuk konfirmasi penerimaan">
-                            </i>` : ''
+                                        style="cursor: pointer" 
+                                        onclick="updateItemStatus('${item.bm_id}', 'diterima')" 
+                                        title="Klik untuk konfirmasi penerimaan">
+                                    </i>` : ''
             }
         </td>
     </tr>`;

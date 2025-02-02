@@ -45,6 +45,7 @@
                                     <th>Nama Barang</th>
                                     <th>Jumlah Barang</th>
                                     <th>Harga Satuan</th>
+                                    <th>Total Harga</th>
                                     <th>Approval</th>
                                     <th>Tracking Status</th>
                                     <th width="1%">Action</th>
@@ -87,8 +88,12 @@
                                             <div id="detail-jumlah" class="fs-6 fw-semibold"></div>
                                         </div>
                                         <div>
-                                            <label class="text-muted small mb-1">Harga</label>
+                                            <label class="text-muted small mb-1">Harga Satuan</label>
                                             <div id="detail-harga" class="fs-6 fw-semibold text-success"></div>
+                                        </div>
+                                        <div>
+                                            <label class="text-muted small mb-1">Total Harga</label>
+                                            <div id="detail-total-harga" class="fs-6 fw-semibold text-success"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -239,6 +244,14 @@
                         }
                     },
                     {
+                        data: null,
+                        name: 'total_harga',
+                        render: function(data) {
+                            const total = parseFloat(data.harga) * parseFloat(data.bm_jumlah);
+                            return 'Rp ' + total.toLocaleString('id-ID');
+                        }
+                    },
+                    {
                         data: 'approval',
                         name: 'approval'
                     },
@@ -270,6 +283,9 @@
             $('#detail-requestid').text(data.request_id);
             $('#detail-keterangan').text(data.keterangan || '-');
             $('#detail-harga').text('Rp ' + parseInt(data.harga).toLocaleString('id-ID'));
+            const totalHarga = parseInt(data.harga) * parseInt(data.bm_jumlah);
+            $('#detail-total-harga').text('Rp ' + totalHarga.toLocaleString('id-ID'));
+
 
             let approvalStatus = data.approval || 'PENDING';
             let approvalClass = data.approval ? 'bg-success' : 'bg-warning';
