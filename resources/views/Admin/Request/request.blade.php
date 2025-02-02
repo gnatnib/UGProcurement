@@ -158,9 +158,9 @@
                                                     <tr>
                                                         <th class="text-center" width="5%">No</th>
                                                         <th>Nama Barang</th>
-                                                        <th class="text-center" width="10%">Jumlah</th>
+                                                        <th class="text-center" width="10%">Jumlah Barang</th>
                                                         <th class="text-end" width="15%">Harga Satuan</th>
-                                                        <th class="text-end" width="15%">Total</th>
+                                                        <th class="text-end" width="15%">Total Harga</th>
                                                         <th class="text-center" width="10%">Status</th>
                                                         <th>Keterangan</th>
                                                     </tr>
@@ -252,10 +252,10 @@
         <td>${item.keterangan || '-'}
             ${item.tracking_status && item.tracking_status.toLowerCase() === 'dikirim' ?
                 `<i class="fe fe-check-circle text-success float-end" 
-                        style="cursor: pointer" 
-                        onclick="updateItemStatus('${item.bm_id}', 'diterima')" 
-                        title="Klik untuk konfirmasi penerimaan">
-                    </i>` : ''
+                                style="cursor: pointer" 
+                                onclick="updateItemStatus('${item.bm_id}', 'diterima')" 
+                                title="Klik untuk konfirmasi penerimaan">
+                            </i>` : ''
             }
         </td>
     </tr>`;
