@@ -228,17 +228,68 @@ class BarangmasukController extends Controller
     }
 
 
-    public function proses_ubah(Request $request, BarangmasukModel $barangmasuk)
+            public function proses_ubah(Request $request, BarangmasukModel $barangmasuk)
     {
-        //update data
-        $barangmasuk->update([
-            'bm_tanggal' => $request->tglmasuk,
-            'barang_kode' => $request->barang,
-            'keterangan' => $request->keterangan,
-            'bm_jumlah' => $request->jml,
-        ]);
+        try {
+            // Validate request
+            $request->validate([
+                'tglmasuk' => [
+                    'required',
+                    'date',
+                    function ($attribute, $value, $fail) {
+                        $inputDate = \Carbon\Carbon::parse($value)->startOfDay();
+                        $today = \Carbon\Carbon::now()->startOfDay();
+                        
+                        if ($inputDate < $today) {
+                            $fail('Tanggal tidak boleh kurang dari hari ini.');
+                        }
+                    },
+                ],
+                'barang' => 'required|string',
+                'keterangan' => 'required|string',
+                'jml' => 'required|numeric|min:1',
+                'satuan' => 'required|string',
+                'harga' => 'nullable|numeric|min:0'
+            ]);
 
-        return response()->json(['success' => 'Berhasil']);
+            // Check if barang exists
+            $barang = DB::table('tbl_barang')->where('barang_kode', $request->barang)->first();
+            if (!$barang) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Barang tidak ditemukan!'
+                ], 404);
+            }
+
+            // Update data
+            $barangmasuk->update([
+                'bm_tanggal' => $request->tglmasuk,
+                'barang_kode' => $request->barang,
+                'keterangan' => $request->keterangan,
+                'bm_jumlah' => $request->jml,
+                'satuan' => $request->satuan,
+                'harga' => $request->harga ?? 0,
+                'updated_at' => now()
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data berhasil diubah'
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal: ' . $e->getMessage()
+            ], 422);
+
+        } catch (\Exception $e) {
+            Log::error('Error updating barang masuk: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat mengubah data'
+            ], 500);
+        }
     }
 
     public function proses_hapus(Request $request, BarangmasukModel $barangmasuk)
