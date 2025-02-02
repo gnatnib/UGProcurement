@@ -40,12 +40,14 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <input type="text" name="tglawal" class="form-control datepicker-date" placeholder="Tanggal Awal">
+                                <input type="text" name="tglawal" class="form-control datepicker-date"
+                                    placeholder="Tanggal Awal">
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <input type="text" name="tglakhir" class="form-control datepicker-date" placeholder="Tanggal Akhir">
+                                <input type="text" name="tglakhir" class="form-control datepicker-date"
+                                    placeholder="Tanggal Akhir">
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -63,8 +65,10 @@
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <button class="btn btn-success-light" onclick="filter()"><i class="fe fe-filter"></i> Filter</button>
-                            <button class="btn btn-secondary-light" onclick="reset()"><i class="fe fe-refresh-ccw"></i> Reset</button>
+                            <button class="btn btn-success-light" onclick="filter()"><i class="fe fe-filter"></i>
+                                Filter</button>
+                            <button class="btn btn-secondary-light" onclick="reset()"><i class="fe fe-refresh-ccw"></i>
+                                Reset</button>
                         </div>
                     </div>
                     <div class="table-responsive">
@@ -121,7 +125,7 @@
                                     </div>
                                 </div>
                             </div>
-    
+
                             <!-- Status Request -->
                             <div class="col-md-6">
                                 <div class="card shadow-sm h-100">
@@ -132,7 +136,7 @@
                                             <div id="detail-status" class="fs-6 mt-1">-</div>
                                         </div>
                                         <div class="mb-3">
-                                            <label class="text-muted small mb-1">Jumlah Item</label>
+                                            <label class="text-muted small mb-1">Jumlah Barang</label>
                                             <div id="detail-jumlahitem" class="fs-6 fw-semibold">-</div>
                                         </div>
                                         <div class="mb-3">
@@ -142,7 +146,7 @@
                                     </div>
                                 </div>
                             </div>
-    
+
                             <!-- Tabel Barang -->
                             <div class="col-12">
                                 <div class="card shadow-sm">
@@ -190,7 +194,6 @@
 @endsection
 
 @section('scripts')
-
     <script>
         // Add this at the top of your script section
         $.ajaxSetup({
@@ -198,92 +201,93 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-    
-        
+
+
         function showDetail(data) {
-                // Reset modal content
-                $('#detail-requestid').text('-');
-                $('#detail-tanggal').text('-');
-                $('#detail-departemen').text('-');
-                $('#detail-divisi').text('-');
-                $('#detail-status').html('-');
-                $('#detail-items').html('<tr><td colspan="7" class="text-center">Memuat data...</td></tr>');
-                $('#detail-jumlahitem').text('-');
-                $('#detail-totalharga').text('-');
+            // Reset modal content
+            $('#detail-requestid').text('-');
+            $('#detail-tanggal').text('-');
+            $('#detail-departemen').text('-');
+            $('#detail-divisi').text('-');
+            $('#detail-status').html('-');
+            $('#detail-items').html('<tr><td colspan="7" class="text-center">Memuat data...</td></tr>');
+            $('#detail-jumlahitem').text('-');
+            $('#detail-totalharga').text('-');
 
-                // Show modal
-                $('#detailModal').modal('show');
+            // Show modal
+            $('#detailModal').modal('show');
 
-                // Encode request_id dengan base64
-                const encodedId = btoa(data.request_id);
+            // Encode request_id dengan base64
+            const encodedId = btoa(data.request_id);
 
-                // Fetch details
-                $.ajax({
-                    url: `/admin/request-barang/get-details/${encodedId}`,
-                    method: 'GET',
-                    success: function (response) {
-                        if (response.success) {
-                            // Update informasi request
-                            $('#detail-requestid').text(response.request.request_id);
-                            $('#detail-tanggal').text(response.request.request_tanggal);
-                            $('#detail-departemen').text(response.request.departemen);
-                            $('#detail-divisi').text(response.request.divisi);
-                            $('#detail-status').html(getStatusBadge(response.request.status));
+            // Fetch details
+            $.ajax({
+                url: `/admin/request-barang/get-details/${encodedId}`,
+                method: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        // Update informasi request
+                        $('#detail-requestid').text(response.request.request_id);
+                        $('#detail-tanggal').text(response.request.request_tanggal);
+                        $('#detail-departemen').text(response.request.departemen);
+                        $('#detail-divisi').text(response.request.divisi);
+                        $('#detail-status').html(getStatusBadge(response.request.status));
 
-                            // Update summary
-                            $('#detail-jumlahitem').text(`${response.total_items} Item`);
-                            $('#detail-totalharga').text(`Rp ${response.total_harga.toLocaleString('id-ID')}`);
+                        // Update summary
+                        $('#detail-jumlahitem').text(`${response.total_items} Item`);
+                        $('#detail-totalharga').text(`Rp ${response.total_harga.toLocaleString('id-ID')}`);
 
-                            // Generate items table
-                            let itemsHtml = '';
-                            if (response.items && response.items.length > 0) {
-                                response.items.forEach((item, index) => {
-                                    itemsHtml += `
-                            <tr>
-                                <td class="text-center">${index + 1}</td>
-                                <td>${item.barang_nama || '-'}</td>
-                                <td class="text-center">${item.bm_jumlah}</td>
-                                <td class="text-end">Rp ${parseFloat(item.harga).toLocaleString('id-ID')}</td>
-                                <td class="text-end">Rp ${item.total_harga.toLocaleString('id-ID')}</td>
-                                <td class="text-center">${getStatusBadge(item.tracking_status)}</td>
-                                <td>${item.keterangan || '-'}
-                                    ${item.tracking_status && item.tracking_status.toLowerCase() === 'dikirim' ?
-                                        `<i class="fe fe-check-circle text-success float-end" 
-                                            style="cursor: pointer" 
-                                            onclick="updateItemStatus('${item.bm_id}', 'diterima')" 
-                                            title="Klik untuk konfirmasi penerimaan">
-                                        </i>` : ''
-                                    }
-                                </td>
-                            </tr>`;
-                                });
-                            } else {
-                                itemsHtml = '<tr><td colspan="7" class="text-center">Tidak ada data barang</td></tr>';
-                            }
-                            $('#detail-items').html(itemsHtml);
-                            $('#detail-total').text(`Rp ${response.total_harga.toLocaleString('id-ID')}`);
+                        // Generate items table
+                        let itemsHtml = '';
+                        if (response.items && response.items.length > 0) {
+                            response.items.forEach((item, index) => {
+                                itemsHtml += `
+    <tr>
+        <td class="text-center">${index + 1}</td>
+        <td>${item.barang_nama || '-'}</td>
+        <td class="text-center">${item.bm_jumlah} ${item.satuan || ''}</td>
+        <td class="text-end">Rp ${parseFloat(item.harga).toLocaleString('id-ID')}</td>
+        <td class="text-end">Rp ${item.total_harga.toLocaleString('id-ID')}</td>
+        <td class="text-center">${getStatusBadge(item.tracking_status)}</td>
+        <td>${item.keterangan || '-'}
+            ${item.tracking_status && item.tracking_status.toLowerCase() === 'dikirim' ?
+                `<i class="fe fe-check-circle text-success float-end" 
+                        style="cursor: pointer" 
+                        onclick="updateItemStatus('${item.bm_id}', 'diterima')" 
+                        title="Klik untuk konfirmasi penerimaan">
+                    </i>` : ''
+            }
+        </td>
+    </tr>`;
+                            });
+                        } else {
+                            itemsHtml =
+                                '<tr><td colspan="7" class="text-center">Tidak ada data barang</td></tr>';
                         }
-                    },
-                    error: function (xhr) {
-                        const response = xhr.responseJSON;
-                        $('#detail-items').html(`
+                        $('#detail-items').html(itemsHtml);
+                        $('#detail-total').text(`Rp ${response.total_harga.toLocaleString('id-ID')}`);
+                    }
+                },
+                error: function(xhr) {
+                    const response = xhr.responseJSON;
+                    $('#detail-items').html(`
                 <tr>
                     <td colspan="7" class="text-center text-danger">
                         <i class="fe fe-alert-circle me-2"></i>
                         ${response?.message || 'Gagal memuat data'}
                     </td>
                 </tr>`);
-                    }
-                });
-            }
+                }
+            });
+        }
 
 
 
         function getStatusBadge(status) {
-                status = (status || '').toLowerCase();
-                let badgeClass, icon;
+            status = (status || '').toLowerCase();
+            let badgeClass, icon;
 
-                switch (status) {
+            switch (status) {
                 case 'diterima':
                     badgeClass = 'bg-success';
                     icon = 'check-circle';
@@ -327,10 +331,10 @@
                     status = 'Send To GM';
             }
 
-                return `<span class="badge ${badgeClass}-gradient">
+            return `<span class="badge ${badgeClass}-gradient">
         <i class="fe fe-${icon} me-1"></i>${status.toUpperCase()}
     </span>`;
-            }
+        }
 
         // Function to add request
         function addRequest() {
@@ -384,7 +388,7 @@
         }
 
         $(document).ready(function() {
-             $('#detailModal').on('hidden.bs.modal', function() {
+            $('#detailModal').on('hidden.bs.modal', function() {
                 if (window.statusChanged === true) {
                     // Refresh datatable tanpa reload halaman
                     $('#table-1').DataTable().ajax.reload(null, false);
@@ -396,12 +400,12 @@
                 autoclose: true,
                 todayHighlight: true
             });
-           var table = $('#table-1').DataTable({
+            var table = $('#table-1').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
                     url: "/admin/request-barang/getdata",
-                    data: function (d) {
+                    data: function(d) {
                         d.tglawal = $('input[name="tglawal"]').val();
                         d.tglakhir = $('input[name="tglakhir"]').val();
                         d.status = $('select[name="status"]').val();
@@ -598,6 +602,7 @@
             });
         }
         window.statusChanged = false;
+
         function updateItemStatus(barangmasukId, newStatus) {
             // Tambahkan style untuk memastikan SweetAlert muncul di atas modal Bootstrap
             if (!document.getElementById('swal-styles')) {
@@ -641,7 +646,7 @@
                             _token: $('meta[name="csrf-token"]').attr('content'),
                             status: newStatus
                         },
-                        success: function (response) {
+                        success: function(response) {
                             if (response.success) {
                                 window.statusChanged = true;
                                 Swal.fire({
@@ -664,7 +669,7 @@
                                 Swal.fire('Error!', response.message, 'error');
                             }
                         },
-                        error: function (xhr) {
+                        error: function(xhr) {
                             const response = xhr.responseJSON;
                             Swal.fire(
                                 'Error!',
@@ -676,31 +681,31 @@
                 }
             });
         }
-        
+
         // Add this to your existing JavaScript
-            function selesaiRequest(requestId) {
-                $('#current_request_id').val(requestId);
-                    Swal.fire({
-                        title: 'Konfirmasi',
-                        text: "Apakah Anda yakin ingin menyelesaikan request ini?",
-                        icon: 'question',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Ya, selesaikan!',
-                        cancelButtonText: 'Batal'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            showSignatureModal(requestId);
-                        }
-                    });
+        function selesaiRequest(requestId) {
+            $('#current_request_id').val(requestId);
+            Swal.fire({
+                title: 'Konfirmasi',
+                text: "Apakah Anda yakin ingin menyelesaikan request ini?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, selesaikan!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    showSignatureModal(requestId);
                 }
-            // Initialize signature pad when modal is shown
-                let signaturePad;
-                // Add hidden input to store request_id
-                    $(document).ready(function () {
-                        // Add modal
-                        $('body').append(`
+            });
+        }
+        // Initialize signature pad when modal is shown
+        let signaturePad;
+        // Add hidden input to store request_id
+        $(document).ready(function() {
+            // Add modal
+            $('body').append(`
                         <div class="modal fade" id="signatureModal">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -725,103 +730,102 @@
                         </div>
                     `);
 
-                        // Initialize signature pad when modal is shown
-                        $('#signatureModal').on('shown.bs.modal', function () {
-                            const canvas = document.getElementById('signaturePad');
-                            signaturePad = new SignaturePad(canvas, {
-                                backgroundColor: 'rgb(255, 255, 255)'
-                            });
+            // Initialize signature pad when modal is shown
+            $('#signatureModal').on('shown.bs.modal', function() {
+                const canvas = document.getElementById('signaturePad');
+                signaturePad = new SignaturePad(canvas, {
+                    backgroundColor: 'rgb(255, 255, 255)'
+                });
+            });
+        });
+
+        function showSignatureModal() {
+            $('#signatureModal').modal('show');
+        }
+
+        function clearSignature() {
+            if (signaturePad) {
+                signaturePad.clear();
+            }
+        }
+
+        // Perbaiki fungsi completeRequest untuk encode request ID
+        function completeRequest(requestId) {
+            // Encode request ID dengan base64
+            const encodedId = btoa(requestId);
+
+            $.ajax({
+                url: `/admin/request-barang/complete/${encodedId}`,
+                type: 'POST',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: 'Request berhasil diselesaikan!',
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => {
+                            $('#table-1').DataTable().ajax.reload();
                         });
-                    });
-
-                function showSignatureModal() {
-                        $('#signatureModal').modal('show');
+                    } else {
+                        Swal.fire(
+                            'Error!',
+                            response.message || 'Terjadi kesalahan saat menyelesaikan request!',
+                            'error'
+                        );
                     }
-
-                function clearSignature() {
-                    if (signaturePad) {
-                        signaturePad.clear();
-                    }
+                },
+                error: function(xhr) {
+                    const response = xhr.responseJSON;
+                    Swal.fire(
+                        'Error!',
+                        response?.message || 'Terjadi kesalahan saat menyelesaikan request!',
+                        'error'
+                    );
                 }
+            });
+        }
 
-                // Perbaiki fungsi completeRequest untuk encode request ID
-                    function completeRequest(requestId) {
-                        // Encode request ID dengan base64
-                        const encodedId = btoa(requestId);
+        // Update fungsi saveSignature untuk menangani request ID dengan benar
+        function saveSignature() {
+            if (!signaturePad || signaturePad.isEmpty()) {
+                Swal.fire('Error!', 'Harap memberikan tanda tangan', 'error');
+                return;
+            }
 
-                        $.ajax({
-                            url: `/admin/request-barang/complete/${encodedId}`,
-                            type: 'POST',
-                            data: {
-                                _token: $('meta[name="csrf-token"]').attr('content')
-                            },
-                            success: function (response) {
-                                if (response.success) {
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'Berhasil!',
-                                        text: 'Request berhasil diselesaikan!',
-                                        timer: 1500,
-                                        showConfirmButton: false
-                                    }).then(() => {
-                                        $('#table-1').DataTable().ajax.reload();
-                                    });
-                                } else {
-                                    Swal.fire(
-                                        'Error!',
-                                        response.message || 'Terjadi kesalahan saat menyelesaikan request!',
-                                        'error'
-                                    );
-                                }
-                            },
-                            error: function (xhr) {
-                                const response = xhr.responseJSON;
-                                Swal.fire(
-                                    'Error!',
-                                    response?.message || 'Terjadi kesalahan saat menyelesaikan request!',
-                                    'error'
-                                );
-                            }
-                        });
+            const requestId = $('#current_request_id').val();
+            if (!requestId) {
+                Swal.fire('Error!', 'Request ID tidak ditemukan', 'error');
+                return;
+            }
+
+            const signatureData = signaturePad.toDataURL();
+
+            $.ajax({
+                url: "/admin/request-barang/store-signature",
+                type: 'POST',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    request_id: requestId,
+                    signature: signatureData
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $('#signatureModal').modal('hide');
+                        completeRequest(requestId);
+                    } else {
+                        Swal.fire('Error!', response.message || 'Gagal menyimpan tanda tangan', 'error');
                     }
-
-                    // Update fungsi saveSignature untuk menangani request ID dengan benar
-                    function saveSignature() {
-                        if (!signaturePad || signaturePad.isEmpty()) {
-                            Swal.fire('Error!', 'Harap memberikan tanda tangan', 'error');
-                            return;
-                        }
-
-                        const requestId = $('#current_request_id').val();
-                        if (!requestId) {
-                            Swal.fire('Error!', 'Request ID tidak ditemukan', 'error');
-                            return;
-                        }
-
-                        const signatureData = signaturePad.toDataURL();
-
-                        $.ajax({
-                            url: "/admin/request-barang/store-signature",
-                            type: 'POST',
-                            data: {
-                                _token: $('meta[name="csrf-token"]').attr('content'),
-                                request_id: requestId,
-                                signature: signatureData
-                            },
-                            success: function (response) {
-                                if (response.success) {
-                                    $('#signatureModal').modal('hide');
-                                    completeRequest(requestId);
-                                } else {
-                                    Swal.fire('Error!', response.message || 'Gagal menyimpan tanda tangan', 'error');
-                                }
-                            },
-                            error: function (xhr) {
-                                Swal.fire('Error!', xhr.responseJSON?.message || 'Gagal menyimpan tanda tangan', 'error');
-                            }
-                        });
-                    }
-                
+                },
+                error: function(xhr) {
+                    Swal.fire('Error!', xhr.responseJSON?.message || 'Gagal menyimpan tanda tangan', 'error');
+                }
+            });
+        }
     </script>
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
     <style>

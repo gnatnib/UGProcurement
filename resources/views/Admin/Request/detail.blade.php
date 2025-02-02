@@ -18,7 +18,7 @@
                         <th>No</th>
                         <th>Kode Barang</th>
                         <th>Nama Barang</th>
-                        <th>Jumlah Item</th>
+                        <th>Jumlah Barang</th>
                         <th>Keterangan</th>
                     </tr>
                 </thead>
