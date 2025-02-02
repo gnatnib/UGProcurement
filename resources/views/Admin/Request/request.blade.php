@@ -33,6 +33,40 @@
                     @endif
                 </div>
                 <div class="card-body">
+                    <!-- Filter Section -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <label for="" class="fw-bold">Filter Data</label>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <input type="text" name="tglawal" class="form-control datepicker-date" placeholder="Tanggal Awal">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <input type="text" name="tglakhir" class="form-control datepicker-date" placeholder="Tanggal Akhir">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <select name="status" class="form-control">
+                                    <option value="">Semua Status</option>
+                                    <option value="draft">Draft</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="approved">Approved</option>
+                                    <option value="rejected">Rejected</option>
+                                    <option value="Diproses">Diproses</option>
+                                    <option value="Dikirim">Dikirim</option>
+                                    <option value="Diterima">Diterima</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-success-light" onclick="filter()"><i class="fe fe-filter"></i> Filter</button>
+                            <button class="btn btn-secondary-light" onclick="reset()"><i class="fe fe-refresh-ccw"></i> Reset</button>
+                        </div>
+                    </div>
                     <div class="table-responsive">
                         <table id="table-1" class="table table-bordered text-nowrap border-bottom dataTable no-footer">
                             <thead>
@@ -165,7 +199,7 @@
             }
         });
     
-    
+        
         function showDetail(data) {
                 // Reset modal content
                 $('#detail-requestid').text('-');
@@ -357,10 +391,22 @@
                     window.statusChanged = false;
                 }
             });
-            var table = $('#table-1').DataTable({
+            $('.datepicker-date').datepicker({
+                format: 'yyyy-mm-dd',
+                autoclose: true,
+                todayHighlight: true
+            });
+           var table = $('#table-1').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "/admin/request-barang/getdata",
+                ajax: {
+                    url: "/admin/request-barang/getdata",
+                    data: function (d) {
+                        d.tglawal = $('input[name="tglawal"]').val();
+                        d.tglakhir = $('input[name="tglakhir"]').val();
+                        d.status = $('select[name="status"]').val();
+                    }
+                },
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
@@ -399,7 +445,42 @@
                 }
             });
         });
+        // Filter function
+        function filter() {
+            var tglawal = $('input[name="tglawal"]').val();
+            var tglakhir = $('input[name="tglakhir"]').val();
+            var status = $('select[name="status"]').val();
 
+            // Check if at least one filter is set
+            if (tglawal || tglakhir || status) {
+                // Validate date range if either date is set
+                if ((tglawal && !tglakhir) || (!tglawal && tglakhir)) {
+                    Swal.fire({
+                        title: 'Peringatan',
+                        text: 'Jika ingin filter tanggal, harap isi kedua tanggal!',
+                        icon: 'warning',
+                        confirmButtonText: 'Ok'
+                    });
+                    return;
+                }
+                $('#table-1').DataTable().ajax.reload();
+            } else {
+                Swal.fire({
+                    title: 'Peringatan',
+                    text: 'Harap isi minimal satu filter!',
+                    icon: 'warning',
+                    confirmButtonText: 'Ok'
+                });
+            }
+        }
+
+        // Reset function
+        function reset() {
+            $('input[name="tglawal"]').val('');
+            $('input[name="tglakhir"]').val('');
+            $('select[name="status"]').val('');
+            $('#table-1').DataTable().ajax.reload();
+        }
         // Function to handle request deletion
         function deleteRequest(requestId) {
             Swal.fire({
