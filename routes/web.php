@@ -105,7 +105,7 @@
             Route::post('/admin/barang/proses_tambah', [BarangController::class, 'proses_tambah'])->name('barang.store');
             Route::post('/admin/barang/proses_ubah/{barang}', [BarangController::class, 'proses_ubah']);
             Route::post('/admin/barang/proses_hapus/{barang}', [BarangController::class, 'proses_hapus']);
-
+            Route::get('/admin/barang/generate-kode', [BarangController::class, 'generateKode'])->name('barang.generate-kode');
             //liat lists barang untuk dashboard
             Route::get('/admin/barang-view', [BarangController::class, 'viewList'])->name('barang.view');
         });
