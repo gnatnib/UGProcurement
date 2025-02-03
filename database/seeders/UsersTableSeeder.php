@@ -24,7 +24,7 @@ class UsersTableSeeder extends Seeder
                 'user_nama' => 'superadmin',
                 'user_email' => 'superadmin@gmail.com',
                 'nomor_hp' => '0811111111',
-                'divisi' => 'HCGA',
+                'divisi' => 'Human Capital and General Affair',
                 'departemen' => 'HR',
                 'user_foto' => 'undraw_profile.svg',
                 'user_password' => '25d55ad283aa400af464c76d713c07ad', // 12345678
@@ -38,7 +38,7 @@ class UsersTableSeeder extends Seeder
                 'user_nama' => 'gmhcga',
                 'user_email' => 'gmhcga@gmail.com',
                 'nomor_hp' => '0811111111',
-                'divisi' => 'HCGA',
+                'divisi' => 'Human Capital and General Affair',
                 'departemen' => 'HR',
                 'user_foto' => 'undraw_profile.svg',
                 'user_password' => '25d55ad283aa400af464c76d713c07ad', // 12345678
