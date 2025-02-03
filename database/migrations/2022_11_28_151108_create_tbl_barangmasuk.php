@@ -13,6 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
+        
         Schema::create('tbl_barangmasuk', function (Blueprint $table) {
             $table->increments('bm_id');
             $table->integer('user_id');
@@ -24,7 +25,6 @@ return new class extends Migration
             $table->string('satuan')->nullable();  // Just define it where you want it in the sequence
             $table->string('divisi');
             $table->string('approval')->nullable();
-            $table->string('status')->nullable();
             $table->string('keterangan');
             $table->decimal('harga', 15, 2)->default(0);
             $table->timestamps();
