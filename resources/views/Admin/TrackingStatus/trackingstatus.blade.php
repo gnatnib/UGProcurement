@@ -137,52 +137,58 @@
             });
 
             // Deklarasikan table sebagai variabel global
-            window.table = $('#table-1').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: {
-                    url: "{{ route('tracking.show') }}",
-                    error: function(xhr, error, thrown) {
-                        console.log('Error:', error);
-                    }
-                },
-                columns: [{
-                        data: 'DT_RowIndex',
-                        name: 'DT_RowIndex'
-                    },
-                    {
-                        data: 'tanggal_format',
-                        name: 'request_tanggal'
-                    },
-                    {
-                        data: 'request_id',
-                        name: 'request_id'
-                    },
-                    {
-                        data: 'divisi',
-                        name: 'divisi'
-                    },
-                    {
-                        data: 'departemen',
-                        name: 'departemen'
-                    },
-                    {
-                        data: 'status_badge',
-                        name: 'status'
-                    },
-                    {
-                        data: 'action',
-                        name: 'action',
-                        orderable: false,
-                        searchable: false,
-                        render: function(data, type, row) {
-                            return `<button class="btn btn-primary btn-sm" onclick="showDetail(encodeURIComponent('${row.request_id}'))">
+// Ganti bagian DataTable columns untuk action
+window.table = $('#table-1').DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: {
+        url: "{{ route('tracking.show') }}",
+        error: function(xhr, error, thrown) {
+            console.log('Error:', error);
+        }
+    },
+    columns: [{
+            data: 'DT_RowIndex',
+            name: 'DT_RowIndex'
+        },
+        {
+            data: 'tanggal_format',
+            name: 'request_tanggal'
+        },
+        {
+            data: 'request_id',
+            name: 'request_id'
+        },
+        {
+            data: 'divisi',
+            name: 'divisi'
+        },
+        {
+            data: 'departemen',
+            name: 'departemen'
+        },
+        {
+            data: 'status_badge',
+            name: 'status'
+        },
+        {
+            data: 'action',
+            name: 'action',
+            orderable: false,
+            searchable: false,
+            render: function(data, type, row) {
+                // Jika status adalah 'Diterima', tidak tampilkan tombol detail
+                if (row.status === 'Diterima') {
+                    return '-';
+                }
+                // Untuk status lainnya, tampilkan tombol detail seperti biasa
+                return `<button class="btn btn-primary btn-sm" onclick="showDetail(encodeURIComponent('${row.request_id}'))">
                     <i class="fe fe-eye"></i> Detail
-                   </button>`;
-                        }
-                    }
-                ]
-            });
+                </button>`;
+            }
+        }
+    ]
+});
         });
 
         // Object untuk menyimpan status tracking per item

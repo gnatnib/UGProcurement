@@ -208,11 +208,16 @@ class TrackingStatusController extends Controller
     {
         try {
             DB::beginTransaction();
-
+    
             if (empty($request->request_id) || empty($request->approvals)) {
                 throw new \Exception('Data tidak lengkap');
             }
-
+    
+            // Get current request status
+            $currentRequest = DB::table('tbl_request_barang')
+                ->where('request_id', $request->request_id)
+                ->first();
+    
             // Update individual items
             foreach ($request->approvals as $bm_id => $status) {
                 DB::table('tbl_barangmasuk')
@@ -222,48 +227,31 @@ class TrackingStatusController extends Controller
                         'updated_at' => now()
                     ]);
             }
-
-            // Cek status semua item dalam request
-            $allApprovedItems = DB::table('tbl_barangmasuk')
-                ->where('request_id', $request->request_id)
-                ->where('approval', 'Approve')
-                ->pluck('tracking_status');
-
-            // Tentukan status request berdasarkan status item
-            $totalApprovedItems = $allApprovedItems->count();
-
-            if ($totalApprovedItems > 0) {
-                // Count items with specific statuses
+    
+            // Hanya update status request jika BELUM berstatus "Dikirim"
+            if ($currentRequest->status !== 'Dikirim') {
+                // Cek status semua item dalam request
+                $allApprovedItems = DB::table('tbl_barangmasuk')
+                    ->where('request_id', $request->request_id)
+                    ->where('approval', 'Approve')
+                    ->pluck('tracking_status');
+    
+                $totalApprovedItems = $allApprovedItems->count();
                 $dikirimCount = $allApprovedItems->filter(function ($status) {
                     return $status === 'Dikirim';
                 })->count();
-
-                $diterimaCount = $allApprovedItems->filter(function ($status) {
-                    return $status === 'Diterima';
-                })->count();
-
-                // Determine new status
-                $newStatus = 'Diproses'; // Default status
-
-                if ($diterimaCount === $totalApprovedItems) {
-                    $newStatus = 'Diterima';
-                } elseif ($dikirimCount === $totalApprovedItems) {
-                    // Only change to 'Dikirim' if ALL approved items are marked as 'Dikirim'
-                    $newStatus = 'Dikirim';
-                } elseif ($dikirimCount > 0 || $diterimaCount > 0) {
-                    // If some items are shipped/received but not all, keep as 'Diproses'
-                    $newStatus = 'Diproses';
+    
+                // Update status request hanya jika semua item "Dikirim"
+                if ($totalApprovedItems > 0 && $dikirimCount === $totalApprovedItems) {
+                    DB::table('tbl_request_barang')
+                        ->where('request_id', $request->request_id)
+                        ->update([
+                            'status' => 'Dikirim',
+                            'updated_at' => now()
+                        ]);
                 }
-
-                // Update request status
-                DB::table('tbl_request_barang')
-                    ->where('request_id', $request->request_id)
-                    ->update([
-                        'status' => $newStatus,
-                        'updated_at' => now()
-                    ]);
             }
-
+    
             DB::commit();
             return response()->json([
                 'success' => true,
@@ -281,65 +269,57 @@ class TrackingStatusController extends Controller
             ], 500);
         }
     }
+    
     public function updateStatus(Request $request)
-    {
-        try {
-            DB::beginTransaction();
+{
+    try {
+        DB::beginTransaction();
 
-            // Update status barang
-            DB::table('tbl_barangmasuk')
-                ->where('bm_id', $request->bm_id)
-                ->update([
-                    'tracking_status' => $request->status,
-                    'updated_at' => now()
-                ]);
+        // Update status barang
+        DB::table('tbl_barangmasuk')
+            ->where('bm_id', $request->bm_id)
+            ->update([
+                'tracking_status' => $request->status,
+                'updated_at' => now()
+            ]);
 
-            // Get request_id
-            $barangMasuk = DB::table('tbl_barangmasuk')
-                ->where('bm_id', $request->bm_id)
-                ->first();
+        // Get request_id dan status saat ini
+        $barangMasuk = DB::table('tbl_barangmasuk')
+            ->where('bm_id', $request->bm_id)
+            ->first();
 
-            // Update status request berdasarkan status semua item
-            $allItems = DB::table('tbl_barangmasuk')
-                ->where('request_id', $barangMasuk->request_id)
-                ->pluck('tracking_status');
+        // Get current request status
+        $currentRequest = DB::table('tbl_request_barang')
+            ->where('request_id', $barangMasuk->request_id)
+            ->first();
 
-            // Tentukan status request
-            if ($allItems->every(function ($status) {
-                return $status === 'Diterima';
-            })) {
-                $newStatus = 'Diterima';
-            } elseif ($allItems->contains('Dikirim')) {
-                $newStatus = 'Dikirim';
-            } elseif ($allItems->contains('Diproses')) {
-                $newStatus = 'Diproses';
-            } else {
-                $newStatus = 'approved';
-            }
-
-            // Update request
+        // JANGAN update status request jika sudah "Dikirim"
+        // Status akan tetap "Dikirim" sampai user melakukan selesai request
+        if ($currentRequest->status !== 'Dikirim') {
+            // Update request hanya jika belum status Dikirim
             DB::table('tbl_request_barang')
                 ->where('request_id', $barangMasuk->request_id)
                 ->update([
-                    'status' => $newStatus,
+                    'status' => 'Diproses',
                     'updated_at' => now()
                 ]);
-
-            DB::commit();
-            return response()->json([
-                'success' => true,
-                'message' => 'Status berhasil diupdate'
-            ]);
-        } catch (\Exception $e) {
-            DB::rollback();
-            Log::error('Error in updateStatus:', [
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
-            ], 500);
         }
+
+        DB::commit();
+        return response()->json([
+            'success' => true,
+            'message' => 'Status berhasil diupdate'
+        ]);
+    } catch (\Exception $e) {
+        DB::rollback();
+        Log::error('Error in updateStatus:', [
+            'message' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+        return response()->json([
+            'success' => false,
+            'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+        ], 500);
     }
+}
 }
