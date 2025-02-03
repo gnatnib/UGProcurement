@@ -20,7 +20,6 @@ class BarangmasukModel extends Model
         'satuan',
         'harga',
         'approval',
-        'status',
         'divisi',
         'keterangan',
     ];

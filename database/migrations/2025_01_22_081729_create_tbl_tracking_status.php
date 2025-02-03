@@ -15,7 +15,7 @@ return new class extends Migration
     {
         // Add tracking_status to tbl_barangmasuk
         Schema::table('tbl_barangmasuk', function (Blueprint $table) {
-            $table->string('tracking_status')->nullable()->after('status');
+            $table->string('tracking_status')->nullable()->after('approval'); // Adjusted to after 'approval'
         });
 
         // Update status enum in tbl_request_barang
