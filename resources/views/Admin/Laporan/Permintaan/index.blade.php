@@ -32,6 +32,16 @@
                                 <input type="text" name="tglakhir" class="form-control datepicker-date" placeholder="Tanggal Akhir">
                             </div>
                         </div>
+                        <div class="col-md-3" id="divisionFilter" style="display: none;">
+                            <div class="form-group">
+                                <select name="divisi" class="form-control">
+                                    <option value="">Semua Divisi</option>
+                                    @foreach($divisions as $division)
+                                        <option value="{{ $division }}">{{ $division }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
                         <div class="col-md-6">
                             <button class="btn btn-success-light" onclick="filter()"><i class="fe fe-filter"></i> Filter</button>
                             <button class="btn btn-secondary-light" onclick="reset()"><i class="fe fe-refresh-ccw"></i> Reset</button>
@@ -69,26 +79,24 @@
         });
 
         function getData() {
-            table = $('#table-1').DataTable({
-                "processing": true,
-                "serverSide": true,
-                "info": true,
-                "order": [],
-                "scrollX": true,
-                "stateSave": true,
-                "lengthMenu": [
-                    [5, 10, 25, 50, 100, -1],
-                    [5, 10, 25, 50, 100, 'Semua']
-                ],
-                "pageLength": 10,
-                lengthChange: true,
-                "ajax": {
-                    "url": "{{ route('lap-permintaan.getlap-permintaan') }}",
-                    "data": function(d) {
-                        d.tglawal = $('input[name="tglawal"]').val();
-                        d.tglakhir = $('input[name="tglakhir"]').val();
-                    }
-                },
+    table = $('#table-1').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "info": true,
+        "order": [],
+        "scrollX": true,
+        "stateSave": true,
+        "lengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, 'Semua']],
+        "pageLength": 10,
+        lengthChange: true,
+        "ajax": {
+            "url": "{{ route('lap-permintaan.getlap-permintaan') }}",
+            "data": function(d) {
+                d.tglawal = $('input[name="tglawal"]').val();
+                d.tglakhir = $('input[name="tglakhir"]').val();
+                d.divisi = $('select[name="divisi"]').val();
+            }
+        },
                 "columns": [{
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex',
@@ -114,6 +122,11 @@
                 },
                 ]
             });
+
+    // Add division filter change event
+    $('select[name="divisi"]').on('change', function() {
+        table.ajax.reload();
+    });
         }
 
         function filter() {
@@ -146,53 +159,79 @@
         }
 
         
+
         function csv() {
-        var tglawal = $('input[name="tglawal"]').val();
-        var tglakhir = $('input[name="tglakhir"]').val();
-        
-        if (tglawal != '' && tglakhir != '') {
-            // Menggunakan AJAX untuk cek data terlebih dahulu
-            $.ajax({
-                url: "{{ route('lap-permintaan.csv') }}",
-                type: 'GET',
-                data: {
-                    tglawal: tglawal,
-                    tglakhir: tglakhir
-                },
-                success: function(response) {
-                    // Cek jika response memiliki status error
-                    if (response.status === 'error') {
-                        swal({
-                            title: "Perhatian!",
-                            text: response.message,
-                            type: "warning",
-                            confirmButtonText: "Ok"
-                        });
-                    } else {
-                        // Jika response adalah file CSV, buat link download
-                        var blob = new Blob([response], { type: 'text/csv' });
-                        var downloadUrl = window.URL.createObjectURL(blob);
-                        var a = document.createElement("a");
-                        a.href = downloadUrl;
-                        a.download = "laporan_permintaan.csv";
-                        document.body.appendChild(a);
-                        a.click();
-                        window.URL.revokeObjectURL(downloadUrl);
-                        a.remove();
-                    }
-                },
-                error: function(xhr, status, error) {
+    var tglawal = $('input[name="tglawal"]').val();
+    var tglakhir = $('input[name="tglakhir"]').val();
+    var divisi = $('select[name="divisi"]').val();
+    
+    console.log('Date range:', tglawal, tglakhir, 'Division:', divisi);
+    
+    if (tglawal != '' && tglakhir != '') {
+        $.ajax({
+            url: "{{ route('lap-permintaan.csv') }}",
+            type: 'GET',
+            data: {
+                tglawal: tglawal,
+                tglakhir: tglakhir,
+                divisi: divisi
+            },
+            success: function(response) {
+                if (response.status === 'error') {
                     swal({
-                        title: "Error!",
-                        text: "Tidak ada data pada periode yang dipilih",
-                        type: "error",
+                        title: "Perhatian!",
+                        text: response.message,
+                        type: "warning",
                         confirmButtonText: "Ok"
                     });
+                } else {
+                    var blob = new Blob([response], { type: 'text/csv' });
+                    var downloadUrl = window.URL.createObjectURL(blob);
+                    var a = document.createElement("a");
+                    a.href = downloadUrl;
+                    a.download = "laporan_permintaan.csv";
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(downloadUrl);
+                    a.remove();
                 }
-            });
+            },
+            error: function(xhr, status, error) {
+                swal({
+                    title: "Error!",
+                    text: "Tidak ada data pada periode yang dipilih",
+                    type: "error",
+                    confirmButtonText: "Ok"
+                });
+            }
+        });
+    } else {
+        validasi("Isi dulu Form Filter Tanggal!", 'warning');
+    }
+}
+
+$(document).ready(function() {
+    const userRole = "{{ Session::get('user')->role_id }}";
+    if (userRole === '2' || userRole === '3') {
+        $('#divisionFilter').show();
+    }
+    
+    $('select[name="divisi"]').on('change', function() {
+        table.ajax.reload();
+    });
+    
+    // Update filter function
+    function filter() {
+        var tglawal = $('input[name="tglawal"]').val();
+        var tglakhir = $('input[name="tglakhir"]').val();
+        var divisi = $('select[name="divisi"]').val();
+        
+        if (tglawal != '' && tglakhir != '') {
+            table.ajax.reload(null, false);
         } else {
             validasi("Isi dulu Form Filter Tanggal!", 'warning');
         }
     }
+});
     </script>
 @endsection
