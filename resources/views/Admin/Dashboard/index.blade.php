@@ -347,7 +347,7 @@
                                             <div class="item-info">
                                                 <div class="item-info-left">
                                                     <h4>${item.barang_nama}</h4>
-                                                    <p>Direquest ${item.total_request} kali (Total: ${item.total_jumlah} pcs)</p>
+                                                    <p>Direquest ${item.total_request} kali (Total: ${item.total_jumlah})</p>
                                                     <div class="price">${formattedHarga}</div>
                                                 </div>
                                             </div>
