@@ -90,106 +90,109 @@
             </div>
         </div>
     </div>
-<!-- Modal Detail -->
-<div class="modal fade" id="detailModal" tabindex="-1">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header bg-primary-gradient text-white">
-                <h5 class="modal-title fw-bold">Detail Request Barang</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div class="container-fluid p-0">
-                    <div class="row g-4">
-                        <!-- Informasi Request -->
-                        <div class="col-md-6">
-                            <div class="card shadow-sm h-100">
-                                <div class="card-body">
-                                    <h6 class="fw-bold mb-4 text-primary">Informasi Request</h6>
-                                    <div class="mb-3">
-                                        <label class="text-muted small mb-1">Request ID</label>
-                                        <div id="detail-requestid" class="fs-6 fw-semibold">-</div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="text-muted small mb-1">Tanggal Request</label>
-                                        <div id="detail-tanggal" class="fs-6 fw-semibold">-</div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="text-muted small mb-1">Departemen</label>
-                                        <div id="detail-departemen" class="fs-6 fw-semibold">-</div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="text-muted small mb-1">Divisi</label>
-                                        <div id="detail-divisi" class="fs-6 fw-semibold">-</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Status Request -->
-                        <div class="col-md-6">
-                            <div class="card shadow-sm h-100">
-                                <div class="card-body">
-                                    <h6 class="fw-bold mb-4 text-primary">Status Request</h6>
-                                    <div class="mb-3">
-                                        <label class="text-muted small mb-1">Status</label>
-                                        <div id="detail-status" class="fs-6 mt-1">-</div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="text-muted small mb-1">Jumlah Barang</label>
-                                        <div id="detail-jumlahitem" class="fs-6 fw-semibold">-</div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="text-muted small mb-1">Total Keseluruhan</label>
-                                        <div id="detail-totalharga" class="fs-6 fw-semibold text-success">-</div>
+    <!-- Modal Detail -->
+    <div class="modal fade" id="detailModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-primary-gradient text-white">
+                    <h5 class="modal-title fw-bold">Detail Request Barang</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid p-0">
+                        <div class="row g-4">
+                            <!-- Informasi Request -->
+                            <div class="col-md-6">
+                                <div class="card shadow-sm h-100">
+                                    <div class="card-body">
+                                        <h6 class="fw-bold mb-4 text-primary">Informasi Request</h6>
+                                        <div class="mb-3">
+                                            <label class="text-muted small mb-1">Request ID</label>
+                                            <div id="detail-requestid" class="fs-6 fw-semibold">-</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="text-muted small mb-1">Tanggal Request</label>
+                                            <div id="detail-tanggal" class="fs-6 fw-semibold">-</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="text-muted small mb-1">Departemen</label>
+                                            <div id="detail-departemen" class="fs-6 fw-semibold">-</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="text-muted small mb-1">Divisi</label>
+                                            <div id="detail-divisi" class="fs-6 fw-semibold">-</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Tabel Barang -->
-                        <div class="col-12">
-                            <div class="card shadow-sm">
-                                <div class="card-body">
-                                    <h6 class="fw-bold mb-3 text-primary">Daftar Barang</h6>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover">
-                                            <thead class="bg-light">
-                                                <tr>
-                                                    <th class="text-center" width="5%">No</th>
-                                                    <th width="20%">Nama Barang</th>
-                                                    <th class="text-center" width="10%">Jumlah</th>
-                                                    <th class="text-end" width="15%">Harga Satuan</th>
-                                                    <th class="text-end" width="15%">Total Harga</th>
-                                                    <th class="text-center" width="10%">Status</th>
-                                                    <th width="25%">Keterangan & Aksi</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="detail-items">
-                                                <tr>
-                                                    <td colspan="7" class="text-center">Memuat data...</td>
-                                                </tr>
-                                            </tbody>
-                                            <tfoot class="bg-light">
-                                                <tr>
-                                                    <td colspan="4" class="text-end fw-bold">Total Keseluruhan</td>
-                                                    <td colspan="3" class="fw-bold text-success text-end" id="detail-total">-</td>
-                                                </tr>
-                                            </tfoot>
-                                        </table>
+                            <!-- Status Request -->
+                            <div class="col-md-6">
+                                <div class="card shadow-sm h-100">
+                                    <div class="card-body">
+                                        <h6 class="fw-bold mb-4 text-primary">Status Request</h6>
+                                        <div class="mb-3">
+                                            <label class="text-muted small mb-1">Status</label>
+                                            <div id="detail-status" class="fs-6 mt-1">-</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="text-muted small mb-1">Jumlah Barang</label>
+                                            <div id="detail-jumlahitem" class="fs-6 fw-semibold">-</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="text-muted small mb-1">Total Keseluruhan</label>
+                                            <div id="detail-totalharga" class="fs-6 fw-semibold text-success">-</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tabel Barang -->
+                            <div class="col-12">
+                                <div class="card shadow-sm">
+                                    <div class="card-body">
+                                        <h6 class="fw-bold mb-3 text-primary">Daftar Barang</h6>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <thead class="bg-light">
+                                                    <tr>
+                                                        <th class="text-center" width="5%">No</th>
+                                                        <th class="text-center" width="10%">Kode Barang</th>
+                                                        <th width="20%">Nama Barang</th>
+                                                        <th width="20%">Merk</th>
+                                                        <th class="text-center" width="10%">Jumlah Barang</th>
+                                                        <th class="text-end" width="15%">Harga Satuan</th>
+                                                        <th class="text-end" width="15%">Total Harga</th>
+                                                        <th class="text-center" width="10%">Status</th>
+                                                        <th width="25%">Keterangan & Aksi</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="detail-items">
+                                                    <tr>
+                                                        <td colspan="7" class="text-center">Memuat data...</td>
+                                                    </tr>
+                                                </tbody>
+                                                <tfoot class="bg-light">
+                                                    <tr>
+                                                        <td colspan="4" class="text-end fw-bold">Total Keseluruhan</td>
+                                                        <td colspan="3" class="fw-bold text-success text-end"
+                                                            id="detail-total">-</td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 @endsection
 
 @section('scripts')
@@ -243,7 +246,9 @@
                                 itemsHtml += `
                                     <tr>
                                         <td class="text-center">${index + 1}</td>
+                                        <td class="text-center">${item.barang_kode || '-'}</td>
                                         <td>${item.barang_nama || '-'}</td>
+                                        <td>${item.merk || '-'}</td>
                                         <td class="text-center">${item.bm_jumlah} ${item.satuan || ''}</td>
                                         <td class="text-end">Rp ${parseFloat(item.harga).toLocaleString('id-ID')}</td>
                                         <td class="text-end">Rp ${item.total_harga.toLocaleString('id-ID')}</td>
@@ -253,25 +258,26 @@
                                                 ${item.keterangan ? 
                                                     item.keterangan.includes('Rejected by') ?
                                                         `<div>
-                                                            ${item.keterangan.split('Rejected by')[0]}
-                                                            <span class="text-danger">Rejected by${item.keterangan.split('Rejected by')[1]}</span>
-                                                        </div>`
+                                                                                        ${item.keterangan.split('Rejected by')[0]}
+                                                                                        <span class="text-danger">Rejected by${item.keterangan.split('Rejected by')[1]}</span>
+                                                                                    </div>`
                                                         : `<span>${item.keterangan}</span>`
                                                     : '-'
                                                 }
                                                 ${item.tracking_status && item.tracking_status.toLowerCase() === 'dikirim' ?
                                                     `<button class="btn btn-success btn-sm" 
-                                                        onclick="updateItemStatus('${item.bm_id}', 'diterima')">
-                                                        <i class="fe fe-check-circle me-1"></i>
-                                                        Terima Barang
-                                                    </button>` : ''
+                                                                                    onclick="updateItemStatus('${item.bm_id}', 'diterima')">
+                                                                                    <i class="fe fe-check-circle me-1"></i>
+                                                                                    Terima Barang
+                                                                                </button>` : ''
                                                 }
                                             </div>
                                         </td>
                                     </tr>`;
                             });
                         } else {
-                            itemsHtml = '<tr><td colspan="7" class="text-center">Tidak ada data barang</td></tr>';
+                            itemsHtml =
+                                '<tr><td colspan="7" class="text-center">Tidak ada data barang</td></tr>';
                         }
                         $('#detail-items').html(itemsHtml);
                         $('#detail-total').text(`Rp ${response.total_harga.toLocaleString('id-ID')}`);

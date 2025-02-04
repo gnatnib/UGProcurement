@@ -79,8 +79,6 @@ class RequestBarangController extends Controller
         }
     }
 
-    // File: app/Http/Controllers/Admin/RequestBarangController.php
-
     public function getDetails($encodedId)
     {
         try {
@@ -115,11 +113,13 @@ class RequestBarangController extends Controller
             // Ambil detail barang
             $items = DB::table('tbl_barangmasuk as bm')
                 ->leftJoin('tbl_barang as b', 'b.barang_kode', '=', 'bm.barang_kode')
+                ->leftJoin('tbl_merk as m', 'm.merk_id', '=', 'b.merk_id')
                 ->where('bm.request_id', $id)
                 ->select(
                     'bm.bm_id',
                     'bm.barang_kode',
                     'b.barang_nama',
+                    'm.merk_nama as merk',
                     'bm.bm_jumlah',
                     'bm.satuan',
                     'bm.harga',
