@@ -172,24 +172,29 @@ class RequestBarangController extends Controller
 
     private function generateRequestId()
     {
-        // Ambil user dan divisi
         $user = Session::get('user');
         $divisiCode = $this->getDivisionCode($user->divisi);
-
-        // Format: nomor-divisi-bulan-tahun
         $year = date('Y');
         $month = date('m');
 
-        // Cari nomor terakhir untuk bulan dan tahun ini
+        // Mencari request ID terakhir berdasarkan divisi, bulan, DAN tahun
         $lastRequest = DB::table('tbl_request_barang')
             ->where('request_id', 'LIKE', "%/$divisiCode/$month/$year")
+            ->whereYear('request_tanggal', $year)
+            ->whereMonth('request_tanggal', $month)
             ->orderBy('request_id', 'DESC')
             ->first();
 
-        $number = '01';
+        $number = '001';
         if ($lastRequest) {
             $lastNumber = explode('/', $lastRequest->request_id)[0];
-            $number = str_pad((int)$lastNumber + 1, 2, '0', STR_PAD_LEFT);
+            $nextNumber = (int)$lastNumber + 1;
+            
+            if ($nextNumber > 999) {
+                throw new \Exception('Batas maksimum request ID untuk bulan ini telah tercapai (999).');
+            }
+            
+            $number = str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
         }
 
         return "$number/$divisiCode/$month/$year";
