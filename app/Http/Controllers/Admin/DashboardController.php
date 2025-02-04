@@ -101,14 +101,15 @@ class DashboardController extends Controller
             )
             ->join('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')
             ->join('tbl_request_barang', 'tbl_request_barang.request_id', '=', 'tbl_barangmasuk.request_id')
-            ->where('tbl_request_barang.status', '=', 'Diterima') // Filter hanya yang statusnya Diterima
+            ->where('tbl_barangmasuk.approval', '=', 'Approve')
+            ->where('tbl_barangmasuk.tracking_status', '=', 'Diterima')
             ->whereMonth('tbl_barangmasuk.created_at', date('m'))
             ->whereYear('tbl_barangmasuk.created_at', date('Y'))
             ->groupBy('tbl_barangmasuk.barang_kode', 'tbl_barang.barang_nama')
-            ->orderBy('total_request', 'DESC') // Urutkan berdasarkan jumlah request
+            ->orderBy('total_request', 'DESC')
             ->limit(5)
             ->get();
-    
+
         return response()->json([
             'success' => true,
             'data' => $topBarang
