@@ -283,30 +283,42 @@ class TrackingStatusController extends Controller
         $itemStatuses = DB::table('tbl_barangmasuk')
             ->where('request_id', $request->request_id)
             ->where('approval', 'Approve')
+            ->whereNotIn('tracking_status', ['Ditolak']) // Abaikan item yang ditolak
             ->select(
-                DB::raw('COUNT(*) as total_items'),
+                DB::raw('COUNT(*) as total_valid_items'), // Hitung total item yang tidak ditolak
                 DB::raw('COUNT(CASE WHEN tracking_status = "Dikirim" THEN 1 END) as total_dikirim'),
                 DB::raw('COUNT(CASE WHEN tracking_status = "Diterima" THEN 1 END) as total_diterima'),
-                DB::raw('COUNT(CASE WHEN tracking_status = "Ditolak" THEN 1 END) as total_ditolak'),
                 DB::raw('COUNT(CASE WHEN tracking_status = "Diproses" THEN 1 END) as total_diproses')
             )
             ->first();
 
-        if ($itemStatuses->total_items > 0) {
+        // Hitung total semua item termasuk yang ditolak untuk cek apakah semuanya ditolak
+        $totalItemsWithRejected = DB::table('tbl_barangmasuk')
+            ->where('request_id', $request->request_id)
+            ->where('approval', 'Approve')
+            ->count();
+
+        $totalRejected = DB::table('tbl_barangmasuk')
+            ->where('request_id', $request->request_id)
+            ->where('approval', 'Approve')
+            ->where('tracking_status', 'Ditolak')
+            ->count();
+
+        if ($totalItemsWithRejected > 0) {
             $newStatus = null;
-            
-            if ($itemStatuses->total_ditolak == $itemStatuses->total_items) {
+
+            if ($totalRejected == $totalItemsWithRejected) {
                 // Jika semua item ditolak
                 $newStatus = 'Ditolak';
-            } elseif ($itemStatuses->total_diterima == $itemStatuses->total_items) {
-                // Jika semua item diterima
-                $newStatus = 'Diterima';
-            } elseif ($itemStatuses->total_dikirim == $itemStatuses->total_items) {
-                // Jika semua item dikirim
-                $newStatus = 'Dikirim';
-            } elseif ($itemStatuses->total_diproses > 0) {
-                // Jika masih ada yang diproses
-                $newStatus = 'Diproses';
+            } elseif ($itemStatuses->total_valid_items > 0) {
+                // Jika ada item valid (tidak ditolak)
+                if ($itemStatuses->total_diterima == $itemStatuses->total_valid_items) {
+                    $newStatus = 'Diterima';
+                } elseif ($itemStatuses->total_dikirim == $itemStatuses->total_valid_items) {
+                    $newStatus = 'Dikirim';
+                } elseif ($itemStatuses->total_diproses > 0) {
+                    $newStatus = 'Diproses';
+                }
             }
 
             if ($newStatus) {
