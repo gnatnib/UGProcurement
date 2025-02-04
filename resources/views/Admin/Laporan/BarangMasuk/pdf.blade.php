@@ -109,7 +109,7 @@
 </head>
 
 <body>
-    <div class="header" style="position: relative; font-size: 14px;">
+    <div class="header" style="position: relative; font-size: 10px;">
         <!-- Add logo -->
         <div style="position: absolute; top: 0; right: 0;">
             <img src="{{ public_path('assets/images/logoug.png') }}" style="width: 150px; height: auto;">
@@ -176,7 +176,7 @@ $no = 1;
         </tbody>
     </table>
 
-    <div class="signatures" style="font-size: 14px;">
+    <div class="signatures" style="font-size: 10px;">
         <div class="signature-cell">
             <p>Disetujui oleh,</p>
             @if(isset($signatures['GM']) && !empty($signatures['GM']->signature_base64))
