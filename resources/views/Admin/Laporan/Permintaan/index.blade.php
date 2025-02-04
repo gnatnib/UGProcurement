@@ -165,8 +165,6 @@
     var tglakhir = $('input[name="tglakhir"]').val();
     var divisi = $('select[name="divisi"]').val();
     
-    console.log('Date range:', tglawal, tglakhir, 'Division:', divisi);
-    
     if (tglawal != '' && tglakhir != '') {
         $.ajax({
             url: "{{ route('lap-permintaan.csv') }}",
@@ -176,20 +174,35 @@
                 tglakhir: tglakhir,
                 divisi: divisi
             },
-            success: function(response) {
-                if (response.status === 'error') {
-                    swal({
-                        title: "Perhatian!",
-                        text: response.message,
-                        type: "warning",
-                        confirmButtonText: "Ok"
-                    });
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function(response, status, xhr) {
+                if (response.type === 'application/json') {
+                    // Handle error response
+                    var reader = new FileReader();
+                    reader.onload = function() {
+                        var errorResponse = JSON.parse(this.result);
+                        swal({
+                            title: "Perhatian!",
+                            text: errorResponse.message,
+                            type: "warning",
+                            confirmButtonText: "Ok"
+                        });
+                    };
+                    reader.readAsText(response);
                 } else {
+                    // Format tanggal untuk nama file
+                    var startDate = moment(tglawal).format('DDMMYYYY');
+                    var endDate = moment(tglakhir).format('DDMMYYYY');
+                    var filename = 'laporan_permintaan_' + startDate + '_sd_' + endDate + '.csv';
+                    
+                    // Buat blob dan download
                     var blob = new Blob([response], { type: 'text/csv' });
                     var downloadUrl = window.URL.createObjectURL(blob);
                     var a = document.createElement("a");
                     a.href = downloadUrl;
-                    a.download = "laporan_permintaan.csv";
+                    a.download = filename;
                     document.body.appendChild(a);
                     a.click();
                     window.URL.revokeObjectURL(downloadUrl);

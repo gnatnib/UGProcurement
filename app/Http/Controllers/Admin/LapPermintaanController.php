@@ -141,110 +141,127 @@ class LapPermintaanController extends Controller
     }
 
 
-public function csv(Request $request) 
-{
-    $user = Session::get('user');
-    $requestQuery = RequestBarangModel::query();
-
-    if ($request->tglawal && $request->tglakhir) {
-        $requestQuery->whereDate('request_tanggal', '>=', $request->tglawal)
-                    ->whereDate('request_tanggal', '<=', $request->tglakhir);
-    }
-
-    // Role-based filtering
-    if ($user->role_id == '5') {
-        $requestQuery->where('user_id', $user->user_id);
-    } 
-    else if ($user->role_id == '4') {
-        $requestQuery->where(function($query) use ($user) {
-            $query->where('user_id', $user->user_id)
-                  ->orWhere('departemen', $user->departemen);
-        });
-    }
-    else if (in_array($user->role_id, ['2', '3']) && $request->divisi) {
-        $requestQuery->where('divisi', $request->divisi);
-    }
-
-    $requests = $requestQuery->get();
-
-    if ($requests->isEmpty()) {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Tidak ada data pada periode yang dipilih'
-        ]);
-    }
-
-    $handle = fopen('php://temp', 'r+');
-
-    // Write report header with complete info
-    fputs($handle, "LAPORAN PERMINTAAN BARANG\n\n");
-    fputs($handle, "INFORMASI LAPORAN:\n");
-    fputs($handle, "Periode: " . Carbon::parse($request->tglawal)->format('d/m/Y') . " - " . Carbon::parse($request->tglakhir)->format('d/m/Y') . "\n");
+    public function csv(Request $request) 
+    {
+        $user = Session::get('user');
+        $requestQuery = RequestBarangModel::query();
     
-    // For roles 2 & 3, show requesting divisions instead of user's division
-    if (in_array($user->role_id, ['2', '3'])) {
-        if ($request->divisi) {
-            fputs($handle, "Filter Divisi: " . $request->divisi . "\n");
+        if ($request->tglawal && $request->tglakhir) {
+            $requestQuery->whereDate('request_tanggal', '>=', $request->tglawal)
+                        ->whereDate('request_tanggal', '<=', $request->tglakhir);
+        }
+    
+        // Role-based filtering
+        if ($user->role_id == '5') {
+            $requestQuery->where('user_id', $user->user_id);
+        } 
+        else if ($user->role_id == '4') {
+            $requestQuery->where(function($query) use ($user) {
+                $query->where('user_id', $user->user_id)
+                      ->orWhere('departemen', $user->departemen);
+            });
+        }
+        else if (in_array($user->role_id, ['2', '3']) && $request->divisi) {
+            $requestQuery->where('divisi', $request->divisi);
+        }
+    
+        // Filter untuk approval dan tracking_status
+        $requestQuery->whereExists(function ($query) {
+            $query->select(DB::raw(1))
+                  ->from('tbl_barangmasuk')
+                  ->whereRaw('tbl_barangmasuk.request_id = tbl_request_barang.request_id')
+                  ->where('tbl_barangmasuk.approval', '=', 'Approve')
+                  ->where('tbl_barangmasuk.tracking_status', '=', 'Diterima');
+        });
+    
+        $requests = $requestQuery->get();
+    
+        if ($requests->isEmpty()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Tidak ada data pada periode yang dipilih'
+            ]);
+        }
+    
+        $handle = fopen('php://temp', 'r+');
+    
+        // Write report header with complete info
+        fputs($handle, "LAPORAN PERMINTAAN BARANG\n\n");
+        fputs($handle, "INFORMASI LAPORAN:\n");
+        fputs($handle, "Periode: " . Carbon::parse($request->tglawal)->format('d/m/Y') . " - " . Carbon::parse($request->tglakhir)->format('d/m/Y') . "\n");
+        
+        // For roles 2 & 3, show requesting divisions instead of user's division
+        if (in_array($user->role_id, ['2', '3'])) {
+            if ($request->divisi) {
+                fputs($handle, "Filter Divisi: " . $request->divisi . "\n");
+            } else {
+                $divisions = $requests->pluck('divisi')->unique()->implode(', ');
+                fputs($handle, "Divisi: " . $divisions . "\n");
+            }
         } else {
-            $divisions = $requests->pluck('divisi')->unique()->implode(', ');
-            fputs($handle, "Divisi: " . $divisions . "\n");
+            fputs($handle, "Departemen: " . $user->departemen . "\n");
+            fputs($handle, "Divisi: " . $user->divisi . "\n");
         }
-    } else {
-        fputs($handle, "Departemen: " . $user->departemen . "\n");
-        fputs($handle, "Divisi: " . $user->divisi . "\n");
-    }
-    fputs($handle, "\n");
-
-    // Rest of the code remains the same...
-    fputs($handle, '"Request ID","Tanggal Request","Departemen","Divisi","Kode Barang","Nama Barang","Jumlah","Harga Satuan","Total Harga"' . "\n");
-
-    $grandTotal = 0;
-    $totalItems = 0;
-
-    foreach ($requests as $request) {
-        $items = BarangmasukModel::select(
-            'tbl_barangmasuk.barang_kode',
-            'tbl_barangmasuk.bm_jumlah', 
-            'tbl_barangmasuk.harga',
-            'tbl_barang.barang_nama'
-        )
-        ->join('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')
-        ->where('request_id', $request->request_id)
-        ->get();
-
-        foreach ($items as $item) {
-            $totalHarga = $item->bm_jumlah * $item->harga;
-            $grandTotal += $totalHarga;
-            $totalItems++;
-
-            $row = [
-                $request->request_id,
-                Carbon::parse($request->request_tanggal)->format('d/m/Y'),
-                $request->departemen,
-                $request->divisi,
-                $item->barang_kode,
-                $item->barang_nama,
-                $item->bm_jumlah,
-                number_format($item->harga, 2, ',', '.'),
-                number_format($totalHarga, 2, ',', '.')
-            ];
-            
-            fputcsv($handle, $row);
+        fputs($handle, "\n");
+    
+        // CSV Headers
+        fputs($handle, '"Request ID","Tanggal Request","Departemen","Divisi","Kode Barang","Nama Barang","Jumlah","Harga Satuan","Total Harga"' . "\n");
+    
+        $grandTotal = 0;
+        $totalItems = 0;
+    
+        foreach ($requests as $request) {
+            $items = BarangmasukModel::select(
+                'tbl_barangmasuk.barang_kode',
+                'tbl_barangmasuk.bm_jumlah', 
+                'tbl_barangmasuk.harga',
+                'tbl_barang.barang_nama'
+            )
+            ->join('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')
+            ->where('request_id', $request->request_id)
+            ->where('approval', 'Approve')
+            ->where('tracking_status', 'Diterima')
+            ->get();
+    
+            foreach ($items as $item) {
+                $totalHarga = $item->bm_jumlah * $item->harga;
+                $grandTotal += $totalHarga;
+                $totalItems++;
+    
+                $row = [
+                    $request->request_id,
+                    Carbon::parse($request->request_tanggal)->format('d/m/Y'),
+                    $request->departemen,
+                    $request->divisi,
+                    $item->barang_kode,
+                    $item->barang_nama,
+                    $item->bm_jumlah,
+                    number_format($item->harga, 2, ',', '.'),
+                    number_format($totalHarga, 2, ',', '.')
+                ];
+                
+                fputcsv($handle, $row);
+            }
         }
+    
+        fputs($handle, "\nRINGKASAN LAPORAN:\n");
+        fputs($handle, "Total Request: " . $requests->count() . "\n");
+        fputs($handle, "Total Item: " . $totalItems . "\n");
+        fputs($handle, "Total Nilai: Rp " . number_format($grandTotal, 2, ',', '.') . "\n");
+    
+        rewind($handle);
+        $content = stream_get_contents($handle);
+        fclose($handle);
+    
+        // Format nama file dengan periode tanggal
+        $filename = sprintf(
+            "laporan_permintaan_%s_sd_%s.csv",
+            Carbon::parse($request->tglawal)->format('dmY'),
+            Carbon::parse($request->tglakhir)->format('dmY')
+        );
+        
+        return response($content)
+            ->header('Content-Type', 'text/csv')
+            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
     }
-
-    fputs($handle, "\nRINGKASAN LAPORAN:\n");
-    fputs($handle, "Total Request: " . $requests->count() . "\n");
-    fputs($handle, "Total Item: " . $totalItems . "\n");
-    fputs($handle, "Total Nilai: Rp " . number_format($grandTotal, 2, ',', '.') . "\n");
-
-    rewind($handle);
-    $content = stream_get_contents($handle);
-    fclose($handle);
-
-    return response($content)
-        ->header('Content-Type', 'text/csv')
-        ->header('Content-Disposition', 'attachment; filename="laporan_permintaan_' . date('Y-m-d_His') . '.csv"');
-}
-
 }
