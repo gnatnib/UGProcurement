@@ -22,6 +22,12 @@ class LapBarangMasukController extends Controller
     public function index(Request $request)
     {
         $data["title"] = "Lap Barang Masuk";
+        $data['divisions'] = DB::table('tbl_user')
+            ->select('divisi')
+            ->whereNotNull('divisi')
+            ->where('divisi', '!=', '')
+            ->distinct()
+            ->pluck('divisi');
         return view('Admin.Laporan.BarangMasuk.index', $data);
     }
 
@@ -128,54 +134,58 @@ public function storeSignature(Request $request)
     ]);
 }
 
-
-   public function show(Request $request)
-{
-    if ($request->ajax()) {
-        $user = Session::get('user');  // Ambil user dari session
-
-        // Cek role_id, jika 4 atau 5 hanya lihat departemen sendiri, jika 1,2,3 lihat semua
-        if (in_array($user->role_id, [4, 5])) {
-            $query = RequestBarangModel::where('status', 'Diterima')
-                ->where('departemen', $user->departemen);  // Filter berdasarkan departemen user
-        } else {
+    public function show(Request $request)
+    {
+        if ($request->ajax()) {
+            $user = Session::get('user');
             $query = RequestBarangModel::where('status', 'Diterima');
-        }
-
-        if ($request->tglawal == '') {
+    
+            // Apply date filter if provided
+            if ($request->tglawal && $request->tglakhir) {
+                $query->whereBetween('request_tanggal', [$request->tglawal, $request->tglakhir]);
+            }
+    
+            // Apply division filter if provided
+            if ($request->divisi) {
+                $query->where('divisi', $request->divisi);
+            }
+    
+            // Apply role-based filters
+            if ($user->role_id == '5') {
+                $query->where('user_id', $user->user_id);
+            } elseif ($user->role_id == '4') {
+                $query->where(function($q) use ($user) {
+                    $q->where('departemen', $user->departemen)
+                      ->orWhere('user_id', $user->user_id);
+                });
+            }
+    
             $data = $query->orderBy('request_id', 'DESC')->get();
-        } else {
-            $data = $query->whereBetween('request_tanggal', [$request->tglawal, $request->tglakhir])
-                ->orderBy('request_id', 'DESC')
-                ->get();
-        }
-
-        return DataTables::of($data)
-            ->addIndexColumn()
-            ->addColumn('tgl', function ($row) {
-                return Carbon::parse($row->request_tanggal)->translatedFormat('d F Y');
-            })
-            ->addColumn('status', function ($row) {
-                if ($row->status == 'Pending') {
-                    return '<span class="badge bg-warning">Pending</span>';
-                } else if ($row->status == 'Diterima') {
-                    return '<span class="badge bg-success">Diterima</span>';
-                } else {
-                    return '<span class="badge bg-danger">Ditolak</span>';
-                }
-            })
-            ->addColumn('action', function ($row) {
-                return '
+    
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->addColumn('tgl', function ($row) {
+                    return Carbon::parse($row->request_tanggal)->translatedFormat('d F Y');
+                })
+                ->addColumn('status', function ($row) {
+                    if ($row->status == 'Pending') {
+                        return '<span class="badge bg-warning">Pending</span>';
+                    } else if ($row->status == 'Diterima') {
+                        return '<span class="badge bg-success">Diterima</span>';
+                    } else {
+                        return '<span class="badge bg-danger">Ditolak</span>';
+                    }
+                })
+                ->addColumn('action', function ($row) {
+                    return '
                         <button class="btn btn-danger-light btn-sm" onclick="pdf(\'' . $row->request_id . '\')">
                             <i class="fa fa-file-pdf-o"></i> PDF
                         </button>';
-            })
-            ->rawColumns(['tgl', 'status', 'action'])
-            ->make(true);
+                })
+                ->rawColumns(['tgl', 'status', 'action'])
+                ->make(true);
+        }
     }
-}
-
-
 
 public function csv(Request $request)
 {

@@ -313,7 +313,7 @@ class TrackingStatusController extends Controller
             } elseif ($itemStatuses->total_valid_items > 0) {
                 // Jika ada item valid (tidak ditolak)
                 if ($itemStatuses->total_diterima == $itemStatuses->total_valid_items) {
-                    $newStatus = 'Diterima';
+                    $newStatus = 'Dikirim';
                 } elseif ($itemStatuses->total_dikirim == $itemStatuses->total_valid_items) {
                     $newStatus = 'Dikirim';
                 } elseif ($itemStatuses->total_diproses > 0) {
