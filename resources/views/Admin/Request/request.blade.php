@@ -408,10 +408,15 @@
                     window.statusChanged = false;
                 }
             });
-            $('.datepicker-date').datepicker({
-                format: 'yyyy-mm-dd',
-                autoclose: true,
-                todayHighlight: true
+                    $('.datepicker-date').each(function() {
+                if (!$(this).data('datepicker')) {
+                    $(this).datepicker({
+                        format: 'dd-mm-yyyy',
+                        autoclose: true,
+                        todayHighlight: true,
+                        orientation: 'auto top'
+                    });
+                }
             });
             var table = $('#table-1').DataTable({
                 processing: true,
@@ -844,5 +849,9 @@
             border-radius: 4px;
             background-color: #fff;
         }
+
+        .datepicker-dropdown {
+    z-index: 9999 !important;
+}
     </style>
 @endsection
