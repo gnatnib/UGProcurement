@@ -228,63 +228,115 @@ class TrackingStatusController extends Controller
     }
 
     public function bulkUpdate(Request $request)
-    {
-        try {
-            DB::beginTransaction();
-    
-            if (empty($request->request_id) || empty($request->approvals)) {
-                throw new \Exception('Data tidak lengkap');
-            }
-    
-            // Update individual items
-            foreach ($request->approvals as $bm_id => $status) {
-                DB::table('tbl_barangmasuk')
-                    ->where('bm_id', $bm_id)
-                    ->update([
-                        'tracking_status' => $status,
-                        'updated_at' => now()
-                    ]);
-            }
-    
-            // Hitung status semua item dalam request
-            $itemStatuses = DB::table('tbl_barangmasuk')
-                ->where('request_id', $request->request_id)
-                ->where('approval', 'Approve')
-                ->select(
-                    DB::raw('COUNT(*) as total_items'),
-                    DB::raw('COUNT(CASE WHEN tracking_status IN ("Dikirim", "Diterima") THEN 1 END) as total_minimal_dikirim')
-                )
+{
+    try {
+        DB::beginTransaction();
+        $user = Session::get('user');
+
+        if (empty($request->request_id) || empty($request->approvals)) {
+            throw new \Exception('Data tidak lengkap');
+        }
+
+        // Update individual items
+        foreach ($request->approvals as $bm_id => $status) {
+            $currentData = DB::table('tbl_barangmasuk')
+                ->where('bm_id', $bm_id)
                 ->first();
-    
-            // Update status request menjadi 'Dikirim' hanya jika semua item minimal sudah dikirim
-            if ($itemStatuses->total_items > 0 && $itemStatuses->total_minimal_dikirim == $itemStatuses->total_items) {
+
+            $updateData = [
+                'tracking_status' => $status['status'],
+                'updated_at' => now()
+            ];
+
+            // Add rejection reason if status is Ditolak
+            if ($status['status'] === 'Ditolak') {
+                // Get current keterangan
+                $currentKeterangan = DB::table('tbl_barangmasuk')
+                    ->where('bm_id', $bm_id)
+                    ->value('keterangan');
+
+                // Format the new rejection message
+                $newReject = sprintf(
+                    'Rejected by %s: %s',
+                    $user->user_nama,
+                    $status['reason']
+                );
+
+                // Get original keterangan without any rejection messages
+                $originalKeterangan = preg_replace('/Rejected by [^:]+: [^\n]+\n?/', '', $currentData->keterangan);
+                $originalKeterangan = trim($originalKeterangan); // Remove extra whitespace
+
+                $updateData['keterangan'] = $originalKeterangan 
+                    ? $originalKeterangan . "\n" . $newReject 
+                    : $newReject;
+            }else {
+                // For other statuses, remove rejection messages but keep original keterangan
+                $cleanKeterangan = preg_replace('/Rejected by [^:]+: [^\n]+\n?/', '', $currentData->keterangan);
+                $updateData['keterangan'] = trim($cleanKeterangan); // Remove extra whitespace
+            }
+
+            DB::table('tbl_barangmasuk')
+                ->where('bm_id', $bm_id)
+                ->update($updateData);
+        }
+
+        $itemStatuses = DB::table('tbl_barangmasuk')
+            ->where('request_id', $request->request_id)
+            ->where('approval', 'Approve')
+            ->select(
+                DB::raw('COUNT(*) as total_items'),
+                DB::raw('COUNT(CASE WHEN tracking_status = "Dikirim" THEN 1 END) as total_dikirim'),
+                DB::raw('COUNT(CASE WHEN tracking_status = "Diterima" THEN 1 END) as total_diterima'),
+                DB::raw('COUNT(CASE WHEN tracking_status = "Ditolak" THEN 1 END) as total_ditolak'),
+                DB::raw('COUNT(CASE WHEN tracking_status = "Diproses" THEN 1 END) as total_diproses')
+            )
+            ->first();
+
+        if ($itemStatuses->total_items > 0) {
+            $newStatus = null;
+            
+            if ($itemStatuses->total_ditolak == $itemStatuses->total_items) {
+                // Jika semua item ditolak
+                $newStatus = 'Ditolak';
+            } elseif ($itemStatuses->total_diterima == $itemStatuses->total_items) {
+                // Jika semua item diterima
+                $newStatus = 'Diterima';
+            } elseif ($itemStatuses->total_dikirim == $itemStatuses->total_items) {
+                // Jika semua item dikirim
+                $newStatus = 'Dikirim';
+            } elseif ($itemStatuses->total_diproses > 0) {
+                // Jika masih ada yang diproses
+                $newStatus = 'Diproses';
+            }
+
+            if ($newStatus) {
                 DB::table('tbl_request_barang')
                     ->where('request_id', $request->request_id)
-                    ->where('status', '!=', 'Diterima') // Jangan update jika sudah Diterima
                     ->update([
-                        'status' => 'Dikirim',
+                        'status' => $newStatus,
                         'updated_at' => now()
                     ]);
             }
-    
-            DB::commit();
-            return response()->json([
-                'success' => true,
-                'message' => 'Status tracking berhasil diupdate'
-            ]);
-    
-        } catch (\Exception $e) {
-            DB::rollback();
-            Log::error('Error in bulkUpdate:', [
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
-            ], 500);
         }
+
+        DB::commit();
+        return response()->json([
+            'success' => true,
+            'message' => 'Status tracking berhasil diupdate'
+        ]);
+
+    } catch (\Exception $e) {
+        DB::rollback();
+        Log::error('Error in bulkUpdate:', [
+            'message' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+        return response()->json([
+            'success' => false,
+            'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+        ], 500);
     }
+}
     
     public function updateStatus(Request $request)
     {

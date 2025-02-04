@@ -40,9 +40,9 @@
                     <select class="form-control" name="tahun" id="filterTahun">
                         <option value="">Semua Tahun</option>
                         @php
-                            $currentYear = date('Y');
-                            $startYear = $currentYear - 3;
-                            $endYear = $currentYear + 1;
+$currentYear = date('Y');
+$startYear = $currentYear - 3;
+$endYear = $currentYear + 1;
                         @endphp
                         @foreach (range($startYear, $endYear) as $year)
                             <option value="{{ $year }}" {{ $currentYear == $year ? 'selected' : '' }}>
@@ -125,6 +125,29 @@
             </div>
         </div>
     </div>
+
+   
+    <div class="modal fade" id="rejectModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Alasan Penolakan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="reject_bm_id">
+                    <div class="form-group">
+                        <label>Keterangan Penolakan</label>
+                        <textarea id="reject_reason" class="form-control" rows="3" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-danger" onclick="submitReject()">Simpan</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('scripts')
@@ -194,75 +217,102 @@ window.table = $('#table-1').DataTable({
         // Object untuk menyimpan status tracking per item
         let itemApprovals = {};
 
-        function showDetail(request_id) {
-            $('#current_request_id').val(decodeURIComponent(request_id));
+            function showDetail(request_id) {
+                $('#current_request_id').val(decodeURIComponent(request_id));
 
-            $.get("/admin/tracking/detail/" + encodeURIComponent(request_id), function(data) {
-                let html = '';
-                data.forEach(item => {
-                    let badgeClass;
-                    let currentStatus = item.tracking_status || 'Pending';
+                $.get("/admin/tracking/detail/" + encodeURIComponent(request_id), function (data) {
+                    let html = '';
+                    data.forEach(item => {
+                        let badgeClass;
+                        let currentStatus = item.tracking_status || 'Pending';
 
-                    switch (currentStatus) {
-                        case 'Diproses':
-                            badgeClass = 'warning';
-                            break;
-                        case 'Dikirim':
-                            badgeClass = 'info';
-                            break;
-                        case 'Diterima':
-                            badgeClass = 'success';
-                            break;
-                        default:
-                            badgeClass = 'secondary';
-                    }
-
-                    html += `
-            <tr id="row-${item.bm_id}">
-                <td>${item.barang_kode}</td>
-                <td>${item.barang_nama}</td>
-                <td>${item.bm_jumlah}</td>
-                <td>${item.divisi}</td>
-                <td>${item.keterangan}</td>
-                <td id="status-${item.bm_id}">
-                    <span class="badge bg-${badgeClass}">${currentStatus}</span>
-                </td>
-                <td>
-                    <select class="form-select form-select-sm" onchange="setItemStatus(${item.bm_id}, this.value)">
-                        <option value="">Pilih Status</option>
-                        <option value="Diproses" ${currentStatus === 'Diproses' ? 'selected' : ''}> Diproses</option>
-                        <option value="Dikirim" ${currentStatus === 'Dikirim' ? 'selected' : ''}>Dikirim</option>
-                        <option value="Diterima" ${currentStatus === 'Diterima' ? 'selected' : ''}>Diterima</option>
-                    </select>
-                </td>
-            </tr>
-            `;
+                        switch (currentStatus) {
+                            case 'Diproses':
+                                badgeClass = 'warning';
+                                break;
+                            case 'Dikirim':
+                                badgeClass = 'info';
+                                break;
+                            case 'Diterima':
+                                badgeClass = 'success';
+                                break;
+                            case 'Ditolak':
+                                badgeClass = 'danger';
+                                break;
+                            default:
+                                badgeClass = 'secondary';
+                        }
+                        const formattedKeterangan = item.keterangan
+                            ? item.keterangan.replace(/\n/g, '<br>')
+                            : '';
+                        
+                        html += `
+                <tr id="row-${item.bm_id}">
+                    <td>${item.barang_kode}</td>
+                    <td>${item.barang_nama}</td>
+                    <td>${item.bm_jumlah}</td>
+                    <td>${item.divisi}</td>
+                    <td>${item.keterangan}</td>
+                    <td id="status-${item.bm_id}">
+                        <span class="badge bg-${badgeClass}">${currentStatus}</span>
+                    </td>
+                    <td>
+                        <select class="form-select form-select-sm" onchange="handleStatusChange(${item.bm_id}, this.value)">
+                            <option value="">Pilih Status</option>
+                            <option value="Diproses" ${currentStatus === 'Diproses' ? 'selected' : ''}>Diproses</option>
+                            <option value="Dikirim" ${currentStatus === 'Dikirim' ? 'selected' : ''}>Dikirim</option>
+                            <option value="Diterima" ${currentStatus === 'Diterima' ? 'selected' : ''}>Diterima</option>
+                            <option value="Ditolak" ${currentStatus === 'Ditolak' ? 'selected' : ''}>Ditolak</option>
+                        </select>
+                    </td>
+                </tr>
+                `;
+                    });
+                    $('#detail-content').html(html);
+                    $('#modalDetail').modal('show');
                 });
-                $('#detail-content').html(html);
-                $('#modalDetail').modal('show');
-            });
-        }
-
-        function setItemStatus(bm_id, status) {
-            itemApprovals[bm_id] = status;
-
-            let badgeClass;
-            switch (status) {
-                case 'Diproses':
-                    badgeClass = 'warning';
-                    break;
-                case 'Dikirim':
-                    badgeClass = 'info';
-                    break;
-                case 'Diterima':
-                    badgeClass = 'success';
-                    break;
-                default:
-                    badgeClass = 'secondary';
             }
 
-            $(`#status-${bm_id}`).html(`<span class="badge bg-${badgeClass}">${status || 'Pending'}</span>`);
-        }
+        function setItemStatus(bm_id, status, reason = '') {
+                itemApprovals[bm_id] = {
+                    status: status,
+                    reason: reason
+                };
+
+                let badgeClass;
+                switch (status) {
+                    case 'Diproses':
+                        badgeClass = 'warning';
+                        break;
+                    case 'Dikirim':
+                        badgeClass = 'info';
+                        break;
+                    case 'Diterima':
+                        badgeClass = 'success';
+                        break;
+                    case 'Ditolak':
+                        badgeClass = 'danger';
+                        break;
+                    default:
+                        badgeClass = 'secondary';
+                }
+
+                $(`#status-${bm_id}`).html(`<span class="badge bg-${badgeClass}">${status}</span>`);
+                const currentKeterangan = $(`#row-${bm_id} td:eq(4)`).html();
+                if (status === 'Ditolak') {
+                    // Remove any existing rejection messages
+                    const cleanKeterangan = currentKeterangan.replace(/Rejected by [^:]+: [^\n]+(<br>|\n)?/g, '');
+                    const newReject = `Rejected by {{ Session::get('user')->user_nmlengkap }}: ${reason}`;
+                    const updatedKeterangan = cleanKeterangan
+                        ? `${cleanKeterangan}<br>${newReject}`
+                        : newReject;
+                    $(`#row-${bm_id} td:eq(4)`).html(`<div style="white-space: pre-line;">${updatedKeterangan}</div>`);
+                } else {
+                    // Remove rejection messages but keep original keterangan
+                    const cleanKeterangan = currentKeterangan.replace(/Rejected by [^:]+: [^\n]+(<br>|\n)?/g, '');
+                    $(`#row-${bm_id} td:eq(4)`).html(`<div style="white-space: pre-line;">${cleanKeterangan.trim()}</div>`);
+                }
+            }
 
         function simpanApproval() {
             const request_id = $('#current_request_id').val();
@@ -336,5 +386,31 @@ window.table = $('#table-1').DataTable({
             $('#filterTahun').val('');
             applyFilter();
         }
+
+        function handleStatusChange(bm_id, status) {
+                if (status === 'Ditolak') {
+                    showRejectModal(bm_id);
+                } else {
+                    setItemStatus(bm_id, status);
+                }
+            }
+
+        function showRejectModal(bm_id) {
+                    $('#reject_bm_id').val(bm_id);
+                    $('#reject_reason').val('');
+                    $('#rejectModal').modal('show');
+            }
+        function submitReject() {
+                const bm_id = $('#reject_bm_id').val();
+                const reason = $('#reject_reason').val();
+
+                if (!reason) {
+                    swal("Error!", "Keterangan penolakan harus diisi", "error");
+                    return;
+                }
+
+                setItemStatus(bm_id, 'Ditolak', reason);
+                $('#rejectModal').modal('hide');
+            }
     </script>
 @endsection
