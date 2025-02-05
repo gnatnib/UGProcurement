@@ -38,33 +38,72 @@ class LapPermintaanController extends Controller
         return view('Admin.Laporan.Permintaan.print', $data);
     }
 
+    // public function pdf(Request $request)
+    // {
+    //     $data['data'] = BarangmasukModel::select(
+    //         'tbl_barangmasuk.barang_kode',
+    //         'tbl_barangmasuk.bm_jumlah',
+    //         'tbl_barangmasuk.harga as barang_harga',
+    //         'tbl_barangmasuk.keterangan', // Mengambil keterangan dari tbl_barangmasuk
+    //         'tbl_barang.barang_nama',
+    //         'tbl_request_barang.request_tanggal',
+    //         'tbl_request_barang.departemen'
+    //     )
+    //         ->join('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')
+    //         ->join('tbl_request_barang', 'tbl_request_barang.request_id', '=', 'tbl_barangmasuk.request_id')
+    //         ->where('tbl_barangmasuk.request_id', $request->id)
+    //         ->get();
+    
+    //     $data["title"] = "PDF Permintaan";
+    //     $data['web'] = WebModel::first();
+    //     $data['request'] = RequestBarangModel::find($request->id);
+    //     $data['signatures'] = DB::table('tbl_signatures')
+    //         ->where('request_id', $request->id)
+    //         ->get()
+    //         ->keyBy('signer_type');
+    
+    //     $pdf = PDF::loadView('Admin.Laporan.Permintaan.pdf', $data);
+    //     return $pdf->download('permintaan-' . $request->id . '.pdf');
+    // }
+
     public function pdf(Request $request)
     {
         $data['data'] = BarangmasukModel::select(
             'tbl_barangmasuk.barang_kode',
             'tbl_barangmasuk.bm_jumlah',
             'tbl_barangmasuk.harga as barang_harga',
-            'tbl_barangmasuk.keterangan', // Mengambil keterangan dari tbl_barangmasuk
+            'tbl_barangmasuk.keterangan',
             'tbl_barang.barang_nama',
+            'tbl_merk.merk_nama',
+            'tbl_jenisbarang.jenisbarang_nama',
             'tbl_request_barang.request_tanggal',
-            'tbl_request_barang.departemen'
+            'tbl_request_barang.departemen',
+            'tbl_request_barang.divisi'  // Add this to get the division
         )
             ->join('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')
+            ->join('tbl_merk', 'tbl_merk.merk_id', '=', 'tbl_barang.merk_id')
+            ->join('tbl_jenisbarang', 'tbl_jenisbarang.jenisbarang_id', '=', 'tbl_barang.jenisbarang_id')
             ->join('tbl_request_barang', 'tbl_request_barang.request_id', '=', 'tbl_barangmasuk.request_id')
             ->where('tbl_barangmasuk.request_id', $request->id)
             ->get();
-    
+
+        $requestData = RequestBarangModel::find($request->id);
+        
+        // Get GM for this division
+        $data['gm'] = DB::table('tbl_user')
+            ->where('role_id', '4')
+            ->where('divisi', $requestData->divisi)
+            ->where('departemen', $requestData->departemen)
+            ->first();
+
         $data["title"] = "PDF Permintaan";
         $data['web'] = WebModel::first();
-        $data['request'] = RequestBarangModel::find($request->id);
-        $data['signatures'] = DB::table('tbl_signatures')
-            ->where('request_id', $request->id)
-            ->get()
-            ->keyBy('signer_type');
-    
+        $data['request'] = $requestData;
+        
         $pdf = PDF::loadView('Admin.Laporan.Permintaan.pdf', $data);
         return $pdf->download('permintaan-' . $request->id . '.pdf');
     }
+
     public function storeSignature(Request $request)
     {
         $imageData = $request->input('signature'); // Assume base64 input
