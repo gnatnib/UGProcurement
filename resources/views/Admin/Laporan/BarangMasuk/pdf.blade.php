@@ -140,9 +140,9 @@
                 <th width="3%">No</th>
                 <th width="12%">Kode Barang</th>
                 <th width="25%">Nama Barang</th>
-                <th width="15%">Merk</th> <!-- Add Merk column -->
-                <th width="15%">Jenis Barang</th> <!-- Add Jenis Barang column -->
-                <th width="15%">Jumlah Satuan</th> <!-- Change to Jumlah Satuan -->
+                <th width="15%">Merk</th>
+                <th width="15%">Jenis Barang</th>
+                <th width="15%">Jumlah Satuan</th>
                 <th width="15%">Harga</th>
                 <th width="10%">Status</th>
                 <th>Keterangan</th>
@@ -150,23 +150,23 @@
         </thead>
         <tbody>
             @php 
-                            $total = 0;
-$no = 1;
+                $total = 0;
+                $no = 1;
             @endphp
             @foreach($data as $d)
+                <tr>
+                    <td>{{ $no++ }}</td>
+                    <td>{{ $d->barang_kode }}</td>
+                    <td>{{ $d->barang_nama }}</td>
+                    <td>{{ $d->merk_nama }}</td>
+                    <td>{{ $d->jenisbarang_nama }}</td>
+                    <td>{{ $d->jumlah_satuan }}</td>
+                    <td>Rp {{ number_format($d->harga, 0, ',', '.') }}</td>
+                    <td>{{ $d->tracking_status }}</td>
+                    <td>{{ $d->keterangan }}</td>
+                </tr>
                 @if($d->tracking_status == 'Diterima')
                     @php $total += $d->harga * $d->bm_jumlah; @endphp
-                    <tr>
-                        <td>{{ $no++ }}</td>
-                        <td>{{ $d->barang_kode }}</td>
-                        <td>{{ $d->barang_nama }}</td>
-                        <td>{{ $d->merk_nama }}</td> <!-- Display Merk name -->
-                        <td>{{ $d->jenisbarang_nama }}</td> <!-- Display Jenis Barang name -->
-                        <td>{{ $d->jumlah_satuan }}</td> <!-- Display Jumlah Satuan -->
-                        <td>Rp {{ number_format($d->harga, 0, ',', '.') }}</td>
-                        <td>{{ $d->tracking_status }}</td>
-                        <td>{{ $d->keterangan }}</td>
-                    </tr>
                 @endif
             @endforeach
             <tr>
