@@ -83,7 +83,10 @@ class BarangmasukController extends Controller
 
             $query = BarangmasukModel::leftJoin('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')
                 ->leftJoin('tbl_request_barang', 'tbl_request_barang.request_id', '=', 'tbl_barangmasuk.request_id')
-                ->leftJoin('tbl_user', 'tbl_user.user_id', '=', 'tbl_barangmasuk.user_id');
+                ->leftJoin('tbl_user', 'tbl_user.user_id', '=', 'tbl_barangmasuk.user_id')
+                ->leftJoin('tbl_jenisbarang', 'tbl_jenisbarang.jenisbarang_id', '=', 'tbl_barang.jenisbarang_id')
+                ->leftJoin('tbl_merk', 'tbl_merk.merk_id', '=', 'tbl_barang.merk_id');
+
 
             // Filter by request_id if provided
             if ($requestId) {
@@ -103,7 +106,9 @@ class BarangmasukController extends Controller
             $data = $query->select(
                 'tbl_barangmasuk.*',
                 'tbl_barang.barang_nama',
-                'tbl_request_barang.status as request_status'
+                'tbl_request_barang.status as request_status',
+                'tbl_jenisbarang.jenisbarang_nama as jenis',
+                'tbl_merk.merk_nama as merk'
             )
                 ->orderBy('tbl_barangmasuk.request_id', 'DESC')
                 ->get();
@@ -115,6 +120,12 @@ class BarangmasukController extends Controller
                 })
                 ->addColumn('barang', function ($row) {
                     return $row->barang_nama ?? '-';
+                })
+                ->addColumn('jenis', function ($row) {
+                    return $row->jenis ?? '-';
+                })
+                ->addColumn('merk', function ($row) {
+                    return $row->merk ?? '-';
                 })
                 ->addColumn('jumlah_item', function ($row) {
                     return $row->bm_jumlah . ' ' . $row->satuan;
@@ -228,7 +239,7 @@ class BarangmasukController extends Controller
     }
 
 
-            public function proses_ubah(Request $request, BarangmasukModel $barangmasuk)
+    public function proses_ubah(Request $request, BarangmasukModel $barangmasuk)
     {
         try {
             // Validate request
@@ -239,7 +250,7 @@ class BarangmasukController extends Controller
                     function ($attribute, $value, $fail) {
                         $inputDate = \Carbon\Carbon::parse($value)->startOfDay();
                         $today = \Carbon\Carbon::now()->startOfDay();
-                        
+
                         if ($inputDate < $today) {
                             $fail('Tanggal tidak boleh kurang dari hari ini.');
                         }
@@ -276,13 +287,11 @@ class BarangmasukController extends Controller
                 'success' => true,
                 'message' => 'Data berhasil diubah'
             ]);
-
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Validasi gagal: ' . $e->getMessage()
             ], 422);
-
         } catch (\Exception $e) {
             Log::error('Error updating barang masuk: ' . $e->getMessage());
             return response()->json([

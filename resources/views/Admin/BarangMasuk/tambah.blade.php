@@ -73,6 +73,10 @@
                                     <label>Jenis</label>
                                     <input type="text" class="form-control" id="jenis" readonly>
                                 </div>
+                                <div class="form-group">
+                                    <label>Merk</label>
+                                    <input type="text" class="form-control" id="merk" readonly>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -161,6 +165,7 @@
                         $("#nmbarang").val(data[0].barang_nama);
                         $("#satuan").val(data[0].satuan_nama).trigger('change');
                         $("#jenis").val(data[0].jenisbarang_nama);
+                        $("#merk").val(data[0].merk_nama); // Add this line
                         // Set harga dari database
                         $("input[name='harga']").val(data[0].barang_harga);
                     } else {
@@ -168,6 +173,7 @@
                         $("#nmbarang").val('');
                         $("#satuan").val('');
                         $("#jenis").val('');
+                        $("#merk").val('');
                         $("input[name='harga']").val('0');
                         validasi('Barang tidak ditemukan!', 'warning');
                     }
@@ -397,8 +403,9 @@
             $("input[name='jml']").val('0');
             $("input[name='harga']").val('0');
             $("#nmbarang").val('');
-            $("#satuan").val('').trigger('change'); // Reset satuan dropdown
+            $("#satuan").val('').trigger('change');
             $("#jenis").val('');
+            $("#merk").val('');
             $("#status").val('false');
 
             // Reset loading state
