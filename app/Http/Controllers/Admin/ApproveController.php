@@ -252,7 +252,7 @@ class ApproveController extends Controller
             ])->exists();
 
             if (!$hasUserSignature) {
-                throw new \Exception('Please sign the request before approving items');
+                throw new \Exception('Mohon tanda tangan dahulu sebelum simpan approval!');
             }
 
             // Validasi data
@@ -493,7 +493,7 @@ class ApproveController extends Controller
             if (!$hasSignature && $status === 'Approve') {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Please sign the request before approving items'
+                    'message' => 'Mohon tanda tangan dahulu sebelum simpan approval!'
                 ], 400);
             }
 
