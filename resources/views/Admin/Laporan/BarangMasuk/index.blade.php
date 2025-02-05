@@ -37,16 +37,18 @@
                                 placeholder="Tanggal Akhir">
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <select name="divisi" id="divisi" class="form-control">
-                                <option value="">Semua Divisi</option>
-                                @foreach($divisions as $division)
-                                    <option value="{{ $division }}">{{ $division }}</option>
-                                @endforeach
-                            </select>
+                    @if(!in_array(Session::get('user')->role_id, ['4', '5']))
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <select name="divisi" id="divisi" class="form-control">
+                                    <option value="">Semua Divisi</option>
+                                    @foreach($divisions as $division)
+                                        <option value="{{ $division }}">{{ $division }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
-                    </div>
+                    @endif
                     <div class="col-md-6">
                         <button class="btn btn-success-light" onclick="filter()"><i class="fe fe-filter"></i>
                             Filter</button>
@@ -90,10 +92,7 @@
 
     $(document).ready(function () {
         getData();
-        const userRole = "{{ Session::get('user')->role_id }}";
-        if (userRole === '2' || userRole === '3') {
-            $('#divisionFilter').show();
-        }
+        
     });
 
     function getData() {

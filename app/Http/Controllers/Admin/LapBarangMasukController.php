@@ -34,76 +34,85 @@ class LapBarangMasukController extends Controller
    
 
    public function pdf(Request $request)
-{
-    $data['data'] = BarangmasukModel::join('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')
-        ->join('tbl_merk', 'tbl_merk.merk_id', '=', 'tbl_barang.merk_id') // Join with merk table
-        ->join('tbl_jenisbarang', 'tbl_jenisbarang.jenisbarang_id', '=', 'tbl_barang.jenisbarang_id') // Join with jenis barang table
-        ->select('tbl_barangmasuk.*', 'tbl_barang.barang_nama', 'tbl_barang.barang_harga', 'tbl_merk.merk_nama', 'tbl_jenisbarang.jenisbarang_nama', 'tbl_barangmasuk.satuan') // Select satuan
-        ->where('request_id', $request->id)
-        ->get()
-        ->map(function($item) {
-            $item->tracking_status = ucfirst(strtolower($item->tracking_status));
-            // Concatenate jumlah and satuan
-            $item->jumlah_satuan = $item->bm_jumlah . ' ' . $item->satuan; // Create a new field for jumlah satuan
-            return $item;
-        });
+    {
+        $data['data'] = BarangmasukModel::join('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')
+            ->join('tbl_merk', 'tbl_merk.merk_id', '=', 'tbl_barang.merk_id')
+            ->join('tbl_jenisbarang', 'tbl_jenisbarang.jenisbarang_id', '=', 'tbl_barang.jenisbarang_id')
+            ->select(
+                'tbl_barangmasuk.*',
+                'tbl_barang.barang_nama',
+                'tbl_barang.barang_harga',
+                'tbl_merk.merk_nama',
+                'tbl_jenisbarang.jenisbarang_nama',
+                'tbl_barangmasuk.satuan'
+            )
+            ->where('request_id', $request->id)
+            ->get()
+            ->map(function($item) {
+                $item->tracking_status = ucfirst(strtolower($item->tracking_status));
+                $item->jumlah_satuan = $item->bm_jumlah . ' ' . $item->satuan;
+                return $item;
+            });
 
-    $data["title"] = "PDF Permintaan Barang";
-    $data['web'] = WebModel::first();
-    $request_data = RequestBarangModel::join('tbl_user', 'tbl_request_barang.user_id', '=', 'tbl_user.user_id')
-        ->where('request_id', $request->id)
-        ->select(
-            'tbl_request_barang.request_id',
-            'tbl_request_barang.request_tanggal',
-            'tbl_request_barang.status',
-            'tbl_user.departemen',
-            'tbl_user.divisi'
-        )
-        ->first();
-    $request_data->request_id = str_replace('-', '/', $request_data->request_id);
-    $data['request'] = $request_data;
+        $data["title"] = "PDF Permintaan Barang";
+        $data['web'] = WebModel::first();
+        
+        // Get request details
+        $request_data = RequestBarangModel::join('tbl_user', 'tbl_request_barang.user_id', '=', 'tbl_user.user_id')
+            ->where('request_id', $request->id)
+            ->select(
+                'tbl_request_barang.request_id',
+                'tbl_request_barang.request_tanggal',
+                'tbl_request_barang.status',
+                'tbl_user.departemen',
+                'tbl_user.divisi'
+            )
+            ->first();
+        
+        $request_data->request_id = str_replace('-', '/', $request_data->request_id);
+        $data['request'] = $request_data;
 
-    // Get signatures data
-    $signatures = DB::table('tbl_signatures')
-        ->join('tbl_user', 'tbl_signatures.user_id', '=', 'tbl_user.user_id')
-        ->where('request_id', $request->id)
-        ->select('tbl_signatures.*', 'tbl_user.user_nmlengkap', 'tbl_user.role_id')
-        ->get();
+        // Process signatures
+        $signatures = DB::table('tbl_signatures')
+            ->join('tbl_user', 'tbl_signatures.user_id', '=', 'tbl_user.user_id')
+            ->where('request_id', $request->id)
+            ->select('tbl_signatures.*', 'tbl_user.user_nmlengkap', 'tbl_user.role_id')
+            ->get();
 
-    $processedSignatures = $signatures->map(function($sig) {
-        try {
-            $signature = (object) $sig;
-            $signatureData = $signature->signature;
-            if (strpos($signatureData, 'data:image/png;base64,') !== false) {
-                $signatureData = str_replace('data:image/png;base64,', '', $signatureData);
+        $processedSignatures = $signatures->map(function($sig) {
+            try {
+                $signature = (object) $sig;
+                $signatureData = $signature->signature;
+                if (strpos($signatureData, 'data:image/png;base64,') !== false) {
+                    $signatureData = str_replace('data:image/png;base64,', '', $signatureData);
+                }
+                $imageData = base64_decode($signatureData);
+                if ($imageData) {
+                    $signature->signature_base64 = 'data:image/png;base64,' . base64_encode($imageData);
+                }
+                return $signature;
+            } catch (\Exception $e) {
+                Log::error('Error processing signature: ' . $e->getMessage());
+                return (object) [
+                    'signature_base64' => null,
+                    'signer_type' => $sig->signer_type ?? null,
+                    'user_nmlengkap' => $sig->user_nmlengkap ?? null,
+                ];
             }
-            $imageData = base64_decode($signatureData);
-            if ($imageData) {
-                $signature->signature_base64 = 'data:image/png;base64,' . base64_encode($imageData);
-            }
-            return $signature;
-        } catch (\Exception $e) {
-            Log::error('Error processing signature: ' . $e->getMessage());
-            return (object) [
-                'signature_base64' => null,
-                'signer_type' => $sig->signer_type ?? null,
-                'user_nmlengkap' => $sig->user_nmlengkap ?? null,
-            ];
+        })->keyBy('signer_type');
+
+        $userSignature = $signatures->where('action', 'Complete')->first();
+        if ($userSignature) {
+            $processedSignatures['User'] = $userSignature;
         }
-    })->keyBy('signer_type');
+        $data['signatures'] = $processedSignatures;
 
-    $userSignature = $signatures->where('action', 'Complete')->first();
-    if ($userSignature) {
-        $processedSignatures['User  '] = $userSignature;
+        $pdf = app('dompdf.wrapper');
+        $pdf->setPaper('A4', 'landscape');
+        $pdf->loadView('Admin.Laporan.BarangMasuk.pdf', $data);
+
+        return $pdf->download('permintaan-barang-'.$request->id.'.pdf');
     }
-    $data['signatures'] = $processedSignatures;
-
-    $pdf = app('dompdf.wrapper');
-    $pdf->setPaper('A4', 'landscape');
-    $pdf->loadView('Admin.Laporan.BarangMasuk.pdf', $data);
-
-    return $pdf->download('permintaan-barang-'.$request->id.'.pdf');
-}
 
 public function storeSignature(Request $request)
 {
