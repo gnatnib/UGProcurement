@@ -39,9 +39,9 @@
                     <select class="form-control" name="tahun" id="filterTahun">
                         <option value="">Semua Tahun</option>
                         @php
-                            $currentYear = date('Y');
-                            $startYear = $currentYear - 3;
-                            $endYear = $currentYear + 1;
+$currentYear = date('Y');
+$startYear = $currentYear - 3;
+$endYear = $currentYear + 1;
                         @endphp
                         @foreach (range($startYear, $endYear) as $year)
                             <option value="{{ $year }}" {{ $currentYear == $year ? 'selected' : '' }}>
@@ -258,7 +258,41 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+        // Inisialisasi variabel di awal
+        let table;
+        let refreshInterval;
+        const REFRESH_INTERVAL = 10000; // 5 seconds
+        $(document).ready(function() {
+        getData();
+        startTableRefresh();
+        
+        // Stop refresh when modal is shown
+        $('#modalDetail').on('show.bs.modal', function() {
+            stopTableRefresh();
+        });
+        
+        // Resume refresh when modal is hidden
+        $('#modalDetail').on('hidden.bs.modal', function() {
+            startTableRefresh();
+            });
+        });
+        function startTableRefresh() {
+                stopTableRefresh(); // Hentikan interval yang mungkin sedang berjalan
 
+                refreshInterval = setInterval(function () {
+                    if (!$('#modalDetail').hasClass('show')) {
+                        console.log('Refreshing table...'); // Debug log
+                        table.ajax.reload(null, false);
+                    }
+                }, REFRESH_INTERVAL);
+            }
+
+        function stopTableRefresh() {
+                if (refreshInterval) {
+                    clearInterval(refreshInterval);
+                    refreshInterval = null;
+                }
+            }
         // Add signature pad library
         document.head.appendChild(Object.assign(document.createElement('script'), {
             src: 'https://cdnjs.cloudflare.com/ajax/libs/signature_pad/4.1.5/signature_pad.umd.min.js'
@@ -329,48 +363,47 @@
             });
         }
 
-        var table = $('#table-1').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: "{{ route('approve.show') }}",
-            columns: [{
-                    data: 'DT_RowIndex',
-                    name: 'DT_RowIndex',
-                    searchable: false
-                },
-                {
-                    data: 'tanggal_format',
-                    name: 'request_tanggal'
-                },
-                {
-                    data: 'request_id',
-                    name: 'request_id'
-                },
-                {
-                    data: 'divisi',
-                    name: 'divisi'
-                },
-                {
-                    data: 'departemen', // Add this column
-                    name: 'departemen'
-                },
-                {
-                    data: 'status_badge',
-                    name: 'status'
-                },
-                {
-                    data: 'action',
-                    name: 'action',
-                    orderable: false,
-                    searchable: false,
-                    render: function(data, type, row) {
-                        return `<button type="button" class="btn btn-success btn-sm" onclick="showDetail(encodeURIComponent('${row.request_id}'))">
-                    <i class="fe fe-eye"></i> Detail
-                </button>`;
-                    }
-                }
-            ]
-        });
+        $(document).ready(function () {
+                // Inisialisasi DataTable
+                table = $('#table-1').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        url: "{{ route('approve.show') }}",
+                        data: function (d) {
+                            d.departemen = $('#filterDepartemen').val();
+                            d.bulan = $('#filterBulan').val();
+                            d.tahun = $('#filterTahun').val();
+                        }
+                    },
+                    columns: [
+                        { data: 'DT_RowIndex', name: 'DT_RowIndex', searchable: false },
+                        { data: 'tanggal_format', name: 'request_tanggal' },
+                        { data: 'request_id', name: 'request_id' },
+                        { data: 'divisi', name: 'divisi' },
+                        { data: 'departemen', name: 'departemen' },
+                        { data: 'status_badge', name: 'status' },
+                        {
+                            data: 'action',
+                            name: 'action',
+                            orderable: false,
+                            searchable: false,
+                            render: function (data, type, row) {
+                                return `<button type="button" class="btn btn-success btn-sm" onclick="showDetail(encodeURIComponent('${row.request_id}'))">
+                        <i class="fe fe-eye"></i> Detail
+                    </button>`;
+                            }
+                        }
+                    ]
+                });
+
+                // Mulai auto-refresh setelah table diinisialisasi
+                startTableRefresh();
+
+                // Event handler untuk modal
+                $('#modalDetail').on('show.bs.modal', stopTableRefresh);
+                $('#modalDetail').on('hidden.bs.modal', startTableRefresh);
+            });
 
         function numberFormat(number) {
             return new Intl.NumberFormat('id-ID').format(number);
@@ -647,6 +680,7 @@
                 bulan: bulan,
                 tahun: tahun
             })).load();
+            startTableRefresh();
         }
 
         function resetFilter() {
@@ -655,5 +689,6 @@
             $('#filterTahun').val('');
             applyFilter();
         }
+        $(window).on('unload', stopTableRefresh);
     </script>
 @endsection
