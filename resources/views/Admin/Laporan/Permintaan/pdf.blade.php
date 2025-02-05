@@ -7,7 +7,7 @@
     <style>
         @page {
             size: landscape;
-            margin: 2cm;
+            margin: 1cm;
         }
         
         * {
@@ -35,7 +35,7 @@
         table.content-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 10px;
             margin-bottom: 30px;
         }
 
@@ -98,18 +98,20 @@
         }
 
         .document-info {
-            margin: 10px 0;
+            margin: 3px 0;
         }
 
         .document-info p {
-            margin: 3px 0;
+            margin: 1px 0;
             font-size: 11px;
         }
 
         h1 {
             text-align: center;
             font-size: 18px;
-            margin: 10px 0;
+            margin: 0;  /* Hapus semua margin */
+            padding: 0; /* Hapus semua padding */
+            margin-top: -5px;  /* Memberikan negative margin untuk mendekatkan ke atas */
         }
 
         h2 {
@@ -149,7 +151,7 @@
     </style>
 </head>
 <body>
-    <div style="width: 100%; margin-bottom: 20px;">
+    <div style="width: 100%; margin-bottom: 5px;">
         <table style="width: 100%; border: none;">
             <tr style="border: none;">
                 <td style="width: 70%; border: none; vertical-align: top;">
@@ -193,11 +195,18 @@
         <tbody>
             @php $total = 0; @endphp
             @foreach($data as $key => $d)
-                @php 
-                    $itemTotal = $d->barang_harga * $d->bm_jumlah;
-                    $total += $itemTotal;
-                    $keterangan = str_replace('Rejected by (GM):', '', $d->keterangan);
-                @endphp
+            @php 
+            $itemTotal = $d->barang_harga * $d->bm_jumlah;
+            $total += $itemTotal;
+            
+            // Penanganan keterangan yang lebih menyeluruh
+            $keterangan = $d->keterangan;
+            if (strpos(strtolower($keterangan), 'rejected by') !== false) {
+                $keterangan = trim(substr($keterangan, 0, strpos(strtolower($keterangan), 'rejected by')));
+            }
+            // Membersihkan karakter whitespace yang tersisa
+            $keterangan = trim($keterangan);
+        @endphp
                 <tr>
                     <td>{{ $key + 1 }}</td>
                     <td>{{ $d->barang_kode }}</td>
