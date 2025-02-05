@@ -84,6 +84,14 @@
                                             <div id="detail-barang" class="fs-6 fw-semibold"></div>
                                         </div>
                                         <div>
+                                            <label class="text-muted small mb-1">Jenis Barang</label>
+                                            <div id="detail-jenis" class="fs-6 fw-semibold"></div>
+                                        </div>
+                                        <div>
+                                            <label class="text-muted small mb-1">Merk</label>
+                                            <div id="detail-merk" class="fs-6 fw-semibold"></div>
+                                        </div>
+                                        <div>
                                             <label class="text-muted small mb-1">Jumlah Barang</label>
                                             <div id="detail-jumlah" class="fs-6 fw-semibold"></div>
                                         </div>
@@ -279,6 +287,8 @@
             $('#detail-bmkode').text(data.bm_kode);
             $('#detail-tanggal').text(data.tgl);
             $('#detail-barang').text(data.barang);
+            $('#detail-jenis').text(data.jenis || '-');
+            $('#detail-merk').text(data.merk || '-');
             $('#detail-jumlah').text(data.bm_jumlah + ' ' + data.satuan);
             $('#detail-requestid').text(data.request_id);
             $('#detail-keterangan').text(data.keterangan || '-');
