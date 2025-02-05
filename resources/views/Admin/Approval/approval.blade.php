@@ -14,15 +14,21 @@
     <div class="card-body border-bottom">
         <form id="filterForm">
             <div class="row align-items-end mb-3">
-                <div class="col-md-3">
-                    <label class="form-label">Departemen</label>
-                    <select class="form-control" name="departemen" id="filterDepartemen">
-                        <option value="">Semua Departemen</option>
-                        @foreach ($departemen as $d)
-                            <option value="{{ $d }}">{{ $d }}</option>
-                        @endforeach
-                    </select>
-                </div>
+                @php
+                    $userRole = Session::get('user')->role_id;
+                @endphp
+                
+                @if($userRole == 2)
+                    <div class="col-md-3">
+                        <label class="form-label">Departemen</label>
+                        <select class="form-control" name="departemen" id="filterDepartemen">
+                            <option value="">Semua Departemen</option>
+                            @foreach ($departemen as $d)
+                                <option value="{{ $d }}">{{ $d }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                @endif
                 <div class="col-md-2">
                     <label class="form-label">Bulan</label>
                     <select class="form-control" name="bulan" id="filterBulan">
@@ -370,11 +376,14 @@ $endYear = $currentYear + 1;
                     serverSide: true,
                     ajax: {
                         url: "{{ route('approve.show') }}",
-                        data: function (d) {
+                        data: function(d) {
+                        // Hanya kirim filter departemen jika role adalah 2
+                        if ('{{ Session::get('user')->role_id }}' == '2') {
                             d.departemen = $('#filterDepartemen').val();
-                            d.bulan = $('#filterBulan').val();
-                            d.tahun = $('#filterTahun').val();
                         }
+                        d.bulan = $('#filterBulan').val();
+                        d.tahun = $('#filterTahun').val();
+                    }
                     },
                     columns: [
                         { data: 'DT_RowIndex', name: 'DT_RowIndex', searchable: false },
@@ -671,15 +680,7 @@ $endYear = $currentYear + 1;
         }
 
         function applyFilter() {
-            const departemen = $('#filterDepartemen').val();
-            const bulan = $('#filterBulan').val();
-            const tahun = $('#filterTahun').val();
-
-            table.ajax.url("{{ route('approve.show') }}?" + $.param({
-                departemen: departemen,
-                bulan: bulan,
-                tahun: tahun
-            })).load();
+            table.ajax.reload();
             startTableRefresh();
         }
 
