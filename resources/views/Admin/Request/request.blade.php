@@ -56,11 +56,11 @@
                                     <option value="">Semua Status</option>
                                     <option value="draft">Draft</option>
                                     <option value="pending">Pending</option>
-                                    <option value="approved">Approved</option>
-                                    <option value="rejected">Rejected</option>
                                     <option value="Diproses">Diproses</option>
                                     <option value="Dikirim">Dikirim</option>
                                     <option value="Diterima">Diterima</option>
+                                    <option value="Ditolak">Ditolak</option>
+
                                 </select>
                             </div>
                         </div>
