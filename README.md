@@ -7,6 +7,17 @@ This application uses the **Sash Admin** template (built with Bootstrap v5) for 
 
 ---
 
+
+## :gear: Requirements  
+![Laravel Version](https://img.shields.io/badge/Laravel-9.52.18-red.svg)
+![npm Version](https://img.shields.io/badge/npm-11.0.0-red.svg)
+![Composer Version](https://img.shields.io/badge/Composer-2.8.4-yellow.svg)
+![PHP Version](https://img.shields.io/badge/PHP-8.3.6-blue.svg)
+![Node.Js Version](https://img.shields.io/badge/Node.js-20.17.0-green.svg)
+
+
+---
+
 ## :sparkles: Features  
 - **Dashboard**: Overview of key metrics and stock status.  
 - **Jenis Barang**: Manage item categories.  
@@ -16,7 +27,6 @@ This application uses the **Sash Admin** template (built with Bootstrap v5) for 
 - **Customer**: Manage customer data.  
 - **Barang Masuk**: Record incoming stock transactions.  
 - **Laporan Barang Masuk**: Generate reports for incoming stock.  
-- **Laporan Stok Barang**: Generate stock reports.  
 - **Setting Website**: Configure website settings.  
 - **Setting Hak Akses User per Role**: Define user permissions by role.  
 - **Setting Menu**: Add or remove application menus.
@@ -31,13 +41,6 @@ This application uses the **Sash Admin** template (built with Bootstrap v5) for 
 
 ---
 
-## :gear: Requirements  
-![PHP](https://img.shields.io/badge/PHP-%5E8.1-green)  
-![Node.js](https://img.shields.io/badge/Node%20JS-%5E16.14.0-green)  
-![Npm](https://img.shields.io/badge/Npm-%5E8.3.1-green)  
-![Composer](https://img.shields.io/badge/Composer-%5E2.3.9-green)  
-
----
 
 ## :rocket: Installation  
 
@@ -59,23 +62,13 @@ Open your terminal and run these codes below:
 ```
 composer install
 ```
+#### :arrow_right: Seed Database
 ```
-php artisan storage:link
+php artisan migrate:fresh --seed
 ```
-#### :arrow_right: Import Database
-Import `ugprocurement.sql` in `database/db` path to phpmyadmin 
 
 #### :arrow_right: Jalankan Aplikasi
 ```
 php artisan serve
 ```
 copy & paste `http://127.0.0.1:8000/` to your browser.
-
-#### :arrow_right: Login Default
-username: `superadmin` password: `12345678`
-<br>
-username: `admin` password: `12345678`
-<br>
-username: `operator` password: `12345678`
-<br>
-username: `manajer` password: `12345678`
