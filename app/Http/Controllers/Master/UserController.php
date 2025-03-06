@@ -174,41 +174,63 @@ class UserController extends Controller
     }
 
     public function updateProfile(Request $request, UserModel $user)
-    {
-
-        //check if image is uploaded
+{
+    try {
+        // Check if image is uploaded
         if ($request->hasFile('photoU')) {
-
-            //upload new image
             $image = $request->file('photoU');
-            $image->storeAs('public/users', $image->hashName());
+            
+            // Validate image
+            $request->validate([
+                'photoU' => 'image|mimes:jpeg,png,jpg,svg|max:2048'
+            ]);
 
-            //delete old image
-            Storage::delete('public/users/' . $user->user_foto);
+            // Make sure storage directory exists
+            $storage_path = storage_path('app/public/users');
+            if (!file_exists($storage_path)) {
+                mkdir($storage_path, 0755, true);
+            }
 
-            //update post with new image
+            // Generate safe filename
+            $filename = time() . '_' . str_replace(' ', '_', $image->getClientOriginalName());
+            
+            // Store image
+            $image->storeAs('public/users', $filename);
+
+            // Delete old image if it exists and is not the default
+            if ($user->user_foto != 'undraw_profile.svg' && Storage::exists('public/users/' . $user->user_foto)) {
+                Storage::delete('public/users/' . $user->user_foto);
+            }
+
+            // Update user with new image
             $user->update([
-                'user_foto'  => $image->hashName(),
+                'user_foto' => $filename,
                 'user_nmlengkap' => $request->nmlengkap,
-                'user_nama'   => $request->username,
+                'user_nama' => $request->username,
                 'user_email' => $request->email,
             ]);
         } else {
-            //update post without image
+            // Update without changing image
             $user->update([
                 'user_nmlengkap' => $request->nmlengkap,
-                'user_nama'   => $request->username,
+                'user_nama' => $request->username,
                 'user_email' => $request->email,
             ]);
         }
 
-        $data['title'] = "Profile";
         Session::flash('status', 'success');
         Session::flash('msg', 'Profile Berhasil diubah!');
 
-        //redirect to index
-        return redirect(url('admin/profile/' . $user->user_id))->with($data);
+        return redirect(url('admin/profile/' . $user->user_id))->with(['title' => "Profile"]);
+
+    } catch (\Exception $e) {
+        Session::flash('status', 'error');
+        Session::flash('msg', 'Gagal mengupdate profile: ' . $e->getMessage());
+        
+        return redirect()->back();
     }
+}
+
 
     public function hapus(Request $request)
     {
