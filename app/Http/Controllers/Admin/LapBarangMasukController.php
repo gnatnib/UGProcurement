@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
-use PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 use Illuminate\Support\Facades\Log;
 
@@ -31,9 +31,9 @@ class LapBarangMasukController extends Controller
         return view('Admin.Laporan.BarangMasuk.index', $data);
     }
 
-   
 
-   public function pdf(Request $request)
+
+    public function pdf(Request $request)
     {
         $data['data'] = BarangmasukModel::join('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')
             ->join('tbl_merk', 'tbl_merk.merk_id', '=', 'tbl_barang.merk_id')
@@ -48,7 +48,7 @@ class LapBarangMasukController extends Controller
             )
             ->where('request_id', $request->id)
             ->get()
-            ->map(function($item) {
+            ->map(function ($item) {
                 $item->tracking_status = ucfirst(strtolower($item->tracking_status));
                 $item->jumlah_satuan = $item->bm_jumlah . ' ' . $item->satuan;
                 return $item;
@@ -56,7 +56,7 @@ class LapBarangMasukController extends Controller
 
         $data["title"] = "PDF Permintaan Barang";
         $data['web'] = WebModel::first();
-        
+
         // Get request details
         $request_data = RequestBarangModel::join('tbl_user', 'tbl_request_barang.user_id', '=', 'tbl_user.user_id')
             ->where('request_id', $request->id)
@@ -68,7 +68,7 @@ class LapBarangMasukController extends Controller
                 'tbl_user.divisi'
             )
             ->first();
-        
+
         $request_data->request_id = str_replace('-', '/', $request_data->request_id);
         $data['request'] = $request_data;
 
@@ -79,7 +79,7 @@ class LapBarangMasukController extends Controller
             ->select('tbl_signatures.*', 'tbl_user.user_nmlengkap', 'tbl_user.role_id')
             ->get();
 
-        $processedSignatures = $signatures->map(function($sig) {
+        $processedSignatures = $signatures->map(function ($sig) {
             try {
                 $signature = (object) $sig;
                 $signatureData = $signature->signature;
@@ -107,64 +107,66 @@ class LapBarangMasukController extends Controller
         }
         $data['signatures'] = $processedSignatures;
 
-        $pdf = app('dompdf.wrapper');
-        $pdf->setPaper('A4', 'landscape');
-        $pdf->loadView('Admin.Laporan.BarangMasuk.pdf', $data);
 
-        return $pdf->download('permintaan-barang-'.$request->id.'.pdf');
+        $pdf = Pdf::setOptions([
+            'isRemoteEnabled' => true,
+            'chroot' => public_path()
+        ])->setPaper('A4', 'landscape')->loadView('Admin.Laporan.BarangMasuk.pdf', $data);
+
+        return $pdf->download('permintaan-barang-' . $request->id . '.pdf');
     }
 
-public function storeSignature(Request $request)
-{
-    $imageData = $request->input('signature'); // Assume base64 input
-    $imageName = uniqid() . '.png'; // Generate unique file name
-    $imagePath = storage_path('app/public/signatures/' . $imageName);
+    public function storeSignature(Request $request)
+    {
+        $imageData = $request->input('signature'); // Assume base64 input
+        $imageName = uniqid() . '.png'; // Generate unique file name
+        $imagePath = storage_path('app/public/signatures/' . $imageName);
 
-    // Convert base64 to image and save
-    $image = base64_decode($imageData);
-    file_put_contents($imagePath, $image);
+        // Convert base64 to image and save
+        $image = base64_decode($imageData);
+        file_put_contents($imagePath, $image);
 
-    // Save file path to database
-    DB::table('tbl_signatures')->insert([
-        'request_id' => $request->request_id,
-        'user_id' => auth()->user()->user_id,
-        'role_id' => auth()->user()->role_id,
-        'signature' => $imageName, // Save image name
-        'action' => 'Signed',
-        'signer_type' => $request->signer_type,
-        'created_at' => now(),
-        'updated_at' => now(),
-    ]);
-}
+        // Save file path to database
+        DB::table('tbl_signatures')->insert([
+            'request_id' => $request->request_id,
+            'user_id' => auth()->user()->user_id,
+            'role_id' => auth()->user()->role_id,
+            'signature' => $imageName, // Save image name
+            'action' => 'Signed',
+            'signer_type' => $request->signer_type,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+    }
 
     public function show(Request $request)
     {
         if ($request->ajax()) {
             $user = Session::get('user');
             $query = RequestBarangModel::where('status', 'Diterima');
-    
+
             // Apply date filter if provided
             if ($request->tglawal && $request->tglakhir) {
                 $query->whereBetween('request_tanggal', [$request->tglawal, $request->tglakhir]);
             }
-    
+
             // Apply division filter if provided
             if ($request->divisi) {
                 $query->where('divisi', $request->divisi);
             }
-    
+
             // Apply role-based filters
             if ($user->role_id == '5') {
                 $query->where('user_id', $user->user_id);
             } elseif ($user->role_id == '4') {
-                $query->where(function($q) use ($user) {
+                $query->where(function ($q) use ($user) {
                     $q->where('departemen', $user->departemen)
-                      ->orWhere('user_id', $user->user_id);
+                        ->orWhere('user_id', $user->user_id);
                 });
             }
-    
+
             $data = $query->orderBy('request_id', 'DESC')->get();
-    
+
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('tgl', function ($row) {
@@ -189,10 +191,10 @@ public function storeSignature(Request $request)
                 ->make(true);
         }
     }
-public function csv(Request $request)
+    public function csv(Request $request)
     {
         $user = Session::get('user');
-        
+
         $requestQuery = RequestBarangModel::select(
             'request_id',
             'request_tanggal',
@@ -207,9 +209,9 @@ public function csv(Request $request)
         if ($user->role_id == '5') {
             $requestQuery->where('user_id', $user->user_id);
         } elseif ($user->role_id == '4') {
-            $requestQuery->where(function($q) use ($user) {
+            $requestQuery->where(function ($q) use ($user) {
                 $q->where('departemen', $user->departemen)
-                  ->orWhere('user_id', $user->user_id);
+                    ->orWhere('user_id', $user->user_id);
             });
         }
 
@@ -223,15 +225,15 @@ public function csv(Request $request)
         }
 
         $requestDetails = BarangmasukModel::select(
-                'tbl_barangmasuk.request_id',
-                'tbl_barangmasuk.barang_kode',
-                'tbl_barang.barang_nama',
-                'tbl_barangmasuk.bm_jumlah',
-                'tbl_barangmasuk.satuan',
-                'tbl_barangmasuk.harga',
-                'tbl_barangmasuk.divisi',
-                'tbl_barangmasuk.tracking_status'
-            )
+            'tbl_barangmasuk.request_id',
+            'tbl_barangmasuk.barang_kode',
+            'tbl_barang.barang_nama',
+            'tbl_barangmasuk.bm_jumlah',
+            'tbl_barangmasuk.satuan',
+            'tbl_barangmasuk.harga',
+            'tbl_barangmasuk.divisi',
+            'tbl_barangmasuk.tracking_status'
+        )
             ->join('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')
             ->whereIn('tbl_barangmasuk.request_id', $requests->pluck('request_id'))
             ->where('tbl_barangmasuk.tracking_status', 'Diterima')
@@ -246,9 +248,9 @@ public function csv(Request $request)
         });
 
         $filename = 'laporan_permintaan_' . date('Y-m-d_His') . '.csv';
-        
+
         $handle = fopen('php://temp', 'r+');
-        
+
         fputcsv($handle, ['Periode Laporan']);
         fputcsv($handle, ['Tanggal Awal:', $request->tglawal ?? 'Semua Tanggal']);
         fputcsv($handle, ['Tanggal Akhir:', $request->tglakhir ?? 'Semua Tanggal']);
@@ -297,7 +299,7 @@ public function csv(Request $request)
                 foreach ($barangDetails as $barang) {
                     $totalHarga = $barang->bm_jumlah * $barang->harga;
                     $totalHargaRequest += $totalHarga;
-                    
+
                     fputcsv($handle, [
                         $request->request_id,
                         Carbon::parse($request->request_tanggal)->format('d/m/Y'),
@@ -326,11 +328,9 @@ public function csv(Request $request)
         rewind($handle);
         $content = stream_get_contents($handle);
         fclose($handle);
-        
+
         return response($content)
             ->header('Content-Type', 'text/csv')
             ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
     }
-
-
 }
