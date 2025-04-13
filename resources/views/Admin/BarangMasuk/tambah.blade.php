@@ -28,9 +28,8 @@
                         </div>
                         <div class="form-group">
                             <label for="harga" class="form-label">Harga <span class="text-danger">*</span></label>
-                            <input type="text" name="harga" value="0" class="form-control"
-                                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');"
-                                placeholder="Masukkan harga barang">
+                            <input type="text" name="harga" value="0" class="form-control" readonly
+                                placeholder="Harga barang akan terisi otomatis">
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -276,8 +275,8 @@
                 setLoading(false);
                 return false;
             } else if (harga == "" || harga == "0") {
-                validasi('Harga wajib di isi!', 'warning');
-                $("input[name='harga']").addClass('is-invalid');
+                validasi('Silahkan pilih barang terlebih dahulu!', 'warning');
+                $("input[name='kdbarang']").addClass('is-invalid');
                 setLoading(false);
                 return false;
             } else {
