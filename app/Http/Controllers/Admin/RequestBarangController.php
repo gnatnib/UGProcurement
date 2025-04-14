@@ -110,7 +110,7 @@ class RequestBarangController extends Controller
             // Format tanggal
             $request->request_tanggal = Carbon::parse($request->request_tanggal)->translatedFormat('d F Y');
 
-            // Ambil detail barang
+            // Ambil detail barang dengan harga terbaru dari master barang
             $items = DB::table('tbl_barangmasuk as bm')
                 ->leftJoin('tbl_barang as b', 'b.barang_kode', '=', 'bm.barang_kode')
                 ->leftJoin('tbl_merk as m', 'm.merk_id', '=', 'b.merk_id')
@@ -122,8 +122,8 @@ class RequestBarangController extends Controller
                     'm.merk_nama as merk',
                     'bm.bm_jumlah',
                     'bm.satuan',
-                    'bm.harga',
-                    DB::raw('(bm.bm_jumlah * bm.harga) as total_harga'),
+                    'b.barang_harga as harga', // Use current price from master barang
+                    DB::raw('(bm.bm_jumlah * b.barang_harga) as total_harga'), // Calculate with current price
                     'bm.keterangan',
                     'bm.tracking_status'
                 )
@@ -189,11 +189,11 @@ class RequestBarangController extends Controller
         if ($lastRequest) {
             $lastNumber = explode('/', $lastRequest->request_id)[0];
             $nextNumber = (int)$lastNumber + 1;
-            
+
             if ($nextNumber > 999) {
                 throw new \Exception('Batas maksimum request ID untuk bulan ini telah tercapai (999).');
             }
-            
+
             $number = str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
         }
 

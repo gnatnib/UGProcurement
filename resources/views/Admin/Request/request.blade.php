@@ -244,36 +244,36 @@
                         if (response.items && response.items.length > 0) {
                             response.items.forEach((item, index) => {
                                 itemsHtml += `
-                                    <tr>
-                                        <td class="text-center">${index + 1}</td>
-                                        <td class="text-center">${item.barang_kode || '-'}</td>
-                                        <td>${item.barang_nama || '-'}</td>
-                                        <td>${item.merk || '-'}</td>
-                                        <td class="text-center">${item.bm_jumlah} ${item.satuan || ''}</td>
-                                        <td class="text-end">Rp ${parseFloat(item.harga).toLocaleString('id-ID')}</td>
-                                        <td class="text-end">Rp ${item.total_harga.toLocaleString('id-ID')}</td>
-                                        <td class="text-center">${getStatusBadge(item.tracking_status)}</td>
-                                        <td>
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                ${item.keterangan ? 
-                                                    item.keterangan.includes('Rejected by') ?
-                                                        `<div>
+                            <tr>
+                                <td class="text-center">${index + 1}</td>
+                                <td class="text-center">${item.barang_kode || '-'}</td>
+                                <td>${item.barang_nama || '-'}</td>
+                                <td>${item.merk || '-'}</td>
+                                <td class="text-center">${item.bm_jumlah} ${item.satuan || ''}</td>
+                                <td class="text-end">Rp ${parseFloat(item.harga).toLocaleString('id-ID')}</td>
+                                <td class="text-end">Rp ${item.total_harga.toLocaleString('id-ID')}</td>
+                                <td class="text-center">${getStatusBadge(item.tracking_status)}</td>
+                                <td>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        ${item.keterangan ? 
+                                            item.keterangan.includes('Rejected by') ?
+                                                `<div>
                                                                                         ${item.keterangan.split('Rejected by')[0]}
                                                                                         <span class="text-danger">Rejected by${item.keterangan.split('Rejected by')[1]}</span>
                                                                                     </div>`
-                                                        : `<span>${item.keterangan}</span>`
-                                                    : '-'
-                                                }
-                                                ${item.tracking_status && item.tracking_status.toLowerCase() === 'dikirim' ?
-                                                    `<button class="btn btn-success btn-sm" 
-                                                                                    onclick="updateItemStatus('${item.bm_id}', 'diterima')">
-                                                                                    <i class="fe fe-check-circle me-1"></i>
-                                                                                    Terima Barang
-                                                                                </button>` : ''
-                                                }
-                                            </div>
-                                        </td>
-                                    </tr>`;
+                                                : `<span>${item.keterangan}</span>`
+                                            : '-'
+                                        }
+                                        ${item.tracking_status && item.tracking_status.toLowerCase() === 'dikirim' ?
+                                            `<button class="btn btn-success btn-sm" 
+                                                                                        onclick="updateItemStatus('${item.bm_id}', 'diterima')">
+                                                                                        <i class="fe fe-check-circle me-1"></i>
+                                                                                        Terima Barang
+                                                                                    </button>` : ''
+                                        }
+                                    </div>
+                                </td>
+                            </tr>`;
                             });
                         } else {
                             itemsHtml =
@@ -286,12 +286,12 @@
                 error: function(xhr) {
                     const response = xhr.responseJSON;
                     $('#detail-items').html(`
-                        <tr>
-                            <td colspan="7" class="text-center text-danger">
-                                <i class="fe fe-alert-circle me-2"></i>
-                                ${response?.message || 'Gagal memuat data'}
-                            </td>
-                        </tr>`);
+                <tr>
+                    <td colspan="7" class="text-center text-danger">
+                        <i class="fe fe-alert-circle me-2"></i>
+                        ${response?.message || 'Gagal memuat data'}
+                    </td>
+                </tr>`);
                 }
             });
         }
@@ -408,7 +408,7 @@
                     window.statusChanged = false;
                 }
             });
-                    $('.datepicker-date').each(function() {
+            $('.datepicker-date').each(function() {
                 if (!$(this).data('datepicker')) {
                     $(this).datepicker({
                         format: 'dd-mm-yyyy',
@@ -851,7 +851,7 @@
         }
 
         .datepicker-dropdown {
-    z-index: 9999 !important;
-}
+            z-index: 9999 !important;
+        }
     </style>
 @endsection

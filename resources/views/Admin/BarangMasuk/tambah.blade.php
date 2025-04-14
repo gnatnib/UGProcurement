@@ -31,6 +31,10 @@
                             <input type="text" name="harga" value="0" class="form-control" readonly
                                 placeholder="Harga barang akan terisi otomatis">
                         </div>
+                        <div class="form-group">
+                            <label class="form-label">Total Harga</label>
+                            <div id="total-harga" class="form-control-plaintext text-success fw-bold">Rp 0</div>
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
@@ -142,6 +146,33 @@
             validasi('Barang tidak ditemukan!', 'warning');
         }
 
+        function calculateTotal() {
+            const jumlah = parseFloat($("input[name='jml']").val()) || 0;
+            const harga = parseFloat($("input[name='harga']").val()) || 0;
+            const total = jumlah * harga;
+            $("#total-harga").text('Rp ' + total.toLocaleString('id-ID'));
+        }
+
+        // Function to get current price from server
+        function getCurrentPrice(barangKode) {
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    url: "{{ route('barang.get-price', '') }}/" + barangKode,
+                    method: 'GET',
+                    success: function(response) {
+                        if (response.success) {
+                            resolve(response.data.harga);
+                        } else {
+                            reject(response.message);
+                        }
+                    },
+                    error: function(xhr) {
+                        reject('Gagal mendapatkan harga');
+                    }
+                });
+            });
+        }
+
         function searchBarang() {
             const kodeBarang = $('input[name="kdbarang"]').val().trim();
             if (!kodeBarang) {
@@ -164,22 +195,27 @@
                         $("#nmbarang").val(data[0].barang_nama);
                         $("#satuan").val(data[0].satuan_nama).trigger('change');
                         $("#jenis").val(data[0].jenisbarang_nama);
-                        $("#merk").val(data[0].merk_nama); // Add this line
-                        // Set harga dari database
-                        $("input[name='harga']").val(data[0].barang_harga);
+                        $("#merk").val(data[0].merk_nama);
+
+                        // Get current price from server
+                        getCurrentPrice(kodeBarang)
+                            .then(harga => {
+                                $("input[name='harga']").val(harga);
+                                calculateTotal();
+                            })
+                            .catch(error => {
+                                console.error(error);
+                                // Fallback to stored price if API fails
+                                $("input[name='harga']").val(data[0].barang_harga);
+                                calculateTotal();
+                            });
                     } else {
-                        $("#status").val("false");
-                        $("#nmbarang").val('');
-                        $("#satuan").val('');
-                        $("#jenis").val('');
-                        $("#merk").val('');
-                        $("input[name='harga']").val('0');
-                        validasi('Barang tidak ditemukan!', 'warning');
+                        resetFields();
                     }
                 },
                 error: function(xhr, status, error) {
                     $("#loaderkd").addClass('d-none');
-                    $("#status").val("false");
+                    resetFields();
                     console.error("Error details:", {
                         status: status,
                         error: error,
@@ -302,6 +338,12 @@
             $('#modaldemo8').on('hidden.bs.modal', function() {
                 reset();
             });
+
+            // Calculate total when quantity changes
+            $("input[name='jml']").on('input', calculateTotal);
+
+            // Calculate total when price changes (manual override)
+            $("input[name='harga']").on('input', calculateTotal);
         });
 
         // Handle harga input
