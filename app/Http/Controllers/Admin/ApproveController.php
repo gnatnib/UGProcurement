@@ -34,7 +34,6 @@ class ApproveController extends Controller
     {
         if ($request->ajax()) {
             $user = Session::get('user');
-
             try {
                 $query = DB::table('tbl_request_barang as r')
                     ->leftJoin('tbl_user as creator', 'creator.user_id', '=', 'r.user_id')
@@ -47,7 +46,8 @@ class ApproveController extends Controller
                         'creator.departemen',
                         'r.status'
                     )
-                    ->whereNotNull('r.request_id');
+                    ->whereNotNull('r.request_id')
+                    ->where('r.status', '<>', 'Ditolak');
 
                 // Apply filters
                 if ($request->filled('departemen')) {

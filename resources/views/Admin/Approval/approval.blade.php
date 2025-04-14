@@ -45,9 +45,9 @@
                     <select class="form-control" name="tahun" id="filterTahun">
                         <option value="">Semua Tahun</option>
                         @php
-$currentYear = date('Y');
-$startYear = $currentYear - 3;
-$endYear = $currentYear + 1;
+                            $currentYear = date('Y');
+                            $startYear = $currentYear - 3;
+                            $endYear = $currentYear + 1;
                         @endphp
                         @foreach (range($startYear, $endYear) as $year)
                             <option value="{{ $year }}" {{ $currentYear == $year ? 'selected' : '' }}>

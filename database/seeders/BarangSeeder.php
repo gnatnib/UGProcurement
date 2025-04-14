@@ -24,7 +24,7 @@ class BarangSeeder extends Seeder
                 'barang_kode' => 'AC-01',
                 'barang_nama' => 'BLOWER METAL AC',
                 'barang_slug' => 'blower-metal-ac',
-                'barang_harga' => '0',
+                'barang_harga' => '10000',
 
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
@@ -4468,7 +4468,7 @@ class BarangSeeder extends Seeder
                 'barang_kode' => 'TLP-04',
                 'barang_nama' => 'TELEPON ALCATEL IZZI',
                 'barang_slug' => 'telepon-alcatel',
-                'barang_harga' => '0',
+                'barang_harga' => '10000',
 
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
@@ -4482,7 +4482,7 @@ class BarangSeeder extends Seeder
                 'barang_kode' => 'TLP-05',
                 'barang_nama' => 'TELEPON PANASONIC ANALOG',
                 'barang_slug' => 'telepon-panasonic',
-                'barang_harga' => '0',
+                'barang_harga' => '10000',
 
                 'barang_gambar' => '',
                 'created_at' => Carbon::now(),
