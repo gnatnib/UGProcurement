@@ -291,4 +291,27 @@ class BarangController extends Controller
             ))->count();
         return view('Admin.Barang.view', $data);
     }
+
+    public function getPrice($kode)
+    {
+        $barang = BarangModel::where('barang_kode', $kode)
+            ->select('barang_kode', 'barang_nama', 'barang_harga')
+            ->first();
+
+        if (!$barang) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Barang tidak ditemukan'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'kode' => $barang->barang_kode,
+                'nama' => $barang->barang_nama,
+                'harga' => $barang->barang_harga
+            ]
+        ]);
+    }
 }

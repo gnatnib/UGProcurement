@@ -108,6 +108,7 @@
             Route::get('/admin/barang/generate-kode', [BarangController::class, 'generateKode'])->name('barang.generate-kode');
             //liat lists barang untuk dashboard
             Route::get('/admin/barang-view', [BarangController::class, 'viewList'])->name('barang.view');
+            Route::get('/admin/barang/get-price/{kode}', [BarangController::class, 'getPrice'])->name('barang.get-price');
         });
 
         Route::middleware(['checkRoleUser:/customer,menu'])->group(function () {

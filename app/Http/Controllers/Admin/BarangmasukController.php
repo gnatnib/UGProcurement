@@ -85,30 +85,22 @@ class BarangmasukController extends Controller
                 ->leftJoin('tbl_request_barang', 'tbl_request_barang.request_id', '=', 'tbl_barangmasuk.request_id')
                 ->leftJoin('tbl_user', 'tbl_user.user_id', '=', 'tbl_barangmasuk.user_id')
                 ->leftJoin('tbl_jenisbarang', 'tbl_jenisbarang.jenisbarang_id', '=', 'tbl_barang.jenisbarang_id')
-                ->leftJoin('tbl_merk', 'tbl_merk.merk_id', '=', 'tbl_barang.merk_id');
-
+                ->leftJoin('tbl_merk', 'tbl_merk.merk_id', '=', 'tbl_barang.merk_id')
+                ->leftJoin('tbl_satuan', 'tbl_satuan.satuan_id', '=', 'tbl_barang.satuan_id');
 
             // Filter by request_id if provided
             if ($requestId) {
                 $query->where('tbl_barangmasuk.request_id', $requestId);
             }
 
-            // Filter data based on user role
-            if ($user->role_id == 4) { // GM
-                $query->where([
-                    'tbl_user.divisi' => $user->divisi,
-                    'tbl_user.departemen' => $user->departemen
-                ]);
-            } else {
-                $query->where('tbl_barangmasuk.user_id', $user->user_id);
-            }
-
             $data = $query->select(
                 'tbl_barangmasuk.*',
                 'tbl_barang.barang_nama',
+                'tbl_barang.barang_harga as harga', // Always get current price from master
                 'tbl_request_barang.status as request_status',
                 'tbl_jenisbarang.jenisbarang_nama as jenis',
-                'tbl_merk.merk_nama as merk'
+                'tbl_merk.merk_nama as merk',
+                'tbl_satuan.satuan_nama as satuan'
             )
                 ->orderBy('tbl_barangmasuk.request_id', 'DESC')
                 ->get();
@@ -131,7 +123,7 @@ class BarangmasukController extends Controller
                     return $row->bm_jumlah . ' ' . $row->satuan;
                 })
                 ->addColumn('harga', function ($row) {
-                    return $row->harga;
+                    return $row->harga; // This now returns current price from master
                 })
                 ->addColumn('approval', function ($row) {
                     return $row->approval ?? 'PENDING';
@@ -248,8 +240,8 @@ class BarangmasukController extends Controller
                     'required',
                     'date',
                     function ($attribute, $value, $fail) {
-                        $inputDate = \Carbon\Carbon::parse($value)->startOfDay();
-                        $today = \Carbon\Carbon::now()->startOfDay();
+                        $inputDate = Carbon::parse($value)->startOfDay();
+                        $today = Carbon::now()->startOfDay();
 
                         if ($inputDate < $today) {
                             $fail('Tanggal tidak boleh kurang dari hari ini.');

@@ -214,73 +214,77 @@
 
         var table;
         $(document).ready(function() {
-            table = $('#table-1').DataTable({
-                processing: true,
-                serverSide: true,
-                info: true,
-                order: [
-                    [5, 'desc']
-                ],
-                ajax: {
-                    url: "{{ route('barang-masuk.getbarang-masuk') }}",
-                    data: function(d) {
-                        d.request_id = new URLSearchParams(window.location.search).get('request_id');
-                    }
-                },
-                columns: [{
-                        data: 'DT_RowIndex',
-                        name: 'DT_RowIndex',
-                        searchable: false
-                    },
-                    {
-                        data: 'tgl',
-                        name: 'bm_tanggal'
-                    },
-                    {
-                        data: 'barang',
-                        name: 'barang_nama'
-                    },
-                    {
-                        data: 'jumlah_item', // Updated to use the new column
-                        name: 'bm_jumlah'
-                    },
-                    {
-                        data: 'harga',
-                        name: 'harga',
-                        render: function(data) {
-                            return 'Rp ' + parseFloat(data).toLocaleString('id-ID');
+            // Check if DataTable is already initialized
+            if (!$.fn.DataTable.isDataTable('#table-1')) {
+                table = $('#table-1').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    info: true,
+                    order: [
+                        [5, 'desc']
+                    ],
+                    ajax: {
+                        url: "{{ route('barang-masuk.getbarang-masuk') }}",
+                        data: function(d) {
+                            d.request_id = new URLSearchParams(window.location.search).get(
+                                'request_id');
                         }
                     },
-                    {
-                        data: null,
-                        name: 'total_harga',
-                        render: function(data) {
-                            const total = parseFloat(data.harga) * parseFloat(data.bm_jumlah);
-                            return 'Rp ' + total.toLocaleString('id-ID');
+                    columns: [{
+                            data: 'DT_RowIndex',
+                            name: 'DT_RowIndex',
+                            searchable: false
+                        },
+                        {
+                            data: 'tgl',
+                            name: 'bm_tanggal'
+                        },
+                        {
+                            data: 'barang',
+                            name: 'barang_nama'
+                        },
+                        {
+                            data: 'jumlah_item',
+                            name: 'bm_jumlah'
+                        },
+                        {
+                            data: 'harga',
+                            name: 'harga',
+                            render: function(data) {
+                                return 'Rp ' + parseFloat(data).toLocaleString('id-ID');
+                            }
+                        },
+                        {
+                            data: null,
+                            name: 'total_harga',
+                            render: function(data) {
+                                const total = parseFloat(data.harga) * parseFloat(data.bm_jumlah);
+                                return 'Rp ' + total.toLocaleString('id-ID');
+                            }
+                        },
+                        {
+                            data: 'approval',
+                            name: 'approval'
+                        },
+                        {
+                            data: 'tracking_status',
+                            name: 'tracking_status'
+                        },
+                        {
+                            data: 'action',
+                            name: 'action',
+                            orderable: false,
+                            searchable: false
                         }
-                    },
-                    {
-                        data: 'approval',
-                        name: 'approval'
-                    },
-                    {
-                        data: 'tracking_status',
-                        name: 'tracking_status'
-                    },
-                    {
-                        data: 'action',
-                        name: 'action',
-                        orderable: false,
-                        searchable: false
+                    ],
+                    createdRow: function(row, data) {
+                        $(row).css('cursor', 'pointer');
+                        $(row).find('td:not(:last-child)').on('click', function() {
+                            showDetail(data);
+                        });
                     }
-                ],
-                createdRow: function(row, data) {
-                    $(row).css('cursor', 'pointer');
-                    $(row).find('td:not(:last-child)').on('click', function() {
-                        showDetail(data);
-                    });
-                }
-            });
+                });
+            }
         });
 
         function showDetail(data) {
@@ -289,38 +293,99 @@
             $('#detail-barang').text(data.barang);
             $('#detail-jenis').text(data.jenis || '-');
             $('#detail-merk').text(data.merk || '-');
-            $('#detail-jumlah').text(data.bm_jumlah + ' ' + data.satuan);
+            $('#detail-jumlah').text(data.bm_jumlah + ' ' + (data.satuan || ''));
             $('#detail-requestid').text(data.request_id);
             $('#detail-keterangan').text(data.keterangan || '-');
             $('#detail-harga').text('Rp ' + parseInt(data.harga).toLocaleString('id-ID'));
+
             const totalHarga = parseInt(data.harga) * parseInt(data.bm_jumlah);
             $('#detail-total-harga').text('Rp ' + totalHarga.toLocaleString('id-ID'));
-
 
             let approvalStatus = data.approval || 'PENDING';
             let approvalClass = data.approval ? 'bg-success' : 'bg-warning';
             let approvalBadge = `
-       <div class="d-inline-block">
-           <span class="badge rounded-pill ${approvalClass}-gradient px-3 py-2">
-               <i class="fe fe-check-circle me-1"></i>
-               ${approvalStatus}
-           </span>
-       </div>`;
+                <div class="d-inline-block">
+                    <span class="badge rounded-pill ${approvalClass}-gradient px-3 py-2">
+                        <i class="fe fe-check-circle me-1"></i>
+                        ${approvalStatus}
+                    </span>
+                </div>`;
 
             let trackingStatus = data.tracking_status || 'PENDING';
             let trackingClass = data.tracking_status ? 'bg-success' : 'bg-warning';
             let trackingBadge = `
-       <div class="d-inline-block">
-           <span class="badge rounded-pill ${trackingClass}-gradient px-3 py-2">
-               <i class="fe fe-truck me-1"></i>
-               ${trackingStatus}
-           </span>
-       </div>`;
+                <div class="d-inline-block">
+                    <span class="badge rounded-pill ${trackingClass}-gradient px-3 py-2">
+                        <i class="fe fe-truck me-1"></i>
+                        ${trackingStatus}
+                    </span>
+                </div>`;
 
             $('#detail-approval').html(approvalBadge);
             $('#detail-tracking').html(trackingBadge);
 
             $('#detailModal').modal('show');
         }
+
+        function getCurrentPrice(barangKode) {
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    url: '/admin/barang/get-price/' + barangKode,
+                    method: 'GET',
+                    success: function(response) {
+                        resolve(response.harga);
+                    },
+                    error: function(xhr) {
+                        reject('Gagal mendapatkan harga');
+                    }
+                });
+            });
+        }
+
+        // Update price when barang is selected (for add form)
+        $("select[name='barang']").change(function() {
+            const barangKode = $(this).val();
+            if (barangKode) {
+                getCurrentPrice(barangKode)
+                    .then(harga => {
+                        $("input[name='harga']").val(harga);
+                        calculateTotal();
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            }
+        });
+
+        function calculateTotal() {
+            const jumlah = parseFloat($("input[name='jml']").val()) || 0;
+            const harga = parseFloat($("input[name='harga']").val()) || 0;
+            const total = jumlah * harga;
+            $("#total-harga").text('Rp ' + total.toLocaleString('id-ID'));
+        }
+
+        // Update total when quantity or price changes
+        $("input[name='jml'], input[name='harga']").on('input', calculateTotal);
+
+        // For edit form
+        function getbarangbyidU(kode) {
+            getCurrentPrice(kode)
+                .then(data => {
+                    $("input[name='hargaU']").val(data.harga);
+                    calculateTotalU();
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
+
+        function calculateTotalU() {
+            const jumlah = parseFloat($("input[name='jmlU']").val()) || 0;
+            const harga = parseFloat($("input[name='hargaU']").val()) || 0;
+            const total = jumlah * harga;
+            $("#total-hargaU").text('Rp ' + total.toLocaleString('id-ID'));
+        }
+
+        $("input[name='jmlU'], input[name='hargaU']").on('input', calculateTotalU);
     </script>
 @endsection
