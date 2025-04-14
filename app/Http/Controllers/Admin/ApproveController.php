@@ -47,6 +47,7 @@ class ApproveController extends Controller
                         'r.status'
                     )
                     ->whereNotNull('r.request_id')
+                    //menambahkan status
                     ->where('r.status', '<>', 'Ditolak');
 
                 // Apply filters
