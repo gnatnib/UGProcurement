@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +10,7 @@
             size: landscape;
             margin: 1cm;
         }
-        
+
         * {
             font-family: Arial, Helvetica, sans-serif;
         }
@@ -39,17 +40,18 @@
             margin-bottom: 30px;
         }
 
-        .content-table th, .content-table td {
+        .content-table th,
+        .content-table td {
             border: 1px solid black;
             padding: 6px 8px;
             font-size: 11px;
             text-align: justify;
         }
-        
+
         .content-table td {
             vertical-align: top;
         }
-        
+
         .content-table th {
             text-align: center;
             vertical-align: middle;
@@ -109,9 +111,12 @@
         h1 {
             text-align: center;
             font-size: 18px;
-            margin: 0;  /* Hapus semua margin */
-            padding: 0; /* Hapus semua padding */
-            margin-top: -5px;  /* Memberikan negative margin untuk mendekatkan ke atas */
+            margin: 0;
+            /* Hapus semua margin */
+            padding: 0;
+            /* Hapus semua padding */
+            margin-top: -5px;
+            /* Memberikan negative margin untuk mendekatkan ke atas */
         }
 
         h2 {
@@ -126,13 +131,21 @@
         .amount-column {
             text-align: right;
         }
-        
+
         .signature-wrapper {
             float: right;
             width: 250px;
             text-align: center;
             margin-top: 30px;
             margin-right: 20px;
+        }
+
+        .signature-wrapper img {
+            max-width: 210px;
+            max-height: 90px;
+            object-fit: contain;
+            margin: 5px auto 10px auto;
+            display: block;
         }
 
         .signature-line {
@@ -150,6 +163,7 @@
         }
     </style>
 </head>
+
 <body>
     <div style="width: 100%; margin-bottom: 5px;">
         <table style="width: 100%; border: none;">
@@ -173,7 +187,8 @@
 
     <div class="document-info">
         <p><strong>Request ID:</strong> {{ $request->request_id }}</p>
-        <p><strong>Tanggal:</strong> {{ Carbon\Carbon::parse($request->request_tanggal)->translatedFormat('d F Y') }}</p>
+        <p><strong>Tanggal:</strong> {{ Carbon\Carbon::parse($request->request_tanggal)->translatedFormat('d F Y') }}
+        </p>
         <p><strong>Divisi:</strong> {{ $request->divisi }}</p>
         <p><strong>Departemen:</strong> {{ $request->departemen }}</p>
     </div>
@@ -194,19 +209,19 @@
         </thead>
         <tbody>
             @php $total = 0; @endphp
-            @foreach($data as $key => $d)
-            @php 
-            $itemTotal = $d->barang_harga * $d->bm_jumlah;
-            $total += $itemTotal;
-            
-            // Penanganan keterangan yang lebih menyeluruh
-            $keterangan = $d->keterangan;
-            if (strpos(strtolower($keterangan), 'rejected by') !== false) {
-                $keterangan = trim(substr($keterangan, 0, strpos(strtolower($keterangan), 'rejected by')));
-            }
-            // Membersihkan karakter whitespace yang tersisa
-            $keterangan = trim($keterangan);
-        @endphp
+            @foreach ($data as $key => $d)
+                @php
+                    $itemTotal = $d->barang_harga * $d->bm_jumlah;
+                    $total += $itemTotal;
+
+                    // Penanganan keterangan yang lebih menyeluruh
+                    $keterangan = $d->keterangan;
+                    if (strpos(strtolower($keterangan), 'rejected by') !== false) {
+                        $keterangan = trim(substr($keterangan, 0, strpos(strtolower($keterangan), 'rejected by')));
+                    }
+                    // Membersihkan karakter whitespace yang tersisa
+                    $keterangan = trim($keterangan);
+                @endphp
                 <tr>
                     <td>{{ $key + 1 }}</td>
                     <td>{{ $d->barang_kode }}</td>
@@ -229,8 +244,12 @@
 
     <div class="signature-wrapper">
         <p>Disetujui oleh,</p>
+        @if (isset($signatures['GM']) && !empty($signatures['GM']->signature_base64))
+            <img src="{{ $signatures['GM']->signature_base64 }}" alt="Tanda Tangan GM">
+        @endif
         <div class="signature-line"></div>
         <p class="italic-text2">{{ $gm ? $gm->user_nmlengkap : 'nama jelas & tanggal' }}</p>
     </div>
 </body>
+
 </html>
