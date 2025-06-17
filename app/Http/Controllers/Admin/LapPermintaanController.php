@@ -10,8 +10,9 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
-use PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
 
 class LapPermintaanController extends Controller
 {
@@ -37,34 +38,6 @@ class LapPermintaanController extends Controller
         $data['tglakhir'] = $request->tglakhir;
         return view('Admin.Laporan.Permintaan.print', $data);
     }
-
-    // public function pdf(Request $request)
-    // {
-    //     $data['data'] = BarangmasukModel::select(
-    //         'tbl_barangmasuk.barang_kode',
-    //         'tbl_barangmasuk.bm_jumlah',
-    //         'tbl_barangmasuk.harga as barang_harga',
-    //         'tbl_barangmasuk.keterangan', // Mengambil keterangan dari tbl_barangmasuk
-    //         'tbl_barang.barang_nama',
-    //         'tbl_request_barang.request_tanggal',
-    //         'tbl_request_barang.departemen'
-    //     )
-    //         ->join('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangmasuk.barang_kode')
-    //         ->join('tbl_request_barang', 'tbl_request_barang.request_id', '=', 'tbl_barangmasuk.request_id')
-    //         ->where('tbl_barangmasuk.request_id', $request->id)
-    //         ->get();
-
-    //     $data["title"] = "PDF Permintaan";
-    //     $data['web'] = WebModel::first();
-    //     $data['request'] = RequestBarangModel::find($request->id);
-    //     $data['signatures'] = DB::table('tbl_signatures')
-    //         ->where('request_id', $request->id)
-    //         ->get()
-    //         ->keyBy('signer_type');
-
-    //     $pdf = PDF::loadView('Admin.Laporan.Permintaan.pdf', $data);
-    //     return $pdf->download('permintaan-' . $request->id . '.pdf');
-    // }
 
     public function pdf(Request $request)
     {
@@ -100,7 +73,46 @@ class LapPermintaanController extends Controller
         $data['web'] = WebModel::first();
         $data['request'] = $requestData;
 
-        $pdf = PDF::loadView('Admin.Laporan.Permintaan.pdf', $data);
+        // Process signatures
+        $signatures = DB::table('tbl_signatures')
+            ->join('tbl_user', 'tbl_signatures.user_id', '=', 'tbl_user.user_id')
+            ->where('request_id', $request->id)
+            ->select('tbl_signatures.*', 'tbl_user.user_nmlengkap', 'tbl_user.role_id')
+            ->get();
+
+        $processedSignatures = $signatures->map(function ($sig) {
+            try {
+                $signature = (object) $sig;
+                $signatureData = $signature->signature;
+                if (strpos($signatureData, 'data:image/png;base64,') !== false) {
+                    $signatureData = str_replace('data:image/png;base64,', '', $signatureData);
+                }
+                $imageData = base64_decode($signatureData);
+                if ($imageData) {
+                    $signature->signature_base64 = 'data:image/png;base64,' . base64_encode($imageData);
+                }
+                return $signature;
+            } catch (\Exception $e) {
+                Log::error('Error processing signature: ' . $e->getMessage());
+                return (object) [
+                    'signature_base64' => null,
+                    'signer_type' => $sig->signer_type ?? null,
+                    'user_nmlengkap' => $sig->user_nmlengkap ?? null,
+                ];
+            }
+        })->keyBy('signer_type');
+
+        $userSignature = $signatures->where('action', 'Complete')->first();
+        if ($userSignature) {
+            $processedSignatures['User'] = $userSignature;
+        }
+        $data['signatures'] = $processedSignatures;
+
+
+        $pdf = Pdf::setOptions([
+            'isRemoteEnabled' => true,
+            'chroot' => public_path()
+        ])->setPaper('A4', 'landscape')->loadView('Admin.Laporan.Permintaan.pdf', $data);
         return $pdf->download('permintaan-' . $request->id . '.pdf');
     }
 
