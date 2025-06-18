@@ -195,6 +195,16 @@ class BarangController extends Controller
         }
     }
 
+    public function checkKode($kode)
+    {
+        try {
+            $exists = BarangModel::where('barang_kode', $kode)->exists();
+            return response()->json(['exists' => $exists]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
     public function proses_tambah(Request $request)
     {
         $img = "";
