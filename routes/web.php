@@ -109,6 +109,7 @@
             //liat lists barang untuk dashboard
             Route::get('/admin/barang-view', [BarangController::class, 'viewList'])->name('barang.view');
             Route::get('/admin/barang/get-price/{kode}', [BarangController::class, 'getPrice'])->name('barang.get-price');
+            Route::get('/admin/barang/check-kode/{kode}', [BarangController::class, 'checkKode'])->name('barang.check-kode');
         });
 
         Route::middleware(['checkRoleUser:/customer,menu'])->group(function () {

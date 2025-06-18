@@ -131,6 +131,7 @@
                 setLoading(false);
                 return false;
             } else {
+                // Cek duplikasi kode
                 $.ajax({
                     type: 'GET',
                     url: "{{ route('barang.check-kode', ['kode' => ':kode']) }}".replace(':kode', kode),
@@ -140,6 +141,7 @@
                             $("input[name='kode']").addClass('is-invalid');
                             setLoading(false);
                         } else {
+                            // Lanjutkan validasi lainnya
                             if (nama == "") {
                                 validasi('Nama Barang wajib di isi!', 'warning');
                                 $("input[name='nama']").addClass('is-invalid');
