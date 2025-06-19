@@ -27,8 +27,8 @@ class RoleTableSeeder extends Seeder
             ],
             [
                 'role_id' => 2,
-                'role_title' => 'Manajer',
-                'role_slug' => 'Manajer',
+                'role_title' => 'GMHCGA',
+                'role_slug' => 'gmhcga',
                 'role_desc' => '-',
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
@@ -43,8 +43,8 @@ class RoleTableSeeder extends Seeder
             ],
             [
                 'role_id' => 4,
-                'role_title' => 'Manajer',
-                'role_slug' => 'manajer',
+                'role_title' => 'General Manajer',
+                'role_slug' => 'generalmanajer',
                 'role_desc' => null,
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
